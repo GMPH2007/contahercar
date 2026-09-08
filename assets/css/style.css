@@ -1039,7 +1039,7 @@ body.sidebar-open {
 }
 
 /* ==========================================================================
-   TOUR INTERACTIVO GUIADO (ONBOARDING AUTÓNOMO CON AUTO-AVANCE)
+   TOUR INTERACTIVO GUIADO - CONOCE CONTA SMART (NÍTIDO, SIN BORROSIDAD)
    ========================================================================== */
 .tour-backdrop-overlay {
     position: fixed;
@@ -1047,51 +1047,72 @@ body.sidebar-open {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(2px);
-    z-index: 1050;
+    background: transparent;
+    z-index: 1048;
     display: none;
     cursor: pointer;
 }
 
+/* Foco recortado ultra-nítido: el elemento queda 100% transparente y brillante, 
+   y todo el resto de la pantalla se oscurece con box-shadow masivo de 9999px */
 .tour-spotlight-active {
     position: fixed;
-    z-index: 1055;
+    z-index: 1050;
     pointer-events: none;
-    border-radius: 14px;
-    border: 3px solid #38bdf8;
-    box-shadow: 0 0 30px rgba(56, 189, 248, 0.85);
+    border-radius: 16px;
+    border: 3px solid #2563eb;
+    box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 25px rgba(37, 99, 235, 0.75);
     display: none;
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: spotlight-pulse 2s infinite;
+    transition: top 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                left 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                width 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: tour-spotlight-pulse 2.2s infinite ease-in-out;
 }
 
-@keyframes spotlight-pulse {
-    0% {
-        box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+@keyframes tour-spotlight-pulse {
+    0%, 100% {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 20px rgba(37, 99, 235, 0.6);
     }
     50% {
-        box-shadow: 0 0 35px rgba(56, 189, 248, 0.95);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72), 0 0 35px rgba(56, 189, 248, 0.95);
     }
 }
 
+/* Elevación de z-index para el elemento enfocado: nitidez pura vectorial sin filtros */
+.tour-highlighted-element {
+    position: relative !important;
+    z-index: 1052 !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Tarjeta explicativa flotante del Tour */
 .tour-popover-card {
     position: fixed;
     z-index: 1060;
-    width: 360px;
-    max-width: 92vw;
+    width: 380px;
+    max-width: 94vw;
     background: #ffffff;
-    border-radius: 18px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(226, 232, 240, 0.9);
     padding: 1.25rem;
-    border: 1px solid #e2e8f0;
     display: none;
     overflow: hidden;
-    transition: top 0.35s cubic-bezier(0.16, 1, 0.3, 1), left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: popover-fade-in 0.3s ease;
+    transition: top 0.35s cubic-bezier(0.16, 1, 0.3, 1), left 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    animation: tour-popover-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes tour-popover-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .tour-timer-bar-wrap {
@@ -1106,8 +1127,52 @@ body.sidebar-open {
 .tour-timer-bar-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
     transition: width 0.05s linear;
 }
+
+.tour-step-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.tour-autoplay-btn {
+    border: none;
+    background: transparent;
+    padding: 2px 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #475569;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.tour-autoplay-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+/* En dispositivos móviles y celulares: el popover se acopla como bottom sheet sin tapar contenido */
+@media (max-width: 767.98px) {
+    .tour-popover-card {
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
+        left: 10px !important;
+        right: 10px !important;
+        padding: 1rem !important;
+        border-radius: 16px !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+    }
+}
+
 
 

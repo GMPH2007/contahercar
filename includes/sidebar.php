@@ -21,6 +21,13 @@ $lowStockBadge = ($quickCounters['low_stock'] > 0) ? '<span class="badge bg-dang
             </a>
         </li>
         <li class="sidebar-item">
+            <a href="javascript:void(0)" class="sidebar-link btn-start-tour" title="Recorrido guiado interactivo por el sistema">
+                <i class="fa fa-route text-info"></i>
+                <span>Conoce la Web</span>
+                <span class="badge bg-info text-white ms-auto">Tour</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="venta_nueva.php" class="sidebar-link <?= ($currentPage === 'venta_nueva.php') ? 'active' : '' ?>">
                 <i class="fa fa-cash-register text-success"></i>
                 <span>Punto de Venta</span>

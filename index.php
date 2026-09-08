@@ -135,8 +135,8 @@ for ($i = 5; $i >= 0; $i--) {
             </p>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-outline-info btn-sm px-3 py-2 btn-start-tour fw-semibold text-white border-info" title="Iniciar recorrido guiado paso a paso">
-                <i class="fa fa-lightbulb text-warning me-1"></i> Iniciar Tour Guiado
+            <button type="button" class="btn btn-outline-info btn-sm px-3 py-2 btn-start-tour fw-semibold text-white border-info shadow-sm" title="Conoce la Web / Recorrido Interactivo Guiado">
+                <i class="fa fa-route text-warning me-1"></i> Conoce la Web (Tour)
             </button>
             <button type="button" class="btn btn-primary btn-sm px-3 py-2 btn-open-ai fw-bold shadow" title="Abrir Asistente Contable Inteligente">
                 <i class="fa fa-robot me-1"></i> Asistente ContaSmart IA

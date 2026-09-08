@@ -67,10 +67,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 <?php endif; ?>
 
-                <!-- Acceso al Tour Guiado -->
-                <button type="button" class="btn btn-sm btn-outline-info btn-start-tour d-none d-md-flex align-items-center gap-1" title="Iniciar Tour Guiado del Sistema">
-                    <i class="fa fa-lightbulb"></i>
-                    <span>Tour</span>
+                <!-- Acceso al Tour Guiado (Conoce la Web) -->
+                <button type="button" class="btn btn-sm btn-outline-info btn-start-tour d-flex align-items-center gap-1 shadow-sm" title="Conoce la Web / Iniciar Recorrido Guiado">
+                    <i class="fa fa-route text-warning"></i>
+                    <span class="d-none d-sm-inline">Recorrido Web</span>
                 </button>
 
                 <!-- Acceso a ContaSmart IA & ContaVoz -->
