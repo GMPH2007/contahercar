@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CONTA SMART AI & CONTA VOZ & CONTA ALERTA
  * Asistente Inteligente de Gestión Contable, Comandos de Voz y Alertas Predictivas
  */
@@ -98,6 +98,10 @@ const ContaSmartAI = (() => {
     }
 
     function open() {
+        // Cerrar el tour si está en ejecución para evitar superposición
+        if (typeof ContaSmartTour !== 'undefined' && ContaSmartTour.endTour) {
+            ContaSmartTour.endTour();
+        }
         createDrawer();
         backdrop.classList.add('active');
         drawer.classList.add('active');

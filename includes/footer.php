@@ -27,11 +27,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js"></script>
+<script src="assets/js/main.js?v=<?= time() ?>"></script>
 
-<!-- ContaSmart Onboarding Tour & AI Assistant -->
-<script src="assets/js/tour.js"></script>
-<script src="assets/js/conta_ai.js"></script>
+<!-- ContaSmart Onboarding Tour & AI Assistant (Cache-busting) -->
+<script src="assets/js/tour.js?v=<?= time() ?>"></script>
+<script src="assets/js/conta_ai.js?v=<?= time() ?>"></script>
 
 <?php
 // Mostrar alertas flash automáticas si existen

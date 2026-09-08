@@ -28,8 +28,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Custom CSS (con cache-buster dinámico) -->
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= time() ?>">
 </head>
 <body>
 
