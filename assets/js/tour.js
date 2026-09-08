@@ -262,8 +262,15 @@ const ContaSmartTour = (() => {
                 </div>
             </div>
 
+            <!-- Puntos indicadores de avance interactivos -->
+            <div class="d-flex align-items-center justify-content-center gap-1 my-2 py-1">
+                ${steps.map((s, idx) => `
+                    <span class="tour-dot-step ${idx === index ? 'active' : ''}" onclick="ContaSmartTour.goToStep(${idx})" title="Paso ${idx + 1}: ${s.title}" style="cursor: pointer;"></span>
+                `).join('')}
+            </div>
+
             <!-- Botones de Navegación -->
-            <div class="d-flex align-items-center justify-content-between pt-2 border-top mt-3">
+            <div class="d-flex align-items-center justify-content-between pt-2 border-top mt-2">
                 <button type="button" class="btn btn-sm btn-link text-muted p-0 text-decoration-none small" onclick="ContaSmartTour.endTour()">
                     Saltar Tour
                 </button>
@@ -426,10 +433,17 @@ const ContaSmartTour = (() => {
         startTour(true);
     }
 
+    function goToStep(idx) {
+        if (idx >= 0 && idx < steps.length) {
+            showStep(idx);
+        }
+    }
+
     return {
         init,
         startTour,
         resetTour,
+        goToStep,
         nextStep,
         prevStep,
         togglePlayPause,

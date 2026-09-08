@@ -73,10 +73,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <span class="d-none d-sm-inline">Recorrido Web</span>
                 </button>
 
+                <!-- Modo TV / Pantalla Gigante para Monitoreo -->
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-tv-mode d-none d-xl-flex align-items-center gap-1 shadow-sm" id="btnToggleTvMode" onclick="toggleTvMode()" title="Modo TV / Pantalla Gigante para Monitoreo de Almacén o Tienda">
+                    <i class="fa fa-tv text-info"></i>
+                    <span>Modo TV</span>
+                </button>
+
                 <!-- Acceso a ContaSmart IA & ContaVoz -->
                 <button type="button" class="btn btn-sm btn-dark btn-open-ai d-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Abrir Asistente IA & ContaVoz">
                     <i class="fa fa-robot text-info"></i>
-                    <span class="d-none d-sm-inline">ContaSmart IA</span>
+                    <span class="d-none d-sm-inline">ContaSmart Siri</span>
                 </button>
 
                 <!-- Acceso Rápido a Nueva Venta / POS -->
@@ -92,6 +98,29 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
             </div>
         </header>
+
+        <!-- Botón Flotante Móvil Siri / ContaVoz (FAB para Celulares y Tablets) -->
+        <button type="button" class="btn-fab-siri btn-open-ai" title="Hablar con Siri ContaSmart (ContaVoz)" onclick="ContaSmartAI.open()">
+            <i class="fa fa-microphone"></i>
+        </button>
+
+        <script>
+        function toggleTvMode() {
+            document.body.classList.toggle('tv-mode');
+            const btn = document.getElementById('btnToggleTvMode');
+            const isTv = document.body.classList.contains('tv-mode');
+            if (btn) {
+                btn.classList.toggle('active', isTv);
+                btn.innerHTML = isTv ? '<i class="fa fa-compress text-white"></i> <span>Salir TV</span>' : '<i class="fa fa-tv text-info"></i> <span>Modo TV</span>';
+            }
+            // Solicitar fullscreen opcional si es soportado
+            if (isTv && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else if (!isTv && document.fullscreenElement && document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+        </script>
 
         <!-- Contenido de la Página -->
         <main class="app-content">

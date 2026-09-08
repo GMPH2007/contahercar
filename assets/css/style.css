@@ -1174,5 +1174,263 @@ body.sidebar-open {
     }
 }
 
+/* Indicadores de avance en puntos (Tour Dots) */
+.tour-dot-step {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+    transition: all 0.25s ease;
+    display: inline-block;
+}
+
+.tour-dot-step.active {
+    width: 22px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+}
+
+/* ==========================================================================
+   SIRI CONTA SMART - ONDAS DE SONIDO, ORBE & EFECTOS VISUALES
+   ========================================================================== */
+.siri-orb-mini {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #8b5cf6, #06b6d4);
+    background-size: 200% 200%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    animation: siri-gradient-shift 4s ease infinite;
+}
+
+.siri-orb-mini.speaking {
+    animation: siri-gradient-shift 1.5s ease infinite, siri-pulse-scale 1s infinite alternate;
+}
+
+@keyframes siri-gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes siri-pulse-scale {
+    0% { transform: scale(1); box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+    100% { transform: scale(1.15); box-shadow: 0 0 25px rgba(139, 92, 246, 0.8); }
+}
+
+/* Gran Orbe Central de Siri */
+.siri-large-orb {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #06b6d4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+    transition: all 0.3s ease;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+}
+
+.siri-large-orb:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(124, 58, 237, 0.5);
+}
+
+.siri-large-orb.pulse-active {
+    animation: siri-big-pulse 1.2s infinite ease-in-out alternate;
+}
+
+@keyframes siri-big-pulse {
+    0% {
+        transform: scale(0.96);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6), 0 0 20px rgba(6, 182, 212, 0.4);
+    }
+    100% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 18px rgba(37, 99, 235, 0), 0 0 45px rgba(124, 58, 237, 0.85);
+    }
+}
+
+/* Visualizador de Ondas de Audio (Sound Wave Bars) */
+.siri-wave-bars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 38px;
+    margin: 12px auto 0 auto;
+    opacity: 0.25;
+    transition: opacity 0.3s ease;
+}
+
+.siri-wave-bars.active {
+    opacity: 1;
+}
+
+.siri-wave-bars .bar {
+    width: 4px;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #2563eb 0%, #06b6d4 100%);
+    transition: height 0.15s ease;
+}
+
+.siri-wave-bars.active .bar-1 { animation: siri-wave-anim 0.6s infinite ease-in-out alternate 0.1s; }
+.siri-wave-bars.active .bar-2 { animation: siri-wave-anim 0.8s infinite ease-in-out alternate 0.2s; }
+.siri-wave-bars.active .bar-3 { animation: siri-wave-anim 0.5s infinite ease-in-out alternate 0.05s; }
+.siri-wave-bars.active .bar-4 { animation: siri-wave-anim 0.9s infinite ease-in-out alternate 0.3s; }
+.siri-wave-bars.active .bar-5 { animation: siri-wave-anim 0.7s infinite ease-in-out alternate 0.15s; }
+.siri-wave-bars.active .bar-6 { animation: siri-wave-anim 0.6s infinite ease-in-out alternate 0.25s; }
+.siri-wave-bars.active .bar-7 { animation: siri-wave-anim 0.8s infinite ease-in-out alternate 0.08s; }
+
+@keyframes siri-wave-anim {
+    0% { height: 6px; background-color: #38bdf8; }
+    50% { height: 28px; background-color: #2563eb; }
+    100% { height: 36px; background-color: #8b5cf6; }
+}
+
+/* ==========================================================================
+   BOTÓN FLOTANTE MÓVIL FAB (CELULAR / TABLET)
+   ========================================================================== */
+.btn-fab-siri {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 1040;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #ffffff;
+    border: none;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.btn-fab-siri:hover {
+    transform: scale(1.08);
+    box-shadow: 0 14px 30px rgba(124, 58, 237, 0.6);
+    color: #ffffff;
+}
+
+.btn-fab-siri:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 991.98px) {
+    .btn-fab-siri {
+        display: flex;
+    }
+}
+
+/* ==========================================================================
+   MODO TV & PANTALLA GIGANTE (MONITORES 1080p, 4K, KIOSK)
+   ========================================================================== */
+body.tv-mode {
+    font-size: 1.15rem;
+    background-color: #0b0f19 !important;
+    color: #f1f5f9;
+}
+
+body.tv-mode .app-sidebar {
+    display: none !important;
+}
+
+body.tv-mode .app-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1.5rem !important;
+}
+
+body.tv-mode .app-topbar {
+    background: #111827 !important;
+    border-bottom: 2px solid #1f2937 !important;
+    padding: 1rem 2rem !important;
+}
+
+body.tv-mode .page-title {
+    font-size: 1.6rem !important;
+    color: #38bdf8 !important;
+}
+
+body.tv-mode .kpi-smart-card {
+    padding: 1.75rem !important;
+    border-radius: 20px !important;
+    border: 1px solid #374151 !important;
+    background: #1f2937 !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.tv-mode .kpi-title {
+    font-size: 1.1rem !important;
+    color: #9ca3af !important;
+}
+
+body.tv-mode .kpi-value {
+    font-size: 2.3rem !important;
+    font-weight: 800 !important;
+}
+
+body.tv-mode .card-custom {
+    background: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    color: #f3f4f6 !important;
+}
+
+body.tv-mode .card-custom-header {
+    background: #111827 !important;
+    border-bottom: 1px solid #374151 !important;
+}
+
+body.tv-mode .card-custom-header h5 {
+    font-size: 1.35rem !important;
+    color: #ffffff !important;
+}
+
+body.tv-mode .table {
+    font-size: 1.1rem !important;
+    color: #e5e7eb !important;
+}
+
+body.tv-mode .table thead th {
+    background: #111827 !important;
+    color: #9ca3af !important;
+    font-size: 1rem !important;
+}
+
+/* Botón indicador de Modo TV en Topbar */
+.btn-tv-mode {
+    transition: all 0.2s ease;
+}
+
+.btn-tv-mode.active {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #2563eb !important;
+}
+
+/* Ajustes de Alta Resolución (TV 1400px - 4K) */
+@media (min-width: 1400px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        max-width: 100% !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+}
+
+
 
 

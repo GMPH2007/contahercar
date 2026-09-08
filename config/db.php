@@ -48,6 +48,22 @@ function getDBConnection() {
 }
 
 function initDatabaseTables(PDO $pdo) {
+    // 0. Tabla de usuarios
+    $pdo->exec("CREATE TABLE IF NOT EXISTS usuarios (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        usuario VARCHAR(50) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        nombre VARCHAR(100) NOT NULL,
+        rol VARCHAR(20) DEFAULT 'admin',
+        estado TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    $checkUser = $pdo->query("SELECT COUNT(*) FROM usuarios")->fetchColumn();
+    if ($checkUser == 0) {
+        $pdo->exec("INSERT INTO usuarios (usuario, password, nombre, rol) VALUES ('admin', '\$2y\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrador General', 'admin')");
+    }
+
     // 1. Tabla de configuración
     $pdo->exec("CREATE TABLE IF NOT EXISTS configuracion (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -212,6 +228,32 @@ function initDatabaseTables(PDO $pdo) {
         motivo VARCHAR(255) NULL,
         fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // 11. Tabla de propuestas SIRE (RVIE y RCE)
+    $pdo->exec("CREATE TABLE IF NOT EXISTS sire_propuestas (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        periodo VARCHAR(10) NOT NULL,
+        tipo_libro VARCHAR(10) NOT NULL,
+        total_comprobantes INT DEFAULT 0,
+        base_imponible DECIMAL(12,2) DEFAULT 0.00,
+        igv DECIMAL(12,2) DEFAULT 0.00,
+        total_monto DECIMAL(12,2) DEFAULT 0.00,
+        estado_envio VARCHAR(30) DEFAULT 'PENDIENTE',
+        ticket_sunat VARCHAR(50) NULL,
+        car_sunat VARCHAR(50) NULL,
+        archivo_nombre VARCHAR(150) NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // 12. Tabla de periodos fiscales SIRE
+    $pdo->exec("CREATE TABLE IF NOT EXISTS sire_periodos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        periodo VARCHAR(10) NOT NULL UNIQUE,
+        estado_rvie VARCHAR(30) DEFAULT 'ABIERTO',
+        estado_rce VARCHAR(30) DEFAULT 'ABIERTO',
+        fecha_cierre DATETIME NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
     // Cargar datos semilla si no hay categorías

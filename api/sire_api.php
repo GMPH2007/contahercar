@@ -108,7 +108,7 @@ if ($action === 'probar_token') {
 }
 
 // 3. Obtener propuesta local para el visor
-if ($action === 'obtener_propuesta_local') {
+if ($action === 'obtener_propuesta_local' || $action === 'obtener_propuesta') {
     $tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : 'rvie';
     $periodo = isset($_GET['periodo']) ? trim($_GET['periodo']) : date('Y-m');
 
