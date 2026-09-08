@@ -134,15 +134,17 @@ for ($i = 5; $i >= 0; $i--) {
                 Sistema inteligente de gestión contable, analítica financiera y registros electrónicos para MYPES.
             </p>
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-outline-info btn-sm px-3 py-2 btn-start-tour fw-semibold text-white border-info shadow-sm" title="Conoce la Web / Recorrido Interactivo Guiado">
-                <i class="fa fa-route text-warning me-1"></i> Conoce la Web (Tour)
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <button type="button" class="btn btn-gradient-siri btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <i class="fa fa-microphone text-warning"></i>
+                <span>Hablar con Siri</span>
             </button>
-            <button type="button" class="btn btn-primary btn-sm px-3 py-2 btn-open-ai fw-bold shadow" title="Abrir Asistente Contable Inteligente">
-                <i class="fa fa-robot me-1"></i> Asistente ContaSmart IA
-            </button>
-            <button type="button" class="btn btn-danger btn-sm px-3 py-2 btn-open-ai fw-bold shadow" onclick="setTimeout(()=>ContaSmartAI.switchTab('voice'), 150)" title="Comando de Voz">
-                <i class="fa fa-microphone me-1"></i> ContaVoz
+            <a href="venta_nueva.php" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center gap-1">
+                <i class="fa fa-cash-register"></i>
+                <span>Emitir Venta POS</span>
+            </a>
+            <button type="button" class="btn btn-sm btn-outline-light text-white-50 border-0 btn-start-tour p-2" title="Reiniciar Recorrido Guiado (Tour)">
+                <i class="fa fa-circle-question"></i>
             </button>
         </div>
     </div>

@@ -1,8 +1,9 @@
 /**
- * CONTA SMART AI & CONTA VOZ SIRI PRO
- * Asistente Inteligente de Voz, Consultas en Tiempo Real y Generador de Asientos PCGE
- * Compatible con: Móvil, Tablet y Pantalla TV
- * Autor: Gerson Misael Pintado Huaman (GMPH2007)
+ * SIRI CONTA SMART - Asistente de Voz Inteligente Humano y Natural
+ * Conversación fluida en español, pronunciación limpia de moneda y siglas (soles, R-U-C, I-G-V),
+ * ondas de audio en vivo, asientos PCGE automáticos y sincronización en tiempo real con SUNAT/RENIEC.
+ * 
+ * Desarrollado para ContaHercar / Misael Pintado Empresarial (GMPH2007)
  */
 
 const ContaSmartAI = (() => {
@@ -12,10 +13,102 @@ const ContaSmartAI = (() => {
     let isSpeaking = false;
     let isVoiceMuted = false;
     let recognition = null;
-    let currentTab = 'chat';
+    let cachedVoice = null;
 
-    // Generador de sonidos estilo Siri con Web Audio API (Chimes sintéticos nativos)
-    function playSiriTone(type = 'start') {
+    // Inicializar voces del navegador con preferencia por voces humanas naturales en español
+    function initVoiceSynthesis() {
+        if (!('speechSynthesis' in window)) return;
+        
+        const pickVoice = () => {
+            const voices = window.speechSynthesis.getVoices();
+            if (!voices || voices.length === 0) return;
+            
+            // 1. Priorizar voces naturales de Google, Microsoft o Apple en español
+            cachedVoice = voices.find(v => v.lang.startsWith('es') && (
+                v.name.includes('Natural') || 
+                v.name.includes('Google') || 
+                v.name.includes('Sabina') || 
+                v.name.includes('Paulina') || 
+                v.name.includes('Elena') ||
+                v.name.includes('Raul') ||
+                v.name.includes('Monica')
+            )) || 
+            // 2. Voces de Perú, México, Latinoamérica
+            voices.find(v => v.lang === 'es-PE' || v.lang === 'es-MX' || v.lang === 'es-US' || v.lang === 'es-419') ||
+            // 3. Cualquier voz en español
+            voices.find(v => v.lang.startsWith('es'));
+        };
+
+        pickVoice();
+        window.speechSynthesis.onvoiceschanged = pickVoice;
+    }
+
+    // Convierte cifras y siglas técnicas a lenguaje hablado natural y fluido (Ej: "S/. 1,500.00" -> "1500 soles")
+    function cleanSpeechForHuman(text) {
+        if (!text) return '';
+        let s = text;
+        // Eliminar HTML y símbolos raros
+        s = s.replace(/<[^>]*>/g, ' ');
+        s = s.replace(/[*_#`~🤖👋📦🛒⚠️💡⚡🎙️📊]/g, '');
+
+        // Formatear montos monetarios a pronunciación humana peruana
+        s = s.replace(/S\/\.\s*(\d+)(?:\.00|\.0)?\b/gi, '$1 soles');
+        s = s.replace(/S\/\s*(\d+)(?:\.00|\.0)?\b/gi, '$1 soles');
+        s = s.replace(/S\/\.?\s*(\d+)\.(\d{2})/gi, '$1 soles con $2 céntimos');
+        s = s.replace(/S\/\.?/gi, ' soles ');
+
+        // Deletreo y modulación de siglas técnicas
+        s = s.replace(/\bRUC\b/gi, 'R-U-C');
+        s = s.replace(/\bDNI\b/gi, 'D-N-I');
+        s = s.replace(/\bIGV\b/gi, 'I-G-V');
+        s = s.replace(/\bPOS\b/gi, 'punto de venta');
+        s = s.replace(/\bPCGE\b/gi, 'Plan Contable');
+        s = s.replace(/\bSIRE\b/gi, 'sistema SIRE');
+        s = s.replace(/\bunids?\b/gi, 'unidades');
+        s = s.replace(/\bvs\b/gi, 'frente a');
+
+        // Limpiar espacios y retornos
+        s = s.replace(/[\n\r]+/g, '. ');
+        s = s.replace(/\s+/g, ' ').trim();
+
+        return s;
+    }
+
+    // Habla fluida de Siri con cadencia natural
+    function speakHuman(text) {
+        if (isVoiceMuted || !('speechSynthesis' in window)) return;
+        try {
+            window.speechSynthesis.cancel();
+            const speechText = cleanSpeechForHuman(text);
+            if (!speechText) return;
+
+            const utterance = new SpeechSynthesisUtterance(speechText);
+            if (cachedVoice) utterance.voice = cachedVoice;
+            utterance.lang = 'es-PE';
+            utterance.rate = 1.0; // Velocidad de conversación humana normal
+            utterance.pitch = 1.02; // Tono natural y cálido
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                setVisualizerState(true);
+            };
+            utterance.onend = () => {
+                isSpeaking = false;
+                setVisualizerState(false);
+            };
+            utterance.onerror = () => {
+                isSpeaking = false;
+                setVisualizerState(false);
+            };
+
+            window.speechSynthesis.speak(utterance);
+        } catch (e) {
+            console.warn('Speech synthesis error:', e);
+        }
+    }
+
+    // Chimes armónicos nativos de Siri con Web Audio API
+    function playSiriChime(type = 'start') {
         try {
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
             if (!AudioCtx) return;
@@ -27,7 +120,7 @@ const ContaSmartAI = (() => {
 
             const now = ctx.currentTime;
             if (type === 'start') {
-                // Tono dual armónico ascendente de activación (estilo Siri / Apple Intelligence)
+                // Tono dual armónico ascendente de activación (estilo Siri)
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(440, now);
                 osc.frequency.exponentialRampToValueAtTime(784, now + 0.12);
@@ -36,58 +129,26 @@ const ContaSmartAI = (() => {
                 osc.start(now);
                 osc.stop(now + 0.25);
             } else if (type === 'success') {
-                // Tono de éxito / resolución lista
+                // Tono suave de resolución
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now); // Do
-                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // La
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.14);
                 gain.gain.setValueAtTime(0.14, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
                 osc.start(now);
                 osc.stop(now + 0.29);
             }
         } catch (e) {
-            // Ignorar políticas de audio en caso de restricción del navegador
-        }
-    }
-
-    // Síntesis de voz hablada en español (Siri Voice TTS)
-    function speakText(text) {
-        if (isVoiceMuted || !('speechSynthesis' in window)) return;
-        try {
-            window.speechSynthesis.cancel();
-            // Limpiar etiquetas HTML y emojis para lectura fluida
-            const plain = text.replace(/<[^>]*>/g, ' ').replace(/[🤖👋📦🛒⚠️💡⚡🎙️📊]/g, '').replace(/\s+/g, ' ').trim();
-            if (!plain) return;
-
-            const utt = new SpeechSynthesisUtterance(plain);
-            utt.lang = 'es-PE';
-            utt.rate = 1.05;
-            utt.pitch = 1.0;
-
-            utt.onstart = () => {
-                isSpeaking = true;
-                updateWaveVisualizer(true);
-            };
-            utt.onend = () => {
-                isSpeaking = false;
-                updateWaveVisualizer(false);
-            };
-            utt.onerror = () => {
-                isSpeaking = false;
-                updateWaveVisualizer(false);
-            };
-
-            window.speechSynthesis.speak(utt);
-        } catch (e) {
-            console.warn('Speech synthesis not available:', e);
+            // Ignorar políticas de autoplay si aplica
         }
     }
 
     function init() {
-        createDrawer();
+        initVoiceSynthesis();
+        createSiriInterface();
         setupSpeechRecognition();
 
-        // Botones globales para abrir el asistente
+        // Conectar botones globales para abrir a Siri
         document.querySelectorAll('.btn-open-ai').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -96,7 +157,7 @@ const ContaSmartAI = (() => {
         });
     }
 
-    function createDrawer() {
+    function createSiriInterface() {
         if (document.getElementById('aiAssistantDrawer')) return;
 
         backdrop = document.createElement('div');
@@ -106,95 +167,126 @@ const ContaSmartAI = (() => {
         document.body.appendChild(backdrop);
 
         drawer = document.createElement('div');
-        drawer.className = 'ai-assistant-drawer';
+        drawer.className = 'ai-assistant-drawer siri-drawer-premium';
         drawer.id = 'aiAssistantDrawer';
 
         drawer.innerHTML = `
-            <!-- Cabecera Asistente Siri -->
-            <div class="ai-drawer-header d-flex align-items-center justify-content-between p-3">
+            <!-- Cabecera de Siri Inteligente -->
+            <div class="ai-drawer-header p-3 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
                     <div class="siri-orb-mini" id="siriHeaderOrb">
                         <i class="fa fa-sparkles text-white"></i>
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2">
-                            <h6 class="mb-0 fw-bold text-white">ContaSmart Siri IA</h6>
-                            <span class="badge bg-info text-dark" style="font-size: 0.65rem;">v3.0</span>
+                            <h6 class="mb-0 fw-bold text-white" style="letter-spacing: -0.3px;">Siri ContaSmart</h6>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.65rem;">ASISTENTE EN VIVO</span>
                         </div>
-                        <small class="text-info opacity-75" style="font-size: 0.72rem;">Voz Activa & Asesor Contable</small>
+                        <small class="text-light text-opacity-75" style="font-size: 0.72rem;" id="siriStatusSubtext">Voz Clara & Asesor Financiero</small>
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-light p-1 px-2" id="btnToggleSpeechMute" onclick="ContaSmartAI.toggleSpeechMute()" title="Silenciar / Activar voz de Siri">
-                        <i class="fa fa-volume-high" id="iconSpeechMute"></i>
+                    <button type="button" class="btn btn-sm btn-outline-light p-1 px-2 border-0" id="btnToggleSpeechMute" onclick="ContaSmartAI.toggleMute()" title="Silenciar o activar voz de Siri">
+                        <i class="fa fa-volume-high text-white" id="iconSpeechMute"></i>
                     </button>
                     <button type="button" class="btn-close btn-close-white" onclick="ContaSmartAI.close()" title="Cerrar (Esc)"></button>
                 </div>
             </div>
 
-            <!-- Selector de Modos Pestañas -->
-            <div class="bg-white border-bottom px-3 py-2">
-                <ul class="nav nav-pills nav-fill" id="aiModesTabs" style="gap: 4px;">
-                    <li class="nav-item">
-                        <button class="nav-link active py-1 px-2 small" onclick="ContaSmartAI.switchTab('chat')">
-                            <i class="fa fa-comments me-1"></i> Siri Asistente
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link py-1 px-2 small" onclick="ContaSmartAI.switchTab('voice')">
-                            <i class="fa fa-microphone me-1 text-danger"></i> Onda ContaVoz
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link py-1 px-2 small" onclick="ContaSmartAI.switchTab('alerts')">
-                            <i class="fa fa-bell me-1 text-warning"></i> ContaAlerta
-                        </button>
-                    </li>
-                </ul>
+            <!-- Gran Orbe Central y Espectro de Ondas de Sonido -->
+            <div class="siri-hero-panel text-center pt-3 pb-2 px-3 border-bottom bg-gradient-dark">
+                <div class="siri-orb-container my-2">
+                    <div class="siri-large-orb" id="siriLargeOrb" onclick="ContaSmartAI.toggleVoice()" title="Toca para hablar con Siri">
+                        <i class="fa fa-microphone text-white fa-2x" id="siriMicIcon"></i>
+                    </div>
+                </div>
+
+                <!-- Ondas de Sonido Vivas -->
+                <div class="siri-wave-bars" id="siriWaveBars">
+                    <span class="bar bar-1"></span>
+                    <span class="bar bar-2"></span>
+                    <span class="bar bar-3"></span>
+                    <span class="bar bar-4"></span>
+                    <span class="bar bar-5"></span>
+                    <span class="bar bar-6"></span>
+                    <span class="bar bar-7"></span>
+                </div>
+
+                <div class="mt-2 text-center">
+                    <div class="fw-semibold text-dark small" id="siriListeningStatus">
+                        Toca el orbe o el micrófono para dictar con tu voz
+                    </div>
+                </div>
             </div>
 
-            <!-- Cuerpo Dinámico -->
-            <div class="ai-drawer-body" id="aiDrawerBody">
-                <!-- Se renderiza según pestaña -->
+            <!-- Sugerencias de un toque -->
+            <div class="px-3 py-2 bg-light border-bottom d-flex align-items-center gap-1 overflow-x-auto text-nowrap" style="scrollbar-width: none;">
+                <button class="btn btn-sm btn-outline-primary py-1 px-2 rounded-pill small" style="font-size: 0.75rem;" onclick="ContaSmartAI.processQuery('¿Cuánto vendí hoy?')">
+                    📊 ¿Cuánto vendí hoy?
+                </button>
+                <button class="btn btn-sm btn-outline-danger py-1 px-2 rounded-pill small" style="font-size: 0.75rem;" onclick="ContaSmartAI.processQuery('¿Cuáles productos tienen stock bajo?')">
+                    ⚠️ Stock bajo
+                </button>
+                <button class="btn btn-sm btn-outline-success py-1 px-2 rounded-pill small" style="font-size: 0.75rem;" onclick="ContaSmartAI.processQuery('Compré mercadería por 1500 soles en efectivo')">
+                    📦 Compra mercadería S/ 1,500
+                </button>
+                <button class="btn btn-sm btn-outline-info py-1 px-2 rounded-pill small" style="font-size: 0.75rem;" onclick="ContaSmartAI.processQuery('Vendí productos por 800 soles con Factura')">
+                    🛒 Venta S/ 800 Factura
+                </button>
+                <button class="btn btn-sm btn-outline-secondary py-1 px-2 rounded-pill small" style="font-size: 0.75rem;" onclick="ContaSmartAI.processQuery('Consultar RUC 20100070970')">
+                    🔍 Consultar RUC
+                </button>
             </div>
 
-            <!-- Footer con Barra de Entrada & Micrófono -->
-            <div class="ai-drawer-footer p-3 bg-white border-top" id="aiDrawerFooter">
+            <!-- Diálogo y Respuestas con Tarjetas de Acción -->
+            <div class="ai-drawer-body p-3" id="aiDrawerBody">
+                <div class="siri-dialog-stream" id="siriDialogStream">
+                    <!-- Mensaje inicial de bienvenida -->
+                    <div class="siri-exchange mb-3">
+                        <div class="siri-speech-text mb-2">
+                            ¡Hola! Soy <strong>Siri</strong>, tu asistente financiero y contable en ContaSmart.
+                            <br>Háblame con naturalidad: puedes dictarme tus compras, preguntarme tus ventas del día, alertar productos por agotarse o pedirme consultar un RUC.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra inferior con entrada de texto y micrófono -->
+            <div class="ai-drawer-footer p-3 bg-white border-top">
                 <div class="input-group">
-                    <button class="btn btn-danger btn-mic-pulse" id="btnAiMic" onclick="ContaSmartAI.toggleVoice()" title="Dictar por voz (ContaVoz Siri)">
+                    <button class="btn btn-danger btn-mic-pulse" id="btnAiBottomMic" onclick="ContaSmartAI.toggleVoice()" title="Dictar por voz">
                         <i class="fa fa-microphone"></i>
                     </button>
-                    <input type="text" id="aiInputText" class="form-control" placeholder="Escribe o dicta: '¿cuánto vendí hoy?', 'stock bajo'..." onkeydown="if(event.key==='Enter') ContaSmartAI.sendUserQuery()">
+                    <input type="text" id="aiInputText" class="form-control" placeholder="Escribe o habla: '¿cuánto vendí hoy?', 'compra 1200'..." onkeydown="if(event.key==='Enter') ContaSmartAI.sendUserQuery()">
                     <button class="btn btn-primary fw-bold" onclick="ContaSmartAI.sendUserQuery()" title="Enviar">
                         <i class="fa fa-paper-plane"></i>
                     </button>
                 </div>
                 <div class="d-flex align-items-center justify-content-between mt-2">
                     <small class="text-muted" style="font-size: 0.72rem;">
-                        <i class="fa fa-headset me-1 text-primary"></i> Dicta con tu voz o escribe una operación
+                        <i class="fa fa-circle-dot text-success me-1"></i> Dictado en voz alta y respuestas habladas
                     </small>
-                    <small class="text-secondary" style="font-size: 0.7rem;">
-                        PCGE 2024 • SIRE SUNAT
+                    <small class="text-primary fw-semibold" style="font-size: 0.72rem;">
+                        PCGE • SUNAT SIRE
                     </small>
                 </div>
             </div>
         `;
 
         document.body.appendChild(drawer);
-        renderChatView();
     }
 
     function open() {
         if (typeof ContaSmartTour !== 'undefined' && ContaSmartTour.endTour) {
             ContaSmartTour.endTour();
         }
-        createDrawer();
+        createSiriInterface();
         backdrop.classList.add('active');
         drawer.classList.add('active');
-        playSiriTone('start');
+        playSiriChime('start');
         setTimeout(() => {
             const input = document.getElementById('aiInputText');
-            if (input) input.focus();
+            if (input && window.innerWidth >= 768) input.focus();
         }, 300);
     }
 
@@ -205,7 +297,7 @@ const ContaSmartAI = (() => {
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
 
-    function toggleSpeechMute() {
+    function toggleMute() {
         isVoiceMuted = !isVoiceMuted;
         const icon = document.getElementById('iconSpeechMute');
         if (icon) {
@@ -214,217 +306,6 @@ const ContaSmartAI = (() => {
         if (isVoiceMuted && 'speechSynthesis' in window) {
             window.speechSynthesis.cancel();
         }
-    }
-
-    function switchTab(tab) {
-        currentTab = tab;
-        document.querySelectorAll('#aiModesTabs .nav-link').forEach(btn => btn.classList.remove('active'));
-        if (event && event.currentTarget) event.currentTarget.classList.add('active');
-
-        if (tab === 'chat') {
-            renderChatView();
-            document.getElementById('aiDrawerFooter').style.display = 'block';
-        } else if (tab === 'voice') {
-            renderVoiceView();
-            document.getElementById('aiDrawerFooter').style.display = 'block';
-        } else if (tab === 'alerts') {
-            renderAlertsView();
-            document.getElementById('aiDrawerFooter').style.display = 'none';
-        }
-    }
-
-    function renderChatView() {
-        const body = document.getElementById('aiDrawerBody');
-        body.innerHTML = `
-            <div class="ai-message-bubble ai-bubble-bot mb-3">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="badge bg-primary px-2">SIRI CONTA SMART</span>
-                    <small class="text-muted">En línea</small>
-                </div>
-                <strong>¡Hola! Soy Siri ContaSmart 🤖</strong><br>
-                Puedo responderte sobre tus <strong>ventas en tiempo real</strong>, alertarte sobre <strong>stock bajo</strong>, generar <strong>asientos contables del PCGE (Debe/Haber)</strong> o consultar <strong>RUC / DNI en SUNAT</strong>.
-            </div>
-
-            <!-- Chips de Consulta Rápida -->
-            <div class="small fw-semibold text-muted mb-1"><i class="fa fa-bolt text-warning me-1"></i>Consultas Rápidas con 1 Toque:</div>
-            <div class="d-flex flex-wrap gap-1 mb-3">
-                <button class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 0.78rem;" onclick="ContaSmartAI.processQuery('¿Cuánto vendí hoy?')">
-                    📊 Ventas de Hoy
-                </button>
-                <button class="btn btn-sm btn-outline-danger py-1 px-2" style="font-size: 0.78rem;" onclick="ContaSmartAI.processQuery('¿Cuáles son mis productos con stock bajo?')">
-                    ⚠️ Stock Crítico
-                </button>
-                <button class="btn btn-sm btn-outline-success py-1 px-2" style="font-size: 0.78rem;" onclick="ContaSmartAI.processQuery('Compré mercadería por S/ 1,500 en efectivo')">
-                    📦 Compra mercadería S/ 1,500
-                </button>
-                <button class="btn btn-sm btn-outline-info py-1 px-2" style="font-size: 0.78rem;" onclick="ContaSmartAI.processQuery('Vendí productos por S/ 850 al contado con Factura')">
-                    🛒 Venta S/ 850 Factura
-                </button>
-                <button class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 0.78rem;" onclick="ContaSmartAI.processQuery('Consultar RUC 20100070970')">
-                    🔍 Consultar RUC 20100070970
-                </button>
-            </div>
-
-            <!-- Flujo de Conversación -->
-            <div id="aiChatStream"></div>
-        `;
-    }
-
-    function renderVoiceView() {
-        const body = document.getElementById('aiDrawerBody');
-        body.innerHTML = `
-            <div class="text-center py-4 px-2">
-                <!-- Siri Visualizer Orb & Sound Wave -->
-                <div class="siri-voice-center-wrap mb-3">
-                    <div class="siri-large-orb ${isRecording ? 'pulse-active' : ''}" id="siriLargeOrb" onclick="ContaSmartAI.toggleVoice()">
-                        <i class="fa fa-microphone fa-2x text-white"></i>
-                    </div>
-
-                    <!-- Ondas de Audio Siri -->
-                    <div class="siri-wave-bars ${isRecording || isSpeaking ? 'active' : ''}" id="siriWaveBars">
-                        <span class="bar bar-1"></span>
-                        <span class="bar bar-2"></span>
-                        <span class="bar bar-3"></span>
-                        <span class="bar bar-4"></span>
-                        <span class="bar bar-5"></span>
-                        <span class="bar bar-6"></span>
-                        <span class="bar bar-7"></span>
-                    </div>
-                </div>
-
-                <h5 class="fw-bold text-dark mb-1">🎙️ ContaVoz Siri Inteligente</h5>
-                <p class="text-muted small px-3 mb-3" id="voiceStatusLabel">
-                    ${isRecording ? '<strong class="text-danger"><i class="fa fa-circle text-danger me-1 blink"></i>Escuchando tu voz... Habla ahora.</strong>' : 'Toca el círculo o el micrófono inferior para dictar.'}
-                </p>
-
-                <!-- Tarjeta con ejemplos guiados -->
-                <div class="p-3 bg-light rounded-4 text-start border shadow-sm mx-auto" style="max-width: 360px;">
-                    <span class="small fw-bold text-primary d-flex align-items-center gap-1 mb-2">
-                        <i class="fa fa-wand-magic-sparkles"></i> Puedes ordenar por ejemplo:
-                    </span>
-                    <ul class="small text-muted mb-0 ps-3 lh-base">
-                        <li><em>"¿Cuánto vendí hoy?"</em></li>
-                        <li><em>"Compré repuestos por 1,200 soles en efectivo"</em></li>
-                        <li><em>"Dime qué productos tienen stock bajo"</em></li>
-                        <li><em>"Consultar RUC 20100070970"</em></li>
-                        <li><em>"Generar propuesta SIRE del mes"</em></li>
-                    </ul>
-                </div>
-
-                <div id="voiceTranscription" class="mt-3 p-2 font-monospace text-primary fw-bold" style="min-height: 28px;"></div>
-            </div>
-        `;
-    }
-
-    function renderAlertsView() {
-        const body = document.getElementById('aiDrawerBody');
-        body.innerHTML = `
-            <div class="mb-3 d-flex align-items-center justify-content-between">
-                <div>
-                    <h6 class="fw-bold text-dark mb-0"><i class="fa fa-brain text-primary me-2"></i>CONTA ALERTA Predictivo</h6>
-                    <small class="text-muted">Diagnóstico en tiempo real sincronizado con tu base de datos</small>
-                </div>
-                <button class="btn btn-sm btn-outline-primary" onclick="ContaSmartAI.loadRealAlerts()" title="Refrescar diagnóstico">
-                    <i class="fa fa-rotate"></i>
-                </button>
-            </div>
-            <div id="alertsContainer">
-                <div class="text-center py-4 text-muted">
-                    <i class="fa fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
-                    <p class="small mb-0">Cargando diagnóstico en tiempo real...</p>
-                </div>
-            </div>
-        `;
-        loadRealAlerts();
-    }
-
-    function loadRealAlerts() {
-        const container = document.getElementById('alertsContainer');
-        if (!container) return;
-
-        fetch('api/bot_query.php?tipo=resumen_general')
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success) throw new Error(data.message || 'Error');
-
-                let html = '';
-                // 1. Alerta de Stock
-                if (data.stock_bajo && data.stock_bajo.total_criticos > 0) {
-                    html += `
-                        <div class="card border-warning mb-3 shadow-sm rounded-3">
-                            <div class="card-body p-3">
-                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <span class="badge bg-warning text-dark"><i class="fa fa-triangle-exclamation me-1"></i>Stock Crítico (${data.stock_bajo.total_criticos} items)</span>
-                                    <small class="text-muted">Almacén</small>
-                                </div>
-                                <p class="small text-dark mb-2">
-                                    Los siguientes productos requieren reposición inmediata:
-                                </p>
-                                <ul class="small mb-2 ps-3 text-dark">
-                                    ${data.stock_bajo.items.map(it => `<li><strong>${it.nombre}</strong>: Quedan <span class="text-danger fw-bold">${it.stock}</span> (Mínimo: ${it.stock_minimo})</li>`).join('')}
-                                </ul>
-                                <a href="compra_nueva.php" class="btn btn-sm btn-warning w-100 fw-bold text-dark">
-                                    <i class="fa fa-cart-plus me-1"></i> Generar Orden de Reposición en Compras
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="card border-success mb-3 shadow-sm rounded-3">
-                            <div class="card-body p-3">
-                                <div class="d-flex align-items-center gap-2 text-success mb-1">
-                                    <i class="fa fa-shield-check fs-5"></i>
-                                    <strong>Inventario en Estado Óptimo</strong>
-                                </div>
-                                <p class="small text-muted mb-0">No se registran roturas de stock ni faltantes en los ${data.total_productos} productos del catálogo.</p>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // 2. Alerta de Flujo Financiero
-                html += `
-                    <div class="card border-info mb-3 shadow-sm rounded-3">
-                        <div class="card-body p-3">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <span class="badge bg-info text-white"><i class="fa fa-sack-dollar me-1"></i>Utilidad Bruta del Periodo</span>
-                                <small class="text-muted">Finanzas</small>
-                            </div>
-                            <h5 class="fw-bold text-success mb-1">${data.utilidad_mes.total_formateado}</h5>
-                            <p class="small text-muted mb-2">
-                                Ventas del mes: <strong>${data.ventas_mes.total_formateado}</strong> (${data.ventas_mes.cantidad} tickets) vs Compras: <strong>${data.compras_mes.total_formateado}</strong>.
-                            </p>
-                            <a href="reportes.php" class="btn btn-sm btn-outline-info w-100 fw-semibold">
-                                <i class="fa fa-chart-line me-1"></i> Ver Reporte Financiero Completo
-                            </a>
-                        </div>
-                    </div>
-                `;
-
-                // 3. Cumplimiento SIRE SUNAT
-                html += `
-                    <div class="card border-primary mb-3 shadow-sm rounded-3">
-                        <div class="card-body p-3">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <span class="badge bg-primary"><i class="fa fa-book-bookmark me-1"></i>SIRE SUNAT</span>
-                                <small class="text-muted">Cumplimiento</small>
-                            </div>
-                            <p class="small text-dark mb-2">
-                                Propuestas RVIE y RCE listas para descarga de archivos planos con código CAR oficial de 27 dígitos.
-                            </p>
-                            <a href="sire.php" class="btn btn-sm btn-primary w-100 fw-bold">
-                                <i class="fa fa-file-zipper me-1"></i> Gestionar Libros SIRE
-                            </a>
-                        </div>
-                    </div>
-                `;
-
-                container.innerHTML = html;
-            })
-            .catch(err => {
-                container.innerHTML = `<div class="alert alert-danger small p-2">Error al conectar con la base de datos: ${err.message}</div>`;
-            });
     }
 
     function setupSpeechRecognition() {
@@ -438,28 +319,24 @@ const ContaSmartAI = (() => {
 
         recognition.onstart = () => {
             isRecording = true;
-            playSiriTone('start');
+            playSiriChime('start');
             updateMicState(true);
         };
 
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
-            const transDiv = document.getElementById('voiceTranscription');
-            if (transDiv) transDiv.textContent = `"${transcript}"`;
-
             const input = document.getElementById('aiInputText');
             if (input) input.value = transcript;
 
-            // Procesar consulta y dar respuesta
             setTimeout(() => {
                 processQuery(transcript);
-            }, 500);
+            }, 450);
         };
 
         recognition.onerror = (event) => {
             isRecording = false;
             updateMicState(false);
-            console.warn('Siri speech error:', event.error);
+            console.warn('Siri voice error:', event.error);
         };
 
         recognition.onend = () => {
@@ -472,8 +349,8 @@ const ContaSmartAI = (() => {
         if (!recognition) {
             Swal.fire({
                 icon: 'info',
-                title: 'Reconocimiento de Voz ContaVoz',
-                text: 'Te recomendamos utilizar Google Chrome o Microsoft Edge para disfrutar de los comandos de voz fluidos.',
+                title: 'Reconocimiento de Voz de Siri',
+                text: 'Te sugerimos usar Google Chrome o Microsoft Edge para una experiencia de voz fluida y directa.',
                 confirmButtonColor: '#2563eb'
             });
             return;
@@ -509,40 +386,32 @@ const ContaSmartAI = (() => {
     }
 
     function updateMicState(active) {
-        const btn = document.getElementById('btnAiMic');
         const bigOrb = document.getElementById('siriLargeOrb');
-        const label = document.getElementById('voiceStatusLabel');
-        const wave = document.getElementById('siriWaveBars');
+        const micBtn = document.getElementById('btnAiBottomMic');
+        const statusLabel = document.getElementById('siriListeningStatus');
 
-        if (btn) {
-            if (active) btn.classList.add('recording');
-            else btn.classList.remove('recording');
-        }
         if (bigOrb) {
-            if (active) bigOrb.classList.add('pulse-active');
-            else bigOrb.classList.remove('pulse-active');
+            bigOrb.classList.toggle('pulse-active', active);
         }
-        if (wave) {
-            if (active || isSpeaking) wave.classList.add('active');
-            else wave.classList.remove('active');
+        if (micBtn) {
+            micBtn.classList.toggle('recording', active);
         }
-        if (label) {
-            label.innerHTML = active ? 
-                '<strong class="text-danger"><i class="fa fa-circle text-danger me-1 blink"></i>Escuchando tu voz... Habla ahora.</strong>' : 
-                'Toca el micrófono para dictar con tu voz.';
+        if (statusLabel) {
+            statusLabel.innerHTML = active ? 
+                '<span class="text-danger fw-bold"><i class="fa fa-circle text-danger me-1 blink"></i>Siri te está escuchando... Habla con naturalidad</span>' : 
+                'Toca el orbe o el micrófono para dictar con tu voz';
         }
+        setVisualizerState(active);
     }
 
-    function updateWaveVisualizer(active) {
+    function setVisualizerState(active) {
         const wave = document.getElementById('siriWaveBars');
         const headerOrb = document.getElementById('siriHeaderOrb');
         if (wave) {
-            if (active || isRecording) wave.classList.add('active');
-            else wave.classList.remove('active');
+            wave.classList.toggle('active', active || isRecording || isSpeaking);
         }
         if (headerOrb) {
-            if (active) headerOrb.classList.add('speaking');
-            else headerOrb.classList.remove('speaking');
+            headerOrb.classList.toggle('speaking', active || isSpeaking);
         }
     }
 
@@ -556,70 +425,88 @@ const ContaSmartAI = (() => {
     }
 
     function processQuery(text) {
-        if (currentTab !== 'chat') {
-            switchTab('chat');
-        }
-
-        const stream = document.getElementById('aiChatStream');
+        const stream = document.getElementById('siriDialogStream');
         if (!stream) return;
 
-        // Añadir burbuja de mensaje del usuario
-        const userBubble = document.createElement('div');
-        userBubble.className = 'ai-message-bubble ai-bubble-user mb-2';
-        userBubble.textContent = text;
-        stream.appendChild(userBubble);
-
-        // Indicador de "Siri pensando..."
-        const typingIndicator = document.createElement('div');
-        typingIndicator.className = 'ai-message-bubble ai-bubble-bot mb-2 typing-indicator-box';
-        typingIndicator.id = 'aiTypingIndicator';
-        typingIndicator.innerHTML = `
-            <div class="d-flex align-items-center gap-2">
-                <span class="spinner-border spinner-border-sm text-primary"></span>
-                <span class="small text-muted">Siri analizando operación...</span>
+        // 1. Mostrar lo que dijo el usuario
+        const userExchange = document.createElement('div');
+        userExchange.className = 'siri-user-bubble mb-2 text-end';
+        userExchange.innerHTML = `
+            <div class="d-inline-block bg-primary text-white p-2 px-3 rounded-4 shadow-sm small text-start">
+                <i class="fa fa-user me-1 text-light opacity-75"></i> <strong>"${text}"</strong>
             </div>
         `;
-        stream.appendChild(typingIndicator);
+        stream.appendChild(userExchange);
+
+        // 2. Indicador de Siri Pensando
+        const typingBox = document.createElement('div');
+        typingBox.className = 'siri-typing-box mb-2';
+        typingBox.id = 'siriTypingIndicator';
+        typingBox.innerHTML = `
+            <div class="d-flex align-items-center gap-2 p-2 px-3 bg-light rounded-4 text-muted small border">
+                <span class="spinner-grow spinner-grow-sm text-primary"></span>
+                <span>Siri pensando respuesta...</span>
+            </div>
+        `;
+        stream.appendChild(typingBox);
 
         const body = document.getElementById('aiDrawerBody');
         body.scrollTop = body.scrollHeight;
 
-        // Evaluar la consulta (soporta APIs en tiempo real y PCGE)
-        resolveQueryResponse(text)
+        // 3. Resolver la consulta y hablar fluidamente
+        resolveHumanResponse(text)
             .then(result => {
-                // Remover typing indicator
-                const ind = document.getElementById('aiTypingIndicator');
+                const ind = document.getElementById('siriTypingIndicator');
                 if (ind) ind.remove();
 
-                // Crear burbuja de respuesta del bot
-                const botBubble = document.createElement('div');
-                botBubble.className = 'ai-message-bubble ai-bubble-bot mb-3';
-                botBubble.innerHTML = result.html;
-                stream.appendChild(botBubble);
+                const answerExchange = document.createElement('div');
+                answerExchange.className = 'siri-answer-block mb-3';
+                answerExchange.innerHTML = `
+                    <!-- Mensaje hablado / transcrito de Siri -->
+                    <div class="siri-speech-text p-3 bg-white rounded-4 shadow-sm border mb-2">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="siri-orb-mini" style="width: 22px; height: 22px;"></div>
+                            <strong class="text-primary small">Siri ContaSmart</strong>
+                        </div>
+                        <p class="mb-0 text-dark" style="font-size: 0.95rem; line-height: 1.45;">
+                            ${result.humanText}
+                        </p>
+                    </div>
 
-                playSiriTone('success');
+                    <!-- Ficha Interactiva de Acción (si aplica) -->
+                    ${result.actionCardHTML ? `
+                        <div class="siri-action-card p-3 bg-white rounded-4 border shadow-sm">
+                            ${result.actionCardHTML}
+                        </div>
+                    ` : ''}
+                `;
+                stream.appendChild(answerExchange);
+
+                playSiriChime('success');
                 body.scrollTop = body.scrollHeight;
 
-                // Siri habla la respuesta por voz
-                if (result.voiceText) {
-                    speakText(result.voiceText);
-                }
+                // Siri habla la respuesta con voz natural humana
+                speakHuman(result.speechVoiceText || result.humanText);
             })
             .catch(err => {
-                const ind = document.getElementById('aiTypingIndicator');
+                const ind = document.getElementById('siriTypingIndicator');
                 if (ind) ind.remove();
 
-                const botBubble = document.createElement('div');
-                botBubble.className = 'ai-message-bubble ai-bubble-bot mb-3';
-                botBubble.innerHTML = `<div class="text-danger small"><i class="fa fa-circle-exclamation me-1"></i>${err.message}</div>`;
-                stream.appendChild(botBubble);
+                const errBlock = document.createElement('div');
+                errBlock.className = 'siri-answer-block mb-3';
+                errBlock.innerHTML = `
+                    <div class="p-3 bg-danger bg-opacity-10 border border-danger text-danger rounded-4 small">
+                        <i class="fa fa-circle-exclamation me-1"></i> Disculpa, ocurrió un detalle: ${err.message}
+                    </div>
+                `;
+                stream.appendChild(errBlock);
             });
     }
 
-    async function resolveQueryResponse(raw) {
+    async function resolveHumanResponse(raw) {
         const q = raw.toLowerCase().trim();
 
-        // 1. Consulta RUC (11 dígitos o comando 'ruc')
+        // 1. Consulta RUC (11 dígitos de SUNAT)
         const rucMatch = q.match(/\b(10|20)\d{9}\b/) || (q.includes('ruc') ? q.match(/\d{11}/) : null);
         if (rucMatch) {
             const rucNum = rucMatch[0];
@@ -627,16 +514,18 @@ const ContaSmartAI = (() => {
                 const r = await fetch(`api/consulta_ruc.php?numero=${rucNum}`);
                 const data = await r.json();
                 if (data.success) {
-                    const voice = `RUC ${rucNum} encontrado: ${data.nombre}. Su condición es ${data.condicion} y estado ${data.estado}.`;
-                    const html = `
-                        <div class="d-flex align-items-center justify-content-between mb-1">
-                            <span class="badge bg-success"><i class="fa fa-building-flag me-1"></i>SUNAT RUC Oficial</span>
+                    const humanText = `Encontré la empresa <strong>${data.nombre}</strong> ante la SUNAT. Su estado es <strong>${data.estado}</strong> y su condición es <strong>${data.condicion}</strong> en ${data.distrito || 'su domicilio fiscal'}. ¿La guardamos como cliente o proveedor?`;
+                    const speechVoiceText = `Encontré la empresa ${data.nombre} en la SUNAT. Su estado es ${data.estado} y figura como ${data.condicion}. ¿La guardamos como cliente o como proveedor?`;
+
+                    const actionCardHTML = `
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-success"><i class="fa fa-circle-check me-1"></i>RUC Oficial Verificado</span>
                             <span class="badge bg-light text-dark border">${data.estado}</span>
                         </div>
-                        <h6 class="fw-bold text-primary mb-1">${data.nombre}</h6>
-                        <div class="small text-muted mb-2">
+                        <h6 class="fw-bold text-dark mb-1">${data.nombre}</h6>
+                        <div class="small text-muted mb-3">
                             <div><strong>RUC:</strong> ${data.ruc} | <strong>Condición:</strong> <span class="text-success fw-bold">${data.condicion}</span></div>
-                            <div><strong>Dirección:</strong> ${data.direccion || 'No registrada'}</div>
+                            <div><strong>Dirección:</strong> ${data.direccion || 'Sin dirección declarada'}</div>
                             <div><strong>Ubigeo:</strong> ${data.distrito || ''} - ${data.provincia || ''} - ${data.departamento || ''}</div>
                         </div>
                         <div class="d-flex gap-2">
@@ -648,14 +537,14 @@ const ContaSmartAI = (() => {
                             </a>
                         </div>
                     `;
-                    return { html, voiceText: voice };
+                    return { humanText, speechVoiceText, actionCardHTML };
                 }
             } catch (e) {
-                // Continuar a otros analizadores si falla
+                // Continuar
             }
         }
 
-        // 2. Consulta DNI (8 dígitos o comando 'dni')
+        // 2. Consulta DNI (8 dígitos de RENIEC)
         const dniMatch = q.match(/\b\d{8}\b/);
         if (dniMatch && (q.includes('dni') || q.includes('persona') || q.includes('cliente'))) {
             const dniNum = dniMatch[0];
@@ -663,62 +552,71 @@ const ContaSmartAI = (() => {
                 const r = await fetch(`api/buscar_por_doc.php?tipo=DNI&numero=${dniNum}`);
                 const data = await r.json();
                 if (data.success) {
-                    const voice = `DNI ${dniNum} verificado en RENIEC: ${data.nombre}.`;
-                    const html = `
-                        <div class="d-flex align-items-center justify-content-between mb-1">
+                    const humanText = `Verifiqué el DNI ante el padrón de RENIEC. Corresponde a <strong>${data.nombre}</strong>. ¿Deseas que lo registre como nuevo cliente?`;
+                    const speechVoiceText = `Listo, el D-N-I pertenece a ${data.nombre}, verificado con la RENIEC. ¿Deseas guardarlo como nuevo cliente?`;
+
+                    const actionCardHTML = `
+                        <div class="d-flex align-items-center justify-content-between mb-2">
                             <span class="badge bg-info text-white"><i class="fa fa-id-card me-1"></i>RENIEC Oficial</span>
-                            <small class="text-muted">${data.numero}</small>
+                            <span class="badge bg-light text-dark border">DNI ${data.numero}</span>
                         </div>
-                        <h6 class="fw-bold text-dark mb-1">${data.nombre}</h6>
-                        <p class="small text-muted mb-2">Documento validado con el padrón oficial nacional.</p>
+                        <h6 class="fw-bold text-dark mb-2">${data.nombre}</h6>
                         <a href="clientes.php?action=nuevo&num_doc=${data.numero}&nombre=${encodeURIComponent(data.nombre)}" class="btn btn-sm btn-primary w-100 fw-bold">
-                            <i class="fa fa-user-plus me-1"></i> Registrar como Cliente
+                            <i class="fa fa-user-plus me-1"></i> Guardar Cliente en el Sistema
                         </a>
                     `;
-                    return { html, voiceText: voice };
+                    return { humanText, speechVoiceText, actionCardHTML };
                 }
             } catch (e) {
                 // Continuar
             }
         }
 
-        // 3. Ventas de Hoy o Resumen Financiero en Vivo
+        // 3. Ventas de Hoy o Resumen Financiero en Tiempo Real
         if (q.includes('cuánto vendí') || q.includes('cuanto vendi') || q.includes('ventas hoy') || q.includes('ventas de hoy') || q.includes('ingresos hoy')) {
             try {
                 const r = await fetch('api/bot_query.php?tipo=resumen_general');
                 const data = await r.json();
                 if (data.success) {
-                    const voice = `Hoy tienes ${data.ventas_hoy.total_formateado} en ventas completadas. En el mes acumulas ${data.ventas_mes.total_formateado} con una utilidad bruta estimada de ${data.utilidad_mes.total_formateado}.`;
-                    const html = `
+                    const cant = data.ventas_hoy.cantidad;
+                    const totalSoles = data.ventas_hoy.total;
+                    const totalMesSoles = data.ventas_mes.total;
+
+                    let humanText = `Hoy hemos registrado <strong>${data.ventas_hoy.total_formateado}</strong> en ventas (${cant} comprobantes emitidos). En lo que va del mes acumulamos <strong>${data.ventas_mes.total_formateado}</strong> con una ganancia bruta estimada de <strong>${data.utilidad_mes.total_formateado}</strong>.`;
+                    let speechVoiceText = cant > 0 ? 
+                        `Hoy hemos vendido ${totalSoles} soles en ${cant} comprobantes. En el mes acumulas ${totalMesSoles} soles con una ganancia estimada de ${data.utilidad_mes.total} soles. Tu negocio marcha con buen ritmo.` : 
+                        `Hoy aún no se han registrado ventas. Pero en el mes acumulas ${totalMesSoles} soles. ¿Te gustaría abrir el punto de venta para registrar un comprobante?`;
+
+                    const actionCardHTML = `
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="badge bg-primary"><i class="fa fa-cash-register me-1"></i>Ventas en Vivo</span>
-                            <small class="text-muted">Al corte de hoy</small>
+                            <span class="badge bg-primary"><i class="fa fa-cash-register me-1"></i>Balance al Corte</span>
+                            <small class="text-muted">En tiempo real</small>
                         </div>
                         <div class="row g-2 mb-2">
                             <div class="col-6">
                                 <div class="p-2 bg-light rounded text-center border">
                                     <small class="text-muted d-block">Ventas Hoy</small>
                                     <strong class="fs-6 text-primary">${data.ventas_hoy.total_formateado}</strong>
-                                    <div class="small text-muted" style="font-size: 0.7rem;">${data.ventas_hoy.cantidad} tickets</div>
+                                    <div class="small text-muted" style="font-size: 0.72rem;">${cant} tickets</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="p-2 bg-light rounded text-center border">
-                                    <small class="text-muted d-block">Ventas Mes</small>
+                                    <small class="text-muted d-block">Ventas del Mes</small>
                                     <strong class="fs-6 text-success">${data.ventas_mes.total_formateado}</strong>
-                                    <div class="small text-muted" style="font-size: 0.7rem;">${data.ventas_mes.cantidad} tickets</div>
+                                    <div class="small text-muted" style="font-size: 0.72rem;">${data.ventas_mes.cantidad} tickets</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-2 bg-success bg-opacity-10 border border-success border-opacity-25 rounded mb-2 text-center">
-                            <small class="text-success fw-bold d-block">Utilidad Bruta Real Estimada:</small>
-                            <span class="fs-5 fw-bold text-success">${data.utilidad_mes.total_formateado}</span>
+                        <div class="p-2 bg-success bg-opacity-10 text-success rounded text-center border border-success border-opacity-25 mb-2">
+                            <small class="fw-bold d-block">Margen Bruto Real:</small>
+                            <span class="fs-5 fw-bold">${data.utilidad_mes.total_formateado}</span>
                         </div>
                         <a href="venta_nueva.php" class="btn btn-sm btn-primary w-100 fw-bold">
                             <i class="fa fa-plus-circle me-1"></i> Abrir Punto de Venta (POS)
                         </a>
                     `;
-                    return { html, voiceText: voice };
+                    return { humanText, speechVoiceText, actionCardHTML };
                 }
             } catch (e) {
                 // Continuar
@@ -732,44 +630,42 @@ const ContaSmartAI = (() => {
                 const data = await r.json();
                 if (data.success) {
                     const count = data.total;
-                    let voice = count > 0 ? 
-                        `Se detectaron ${count} productos con existencias por debajo del mínimo.` : 
-                        `Tu inventario está en regla, no hay productos con stock crítico.`;
-
-                    let html = `
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="badge ${count > 0 ? 'bg-warning text-dark' : 'bg-success text-white'}">
-                                <i class="fa fa-boxes-stacked me-1"></i>Estado de Almacén
-                            </span>
-                            <small class="text-muted">${count} críticos</small>
-                        </div>
-                    `;
+                    let humanText = '';
+                    let speechVoiceText = '';
 
                     if (count > 0) {
-                        html += `
-                            <p class="small text-dark mb-2">Productos que requieren reposición:</p>
-                            <ul class="small ps-3 mb-3 text-dark">
-                                ${data.items.slice(0, 5).map(it => `
-                                    <li class="mb-1">
-                                        <strong>${it.nombre}</strong><br>
-                                        <span class="text-danger fw-bold">Stock actual: ${it.stock}</span> (Mínimo: ${it.stock_minimo})
-                                    </li>
-                                `).join('')}
-                            </ul>
-                            <a href="compra_nueva.php" class="btn btn-sm btn-warning w-100 fw-bold text-dark">
-                                <i class="fa fa-cart-plus me-1"></i> Crear Orden de Compra
-                            </a>
-                        `;
+                        const topItems = data.items.slice(0, 2).map(it => `${it.nombre} con solo ${it.stock} unidades`).join(', y ');
+                        humanText = `Atención: he detectado <strong>${count} productos</strong> con existencias por debajo del stock mínimo recomendado, especialmente: <strong>${topItems}</strong>. Te sugiero reponerlos pronto para evitar roturas de stock.`;
+                        speechVoiceText = `Ojo con tu almacén. He detectado ${count} productos con existencias por debajo del mínimo, especialmente ${topItems}. Te sugiero reponerlos pronto para no quedarte sin mercadería.`;
                     } else {
-                        html += `
-                            <div class="p-3 bg-success bg-opacity-10 text-success rounded text-center mb-2">
-                                <i class="fa fa-circle-check fs-4 mb-1"></i>
-                                <div class="fw-bold">Inventario Saludable</div>
-                                <small class="text-muted">Todos los productos tienen existencias suficientes.</small>
-                            </div>
-                        `;
+                        humanText = `Excelente noticia: tu almacén está en estado óptimo. Todos los productos tienen existencias suficientes por encima de su stock mínimo.`;
+                        speechVoiceText = `Tu almacén está en regla. No hay productos en riesgo de agotarse.`;
                     }
-                    return { html, voiceText: voice };
+
+                    const actionCardHTML = count > 0 ? `
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-warning text-dark"><i class="fa fa-boxes-stacked me-1"></i>Productos en Riesgo</span>
+                            <small class="text-danger fw-bold">${count} críticos</small>
+                        </div>
+                        <ul class="small ps-3 mb-3 text-dark">
+                            ${data.items.slice(0, 4).map(it => `
+                                <li class="mb-1">
+                                    <strong>${it.nombre}</strong><br>
+                                    <span class="text-danger fw-bold">Quedan: ${it.stock} ${it.unidad_medida}</span> (Mínimo: ${it.stock_minimo})
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <a href="compra_nueva.php" class="btn btn-sm btn-warning w-100 fw-bold text-dark">
+                            <i class="fa fa-cart-plus me-1"></i> Generar Orden de Reposición
+                        </a>
+                    ` : `
+                        <div class="p-3 bg-success bg-opacity-10 text-success rounded text-center">
+                            <i class="fa fa-shield-check fs-4 mb-1"></i>
+                            <div class="fw-bold">Almacén Abastecido</div>
+                            <small class="text-muted">Ningún producto requiere compras urgentes hoy.</small>
+                        </div>
+                    `;
+                    return { humanText, speechVoiceText, actionCardHTML };
                 }
             } catch (e) {
                 // Continuar
@@ -778,28 +674,30 @@ const ContaSmartAI = (() => {
 
         // 5. Asientos Contables PCGE: Compra de Mercadería / Gastos
         const nums = q.match(/\d+([\.,]\d+)?/g);
-        let monto = nums ? parseFloat(nums[0].replace(',', '.')) : 1000.00;
+        let monto = nums ? parseFloat(nums[0].replace(',', '.')) : 1500.00;
 
         if (q.includes('compr') || q.includes('adqui') || q.includes('gasto') || q.includes('pago')) {
             const subtotal = (monto / 1.18).toFixed(2);
             const igv = (monto - subtotal).toFixed(2);
             const total = monto.toFixed(2);
-            const voice = `He estructurado el asiento contable de compra por ${total} soles según el Plan Contable General Empresarial, con cargo a la cuenta 601 y 4011, y abono a la 421.`;
 
-            const html = `
+            const humanText = `¡Listo! Registré la compra por <strong>S/ ${total}</strong>. Calculé <strong>S/ ${igv}</strong> de I-G-V y te cuadré el asiento contable con cargo a la cuenta 601 y 4011, y abono a la 421. Puedes guardarla en Compras con un toque.`;
+            const speechVoiceText = `Listo. He registrado la compra por ${total} soles. Calculé ${igv} soles de I-G-V y te cuadré el asiento contable en el Debe y el Haber. Puedes enviarlo a compras con un solo toque.`;
+
+            const actionCardHTML = `
                 <div class="fw-bold text-success mb-1">
-                    <i class="fa fa-file-invoice me-1"></i> Asiento Contable PCGE: Compra de Mercaderías
+                    <i class="fa fa-file-invoice me-1"></i> Asiento Contable Cuadrado (PCGE 2024)
                 </div>
-                <div class="small text-muted mb-2">Operación analizada: <strong>S/ ${total}</strong> (Base: S/ ${subtotal} + IGV 18%: S/ ${igv})</div>
+                <div class="small text-muted mb-2">Monto total: <strong>S/ ${total}</strong> (Base: S/ ${subtotal} + IGV 18%: S/ ${igv})</div>
 
-                <div class="ai-entry-card">
-                    <div class="fw-bold mb-1 border-bottom pb-1 text-primary">1. Provisión por Naturaleza</div>
+                <div class="ai-entry-card p-2 rounded border-start border-4 border-success bg-light">
+                    <div class="fw-bold mb-1 border-bottom pb-1 small text-dark">1. Adquisición por Naturaleza</div>
                     <div class="d-flex justify-content-between small">
                         <span><strong>6011</strong> Mercaderías manufacturadas</span>
                         <span class="text-primary fw-bold">Debe: S/ ${subtotal}</span>
                     </div>
                     <div class="d-flex justify-content-between small">
-                        <span><strong>40111</strong> IGV - Cuenta propia (18%)</span>
+                        <span><strong>40111</strong> IGV - Cuenta propia</span>
                         <span class="text-primary fw-bold">Debe: S/ ${igv}</span>
                     </div>
                     <div class="d-flex justify-content-between small border-top pt-1 mt-1">
@@ -807,65 +705,57 @@ const ContaSmartAI = (() => {
                         <span class="text-danger fw-bold">Haber: S/ ${total}</span>
                     </div>
 
-                    <div class="fw-bold mt-2 mb-1 border-bottom pb-1 text-primary">2. Destino al Almacén</div>
+                    <div class="fw-bold mt-2 mb-1 border-bottom pb-1 small text-dark">2. Destino al Almacén</div>
                     <div class="d-flex justify-content-between small">
-                        <span><strong>20111</strong> Mercaderías manufacturadas</span>
+                        <span><strong>20111</strong> Mercaderías</span>
                         <span class="text-primary fw-bold">Debe: S/ ${subtotal}</span>
                     </div>
                     <div class="d-flex justify-content-between small">
-                        <span><strong>6111</strong> Variación de mercaderías</span>
+                        <span><strong>6111</strong> Variación de existencias</span>
                         <span class="text-danger fw-bold">Haber: S/ ${subtotal}</span>
-                    </div>
-
-                    <div class="fw-bold mt-2 mb-1 border-bottom pb-1 text-primary">3. Cancelación de Obligación</div>
-                    <div class="d-flex justify-content-between small">
-                        <span><strong>4212</strong> Facturas por pagar</span>
-                        <span class="text-primary fw-bold">Debe: S/ ${total}</span>
-                    </div>
-                    <div class="d-flex justify-content-between small">
-                        <span><strong>101</strong> Caja / Fondos fijos</span>
-                        <span class="text-danger fw-bold">Haber: S/ ${total}</span>
                     </div>
                 </div>
 
                 <div class="mt-2">
                     <a href="compra_nueva.php?total=${total}" class="btn btn-sm btn-primary w-100 fw-bold">
-                        <i class="fa fa-cart-arrow-down me-1"></i> Registrar Compra en el Sistema
+                        <i class="fa fa-cart-arrow-down me-1"></i> Registrar en Compras del Sistema
                     </a>
                 </div>
             `;
-            return { html, voiceText: voice };
+            return { humanText, speechVoiceText, actionCardHTML };
         }
 
         // 6. Asientos Contables PCGE: Ventas / Mostrador
-        if (q.includes('vend') || q.includes('venta') || q.includes('factur')) {
+        if (q.includes('vend') || q.includes('venta') || q.includes('factur') || q.includes('bolet')) {
             const subtotal = (monto / 1.18).toFixed(2);
             const igv = (monto - subtotal).toFixed(2);
             const total = monto.toFixed(2);
-            const voice = `He generado el asiento contable de venta por ${total} soles, con cargo a la cuenta 121 y abono a la 4011 de IGV y 701 de ingresos comerciales.`;
 
-            const html = `
+            const humanText = `Excelente venta por <strong>S/ ${total}</strong>. Te generé el asiento contable con cargo a facturas por cobrar y abono a la cuenta 701 de ventas comerciales y 4011 de I-G-V.`;
+            const speechVoiceText = `Excelente venta. Generé el asiento por ${total} soles con abono al I-G-V y a la cuenta setecientos uno de ventas comerciales. ¿Deseas emitir el comprobante en el punto de venta?`;
+
+            const actionCardHTML = `
                 <div class="fw-bold text-primary mb-1">
-                    <i class="fa fa-cash-register me-1"></i> Asiento Contable PCGE: Venta de Mercaderías
+                    <i class="fa fa-cash-register me-1"></i> Asiento Contable Cuadrado (PCGE 2024)
                 </div>
-                <div class="small text-muted mb-2">Operación analizada: <strong>S/ ${total}</strong> (Base: S/ ${subtotal} + IGV 18%: S/ ${igv})</div>
+                <div class="small text-muted mb-2">Ingreso: <strong>S/ ${total}</strong> (Base: S/ ${subtotal} + IGV: S/ ${igv})</div>
 
-                <div class="ai-entry-card" style="border-left-color: #2563eb;">
-                    <div class="fw-bold mb-1 border-bottom pb-1 text-primary">1. Reconocimiento de Ingreso</div>
+                <div class="ai-entry-card p-2 rounded border-start border-4 border-primary bg-light">
+                    <div class="fw-bold mb-1 border-bottom pb-1 small text-dark">1. Reconocimiento de Ingreso</div>
                     <div class="d-flex justify-content-between small">
-                        <span><strong>1212</strong> Emitidas en cartera</span>
+                        <span><strong>1212</strong> Facturas por cobrar</span>
                         <span class="text-primary fw-bold">Debe: S/ ${total}</span>
                     </div>
                     <div class="d-flex justify-content-between small">
-                        <span><strong>40111</strong> IGV - Cuenta propia (18%)</span>
+                        <span><strong>40111</strong> IGV - Cuenta propia</span>
                         <span class="text-danger fw-bold">Haber: S/ ${igv}</span>
                     </div>
                     <div class="d-flex justify-content-between small border-top pt-1 mt-1">
-                        <span><strong>70111</strong> Venta mercaderías</span>
+                        <span><strong>70111</strong> Venta de mercaderías</span>
                         <span class="text-danger fw-bold">Haber: S/ ${subtotal}</span>
                     </div>
 
-                    <div class="fw-bold mt-2 mb-1 border-bottom pb-1 text-primary">2. Cobranza en Caja Efectivo</div>
+                    <div class="fw-bold mt-2 mb-1 border-bottom pb-1 small text-dark">2. Cobro Efectivo en Caja</div>
                     <div class="d-flex justify-content-between small">
                         <span><strong>101</strong> Caja y fondos fijos</span>
                         <span class="text-primary fw-bold">Debe: S/ ${total}</span>
@@ -882,36 +772,23 @@ const ContaSmartAI = (() => {
                     </a>
                 </div>
             `;
-            return { html, voiceText: voice };
+            return { humanText, speechVoiceText, actionCardHTML };
         }
 
-        // 7. Respuesta genérica inteligente
-        const voice = `He recibido tu mensaje: ${raw}. Puedes consultarme sobre tus ventas, alertar productos bajos, o dictar operaciones contables.`;
-        const html = `
-            <div class="fw-bold text-dark mb-1">
-                <i class="fa fa-sparkles text-primary me-1"></i> Asistente Siri ContaSmart
-            </div>
-            <p class="small text-secondary mb-2">
-                Consulta procesada: <em>"${raw}"</em>.
-                <br>Prueba ordenándome por voz o texto:
-                <br>• <strong>"¿Cuánto vendí hoy?"</strong>
-                <br>• <strong>"Compré insumos por 900 soles"</strong>
-                <br>• <strong>"Consultar RUC 20100070970"</strong>
-            </p>
-        `;
-        return { html, voiceText: voice };
+        // 7. Respuesta conversacional natural
+        const humanText = `Te escucho con atención. Puedo responderte sobre tus <strong>ventas de hoy</strong>, revisar productos en <strong>stock bajo</strong>, consultar un <strong>RUC o DNI</strong>, o generarte un <strong>asiento contable</strong> con solo dictarlo. ¿Qué te gustaría revisar?`;
+        const speechVoiceText = `Te escucho con atención. Puedes dictarme tus compras, preguntarme tus ventas de hoy o consultar cualquier R-U-C o D-N-I.`;
+        return { humanText, speechVoiceText, actionCardHTML: null };
     }
 
     return {
         init,
         open,
         close,
-        switchTab,
         toggleVoice,
-        toggleSpeechMute,
+        toggleMute,
         sendUserQuery,
-        processQuery,
-        loadRealAlerts
+        processQuery
     };
 })();
 

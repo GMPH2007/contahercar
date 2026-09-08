@@ -67,22 +67,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 <?php endif; ?>
 
-                <!-- Acceso al Tour Guiado (Conoce la Web) -->
-                <button type="button" class="btn btn-sm btn-outline-info btn-start-tour d-flex align-items-center gap-1 shadow-sm" title="Conoce la Web / Iniciar Recorrido Guiado">
-                    <i class="fa fa-route text-warning"></i>
-                    <span class="d-none d-sm-inline">Recorrido Web</span>
-                </button>
-
                 <!-- Modo TV / Pantalla Gigante para Monitoreo -->
                 <button type="button" class="btn btn-sm btn-outline-secondary btn-tv-mode d-none d-xl-flex align-items-center gap-1 shadow-sm" id="btnToggleTvMode" onclick="toggleTvMode()" title="Modo TV / Pantalla Gigante para Monitoreo de Almacén o Tienda">
                     <i class="fa fa-tv text-info"></i>
                     <span>Modo TV</span>
                 </button>
 
-                <!-- Acceso a ContaSmart IA & ContaVoz -->
-                <button type="button" class="btn btn-sm btn-dark btn-open-ai d-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Abrir Asistente IA & ContaVoz">
-                    <i class="fa fa-robot text-info"></i>
-                    <span class="d-none d-sm-inline">ContaSmart Siri</span>
+                <!-- Acceso a Siri ContaSmart (Asistente de Voz Inteligente) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-2 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <i class="fa fa-microphone text-warning"></i>
+                    <span class="fw-bold">Siri ContaSmart</span>
                 </button>
 
                 <!-- Acceso Rápido a Nueva Venta / POS -->
