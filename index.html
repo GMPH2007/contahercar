@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContaSmart - Sistema Inteligente de Gestión Contable, POS & SIRE SUNAT</title>
+    
+    <!-- Metadatos SEO & PWA -->
+    <meta name="description" content="ContaSmart v3.0 - Sistema de Gestión Contable, POS Móvil, Control de Inventario con Utilidades Reales y Sincronización SIRE SUNAT. Desarrollado por Gerson Misael Pintado Huaman (GMPH2007)">
+    <meta name="author" content="Gerson Misael Pintado Huaman (GMPH2007) - Misael Pintado Empresarial">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS ContaSmart -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- Barra Lateral (Sidebar) -->
+    <aside class="app-sidebar">
+        <div class="sidebar-brand d-flex align-items-center justify-content-between">
+            <a href="index.html" class="brand-logo">
+                <i class="fa fa-cubes"></i>
+                <span>ContaHercar</span>
+            </a>
+            <button type="button" class="btn-close btn-close-white d-lg-none" id="sidebarCloseBtn" aria-label="Cerrar"></button>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="sidebar-header">Principal</li>
+            <li class="sidebar-item">
+                <a href="index.html" class="sidebar-link active">
+                    <i class="fa fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="openPosModal()">
+                    <i class="fa fa-cash-register text-success"></i>
+                    <span>Punto de Venta</span>
+                    <span class="badge bg-success ms-auto">POS</span>
+                </a>
+            </li>
+
+            <li class="sidebar-header">Gestión Comercial</li>
+            <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="openHistoryModal()">
+                    <i class="fa fa-receipt"></i>
+                    <span>Historial de Ventas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="openComprasModal()">
+                    <i class="fa fa-cart-arrow-down"></i>
+                    <span>Compras & Gastos</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="scrollSection('tourInventoryTable')">
+                    <i class="fa fa-boxes-stacked"></i>
+                    <span>Inventario</span>
+                    <span class="badge bg-danger ms-auto">2</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="openClientesModal()">
+                    <i class="fa fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="openProveedoresModal()">
+                    <i class="fa fa-truck-moving"></i>
+                    <span>Proveedores</span>
+                </a>
+            </li>
+
+            <li class="sidebar-header d-flex align-items-center justify-content-between">
+                <span>SUNAT & RENIEC</span>
+                <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.6rem;">OFICIAL</span>
+            </li>
+            <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="openSireModal()">
+                    <i class="fa fa-book-bookmark text-primary"></i>
+                    <span>SIRE (RVIE / RCE)</span>
+                    <span class="badge bg-primary ms-auto">SIRE</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link">
+                    <i class="fa fa-globe text-primary"></i>
+                    <span>Portal SIRE SUNAT</span>
+                    <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link">
+                    <i class="fa fa-magnifying-glass-chart text-warning"></i>
+                    <span>Portal RUC SUNAT</span>
+                    <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link">
+                    <i class="fa fa-id-card-clip text-info"></i>
+                    <span>Portal RENIEC Oficial</span>
+                    <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+                </a>
+            </li>
+
+            <li class="sidebar-header">GitHub & Nube</li>
+            <li class="sidebar-item">
+                <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="sidebar-link">
+                    <i class="fa-brands fa-github text-white"></i>
+                    <span>Repositorio GitHub</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="sidebar-link text-info">
+                    <i class="fa fa-cloud text-info"></i>
+                    <span>Ejecutar en la Nube</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <i class="fa fa-shield-halved text-success"></i>
+            <span>ContaHercar v3.0 • GMPH2007</span>
+        </div>
+    </aside>
+
+    <!-- Telón de Fondo para Móviles -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Contenido Principal -->
+    <div class="app-main">
+        <!-- Barra Superior (Topbar) -->
+        <header class="app-topbar">
+            <div class="topbar-left">
+                <button type="button" class="btn-sidebar-toggle" id="sidebarToggleBtn" aria-label="Abrir Menú">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h1 class="page-title">Dashboard - ContaSmart Inteligente</h1>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Indicador de Tipo de Cambio SUNAT -->
+                <div class="badge bg-light text-secondary border d-none d-lg-flex align-items-center gap-2 py-2 px-3" id="topbarTipoCambio">
+                    <i class="fa fa-dollar-sign text-success"></i>
+                    <span class="small fw-semibold" id="tcTexto">USD SUNAT: C: S/. 3.742 | V: S/. 3.750</span>
+                </div>
+
+                <!-- Indicador de Stock Bajo -->
+                <a href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2" title="Productos con stock bajo">
+                    <i class="fa fa-exclamation-triangle text-warning"></i>
+                    <span class="d-none d-md-inline">Stock Crítico:</span>
+                    <span class="badge bg-warning text-dark">2</span>
+                </a>
+
+                <!-- Modo TV / Pantalla Gigante -->
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-tv-mode d-none d-xl-flex align-items-center gap-1 shadow-sm" id="btnToggleTvMode" onclick="toggleTvMode()" title="Modo TV / Pantalla Gigante para Monitoreo">
+                    <i class="fa fa-tv text-info"></i>
+                    <span>Modo TV</span>
+                </button>
+
+                <!-- Acceso a Siri ContaSmart -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-2 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <i class="fa fa-microphone text-warning"></i>
+                    <span class="fw-bold">Siri ContaSmart</span>
+                </button>
+
+                <!-- Acceso Rápido a POS -->
+                <button type="button" class="btn btn-sm btn-success d-flex align-items-center gap-1" onclick="openPosModal()">
+                    <i class="fa fa-cash-register"></i>
+                    <span class="d-none d-sm-inline">POS</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Botón Flotante Móvil Siri / ContaVoz (FAB) -->
+        <button type="button" class="btn-fab-siri btn-open-ai" title="Hablar con Siri ContaSmart" onclick="ContaSmartAI.open()">
+            <i class="fa fa-microphone"></i>
+        </button>
+
+        <!-- Contenido de la Página -->
+        <main class="app-content">
+            <!-- 1. BANNER EJECUTIVO CONTA SMART -->
+            <div class="card-custom p-4 mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 16px;" id="tourHeaderGreeting">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v3.0</span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.72rem;">
+                                <i class="fa fa-circle-check me-1"></i> SIRE SUNAT Activo
+                            </span>
+                            <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1" style="font-size: 0.72rem;">
+                                <i class="fa fa-cloud me-1"></i> Live Web GitHub
+                            </span>
+                        </div>
+                        <h3 class="fw-bold mb-1 text-white">
+                            ¡Hola, ContaHercar S.A.C.! 👋
+                        </h3>
+                        <p class="text-light text-opacity-75 small mb-0">
+                            Sistema inteligente de gestión contable, analítica financiera y registros electrónicos para MYPES.
+                        </p>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                            <i class="fa fa-microphone text-warning"></i>
+                            <span>Hablar con Siri</span>
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center gap-1" onclick="openPosModal()">
+                            <i class="fa fa-cash-register"></i>
+                            <span>Emitir Venta POS</span>
+                        </button>
+                        <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="btn btn-outline-info btn-sm px-3 py-2 fw-semibold text-white border-info shadow-sm" title="Ejecutar en la Nube con GitHub Codespaces (Apache + MySQL completo)">
+                            <i class="fa fa-play text-warning me-1"></i> Ejecutar en la Nube
+                        </a>
+                        <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="btn btn-outline-light btn-sm px-3 py-2 fw-semibold" title="Ver Repositorio Oficial en GitHub">
+                            <i class="fa-brands fa-github me-1"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. TARJETAS KPI INTELIGENTES -->
+            <div class="row g-3 mb-4" id="tourKpiCards">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-smart-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Ventas del Mes</span>
+                            <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
+                                <i class="fa fa-wallet"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-primary">S/. 38,420.00</div>
+                        <div class="kpi-footer">
+                            <span class="badge-trend-up">
+                                <i class="fa fa-arrow-trend-up me-1"></i>+14.5%
+                            </span>
+                            <span>38 comprobantes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-smart-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Compras & Gastos</span>
+                            <div class="kpi-icon-wrap bg-warning bg-opacity-10 text-warning">
+                                <i class="fa fa-cart-shopping"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-dark">S/. 14,250.00</div>
+                        <div class="kpi-footer">
+                            <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
+                                Insumos & Costos
+                            </span>
+                            <span>12 compras</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-smart-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Utilidad Bruta</span>
+                            <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
+                                <i class="fa fa-sack-dollar"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-success">S/. 24,170.00</div>
+                        <div class="kpi-footer">
+                            <span class="badge-trend-up">
+                                <i class="fa fa-shield-check me-1"></i>Rentable
+                            </span>
+                            <span>Margen sobre costo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-smart-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Alerta de Stock</span>
+                            <div class="kpi-icon-wrap bg-danger bg-opacity-10 text-danger">
+                                <i class="fa fa-triangle-exclamation"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value text-danger">2 <small class="fs-6 fw-normal text-muted">items</small></div>
+                        <div class="kpi-footer">
+                            <span class="badge-trend-down">
+                                <i class="fa fa-arrow-down me-1"></i>Reponer
+                            </span>
+                            <a href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')" class="text-danger fw-semibold text-decoration-none small">Ver lista &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. CUADRÍCULA DE ACCIONES RÁPIDAS -->
+            <div class="mb-4" id="tourQuickActions">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="fw-bold text-dark text-uppercase small mb-0">
+                        <i class="fa fa-bolt text-warning me-1"></i> Acciones Rápidas del Sistema
+                    </h6>
+                    <small class="text-muted">Operaciones con 1 clic</small>
+                </div>
+                <div class="row g-2">
+                    <div class="col-4 col-md-2">
+                        <a href="javascript:void(0)" onclick="openPosModal()" class="quick-action-card text-decoration-none">
+                            <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
+                                <i class="fa fa-cash-register"></i>
+                            </div>
+                            <span class="action-label">Venta POS</span>
+                        </a>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <a href="javascript:void(0)" onclick="openComprasModal()" class="quick-action-card text-decoration-none">
+                            <div class="action-icon-circle bg-warning bg-opacity-10 text-warning">
+                                <i class="fa fa-cart-arrow-down"></i>
+                            </div>
+                            <span class="action-label">+ Compra</span>
+                        </a>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <a href="javascript:void(0)" onclick="openClientesModal()" class="quick-action-card text-decoration-none">
+                            <div class="action-icon-circle bg-success bg-opacity-10 text-success">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <span class="action-label">Clientes</span>
+                        </a>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <a href="javascript:void(0)" onclick="openProveedoresModal()" class="quick-action-card text-decoration-none">
+                            <div class="action-icon-circle bg-secondary bg-opacity-10 text-secondary">
+                                <i class="fa fa-truck-moving"></i>
+                            </div>
+                            <span class="action-label">Proveedores</span>
+                        </a>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <a href="javascript:void(0)" onclick="openSireModal()" class="quick-action-card text-decoration-none">
+                            <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
+                                <i class="fa fa-file-zipper"></i>
+                            </div>
+                            <span class="action-label">SIRE Libros</span>
+                        </a>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <div class="quick-action-card btn-open-ai" style="border: 1px dashed #3b82f6; cursor: pointer;">
+                            <div class="action-icon-circle bg-danger bg-opacity-10 text-danger">
+                                <i class="fa fa-microphone"></i>
+                            </div>
+                            <span class="action-label text-primary">Siri ContaVoz</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. GRÁFICOS: FLUJO DE CAJA & SALUD DE INVENTARIO -->
+            <div class="row g-3 mb-4" id="tourChartsSection">
+                <div class="col-12 col-lg-8">
+                    <div class="card-custom h-100">
+                        <div class="card-custom-header d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="mb-0"><i class="fa fa-chart-column text-primary me-2"></i>Flujo de Caja (Cash Flow)</h5>
+                                <small class="text-muted">Comparativa de Ventas vs Compras de los últimos 6 meses</small>
+                            </div>
+                            <span class="badge bg-light text-secondary border">En S/.</span>
+                        </div>
+                        <div class="card-custom-body">
+                            <canvas id="chartVentasCompras" height="270"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="card-custom h-100">
+                        <div class="card-custom-header">
+                            <h5 class="mb-0"><i class="fa fa-chart-pie text-success me-2"></i>Salud del Inventario</h5>
+                            <small class="text-muted">Estado actual de existencias</small>
+                        </div>
+                        <div class="card-custom-body d-flex flex-column align-items-center justify-content-center">
+                            <div style="width: 170px; height: 170px; position: relative;">
+                                <canvas id="chartDonutInventario"></canvas>
+                            </div>
+                            <div class="w-100 mt-3 pt-2 border-top">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span><i class="fa fa-circle text-success me-1"></i> En Stock Óptimo:</span>
+                                    <strong class="text-success">6 productos</strong>
+                                </div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span><i class="fa fa-circle text-warning me-1"></i> Stock Bajo (Riesgo):</span>
+                                    <strong class="text-warning">2 productos</strong>
+                                </div>
+                                <div class="d-flex justify-content-between small">
+                                    <span><i class="fa fa-circle text-danger me-1"></i> Agotados:</span>
+                                    <strong class="text-danger">0 productos</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. MONITOREO INTELIGENTE DE PRODUCTOS -->
+            <div class="card-custom mb-4" id="tourInventoryTable">
+                <div class="card-custom-header d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="mb-0"><i class="fa fa-boxes-stacked text-primary me-2"></i>Monitoreo Inteligente de Almacén</h5>
+                        <small class="text-muted">Supervisión automática de stock y sugerencias de reabastecimiento</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="Swal.fire({icon:'info', title:'Catálogo Completo', text:'8 productos registrados en base de datos.'})">
+                        Ver Catálogo Completo &rarr;
+                    </button>
+                </div>
+                <div class="card-custom-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Cód.</th>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Stock Actual</th>
+                                    <th>Precio Compra</th>
+                                    <th>Precio Venta</th>
+                                    <th>Estado</th>
+                                    <th class="text-end">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-warning bg-opacity-10">
+                                    <td><span class="badge bg-light text-dark font-monospace">77501007</span></td>
+                                    <td>
+                                        <div class="fw-bold">Cable Mellizo 2x14 AWG Indeco (Rollo 100m)</div>
+                                        <small class="text-muted">Conductor de cobre electrolítico recocido</small>
+                                    </td>
+                                    <td><span class="badge bg-secondary-subtle text-secondary">Electricidad</span></td>
+                                    <td>
+                                        <span class="badge bg-danger fs-6 px-2 py-1">3 ROLLO</span>
+                                        <small class="d-block text-muted">Mín: 5</small>
+                                    </td>
+                                    <td>S/. 115.00</td>
+                                    <td class="fw-bold text-dark">S/. 160.00</td>
+                                    <td><span class="badge bg-danger">Stock Bajo</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-warning text-dark fw-bold" onclick="openComprasModal('Cable Mellizo 2x14')">
+                                            <i class="fa fa-cart-plus me-1"></i> Reponer
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="table-warning bg-opacity-10">
+                                    <td><span class="badge bg-light text-dark font-monospace">77501005</span></td>
+                                    <td>
+                                        <div class="fw-bold">Cinta Métrica 5m / 16ft Global Plus Stanley</div>
+                                        <small class="text-muted">Cinta recubierta de polímero</small>
+                                    </td>
+                                    <td><span class="badge bg-secondary-subtle text-secondary">Manuales</span></td>
+                                    <td>
+                                        <span class="badge bg-danger fs-6 px-2 py-1">4 UNID</span>
+                                        <small class="d-block text-muted">Mín: 10</small>
+                                    </td>
+                                    <td>S/. 14.50</td>
+                                    <td class="fw-bold text-dark">S/. 24.00</td>
+                                    <td><span class="badge bg-danger">Stock Bajo</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-warning text-dark fw-bold" onclick="openComprasModal('Cinta Métrica 5m')">
+                                            <i class="fa fa-cart-plus me-1"></i> Reponer
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-light text-dark font-monospace">77501001</span></td>
+                                    <td>
+                                        <div class="fw-bold">Taladro Percutor 1/2 pulg 650W Bosch</div>
+                                        <small class="text-muted">Taladro con velocidad variable y reversa</small>
+                                    </td>
+                                    <td><span class="badge bg-secondary-subtle text-secondary">Eléctricas</span></td>
+                                    <td>
+                                        <span class="badge bg-success fs-6 px-2 py-1">18 UNID</span>
+                                        <small class="d-block text-muted">Mín: 5</small>
+                                    </td>
+                                    <td>S/. 180.00</td>
+                                    <td class="fw-bold text-dark">S/. 245.00</td>
+                                    <td><span class="badge bg-success">Óptimo</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="openKardexModal('Taladro Percutor')">
+                                            <i class="fa fa-clock-rotate-left"></i> Kardex
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-light text-dark font-monospace">77501002</span></td>
+                                    <td>
+                                        <div class="fw-bold">Amoladora Angular 4-1/2 pulg 850W Dewalt</div>
+                                        <small class="text-muted">Motor protegido contra la abrasión</small>
+                                    </td>
+                                    <td><span class="badge bg-secondary-subtle text-secondary">Eléctricas</span></td>
+                                    <td>
+                                        <span class="badge bg-success fs-6 px-2 py-1">12 UNID</span>
+                                        <small class="d-block text-muted">Mín: 4</small>
+                                    </td>
+                                    <td>S/. 210.00</td>
+                                    <td class="fw-bold text-dark">S/. 285.00</td>
+                                    <td><span class="badge bg-success">Óptimo</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="openKardexModal('Amoladora Angular')">
+                                            <i class="fa fa-clock-rotate-left"></i> Kardex
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marca de agua de GitHub & Footer -->
+            <footer class="text-center py-4 text-muted small border-top">
+                <div class="mb-2">
+                    <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="text-decoration-none fw-bold text-dark me-3">
+                        <i class="fa-brands fa-github me-1"></i> github.com/GMPH2007/contahercar
+                    </a>
+                    <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="text-decoration-none fw-bold text-primary">
+                        <i class="fa fa-play me-1"></i> Ejecutar Servidor Completo en Codespaces
+                    </a>
+                </div>
+                <div>
+                    <strong>ContaSmart v3.0</strong> • Diseñado y Desarrollado por <strong>Gerson Misael Pintado Huaman (@GMPH2007)</strong> • <em>Misael Pintado Empresarial</em>
+                </div>
+            </footer>
+        </main>
+    </div>
+</div>
+
+<!-- Modal Global Interactivo para POS -->
+<div class="modal fade" id="modalPosGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fs-6"><i class="fa fa-cash-register me-2"></i>Punto de Venta (POS) Rápido</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Cliente:</label>
+                    <input type="text" class="form-control" value="00000000 - CLIENTE VARIOS / GENERAL">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Producto a Facturar:</label>
+                    <select class="form-select" id="posSelectProd">
+                        <option value="245">Taladro Percutor Bosch - S/. 245.00</option>
+                        <option value="285">Amoladora Angular Dewalt - S/. 285.00</option>
+                        <option value="24">Cinta Métrica 5m Stanley - S/. 24.00</option>
+                        <option value="160">Cable Mellizo 2x14 Indeco - S/. 160.00</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between p-3 bg-light rounded-3 mb-3 border">
+                    <span class="fw-bold">Total a Cobrar:</span>
+                    <strong class="text-success fs-5" id="posTotalLabel">S/. 245.00</strong>
+                </div>
+                <button type="button" class="btn btn-success w-100 py-2 fw-bold" onclick="simulateSale()">
+                    <i class="fa fa-print me-1"></i> Emitir Boleta Electrónica
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Scripts ContaSmart -->
+<script src="assets/js/tour.js"></script>
+<script src="assets/js/conta_ai.js"></script>
+
+<script>
+// Inicializar Gráficos con Chart.js
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Gráfico Flujo de Caja
+    const ctxVentas = document.getElementById('chartVentasCompras');
+    if (ctxVentas) {
+        new Chart(ctxVentas, {
+            type: 'bar',
+            data: {
+                labels: ['Abr 2024', 'May 2024', 'Jun 2024', 'Jul 2024', 'Ago 2024', 'Set 2024'],
+                datasets: [
+                    {
+                        label: 'Ventas (Ingresos)',
+                        data: [28400, 31200, 34500, 29800, 36200, 38420],
+                        backgroundColor: '#2563eb',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Compras & Costos',
+                        data: [12100, 14300, 15800, 11900, 13400, 14250],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+    }
+
+    // 2. Gráfico Donut de Salud de Inventario
+    const ctxDonut = document.getElementById('chartDonutInventario');
+    if (ctxDonut) {
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['En Stock Óptimo', 'Stock Bajo', 'Agotados'],
+                datasets: [{
+                    data: [6, 2, 0],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                cutout: '70%'
+            }
+        });
+    }
+
+    // Toggle de Menú Móvil
+    const toggleBtn = document.getElementById('sidebarToggleBtn');
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+    const backdrop = document.getElementById('sidebarBackdrop');
+
+    if (toggleBtn) {
+        toggleBtn.onclick = () => {
+            document.body.classList.toggle('sidebar-mobile-open');
+        };
+    }
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            document.body.classList.remove('sidebar-mobile-open');
+        };
+    }
+    if (backdrop) {
+        backdrop.onclick = () => {
+            document.body.classList.remove('sidebar-mobile-open');
+        };
+    }
+});
+
+// Función de Modo TV
+function toggleTvMode() {
+    document.body.classList.toggle('tv-mode');
+    const btn = document.getElementById('btnToggleTvMode');
+    const isTv = document.body.classList.contains('tv-mode');
+    if (btn) {
+        btn.classList.toggle('active', isTv);
+        btn.innerHTML = isTv ? '<i class="fa fa-compress text-white"></i> <span>Salir TV</span>' : '<i class="fa fa-tv text-info"></i> <span>Modo TV</span>';
+    }
+}
+
+// Helpers de Interacción
+function scrollSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function openPosModal() {
+    const m = new bootstrap.Modal(document.getElementById('modalPosGlobal'));
+    m.show();
+}
+
+function simulateSale() {
+    bootstrap.Modal.getInstance(document.getElementById('modalPosGlobal')).hide();
+    Swal.fire({
+        icon: 'success',
+        title: '¡Boleta Electrónica Emitida!',
+        html: 'Comprobante <strong>B001-000045</strong> generado con éxito.<br>Código CAR SIRE sincronizado.',
+        confirmButtonColor: '#10b981'
+    });
+}
+
+function openHistoryModal() {
+    Swal.fire({
+        icon: 'info',
+        title: 'Historial de Ventas',
+        text: 'Mostrando 38 comprobantes emitidos en el periodo actual.',
+        confirmButtonColor: '#2563eb'
+    });
+}
+
+function openComprasModal(prod = '') {
+    Swal.fire({
+        icon: 'question',
+        title: 'Nueva Compra / Reposición',
+        text: prod ? `Generando orden de compra para: ${prod}` : 'Módulo de compras con cálculo de crédito fiscal IGV.',
+        confirmButtonColor: '#f59e0b'
+    });
+}
+
+function openClientesModal() {
+    Swal.fire({
+        icon: 'info',
+        title: 'Gestión de Clientes',
+        text: 'Padrón con validación en tiempo real de DNI (RENIEC) y RUC (SUNAT).',
+        confirmButtonColor: '#2563eb'
+    });
+}
+
+function openProveedoresModal() {
+    Swal.fire({
+        icon: 'info',
+        title: 'Proveedores Registrados',
+        text: 'Corporación Ferretera, Importadora Industrial Hercar y más.',
+        confirmButtonColor: '#2563eb'
+    });
+}
+
+function openSireModal() {
+    Swal.fire({
+        icon: 'success',
+        title: 'Libros SIRE SUNAT Activos',
+        html: 'Propuestas oficiales <strong>RVIE (140400)</strong> y <strong>RCE (080400)</strong> listas con código CAR de 27 dígitos.',
+        confirmButtonColor: '#2563eb'
+    });
+}
+
+function openKardexModal(item) {
+    Swal.fire({
+        icon: 'info',
+        title: `Kardex: ${item}`,
+        text: 'Movimientos de inventario: Entradas por compras y Salidas por ventas POS.',
+        confirmButtonColor: '#2563eb'
+    });
+}
+</script>
+
+</body>
+</html>

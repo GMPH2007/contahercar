@@ -37,6 +37,7 @@ const ContaSmartTour = (() => {
         const isCompleted = localStorage.getItem('contasmart_tour_completed');
         const path = window.location.pathname.toLowerCase();
         const isDashboard = path.endsWith('index.php') || 
+                            path.endsWith('index.html') ||
                             path.endsWith('/contahercar/') ||
                             path.endsWith('/contahercar') ||
                             path === '/';

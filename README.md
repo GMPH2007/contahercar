@@ -1,11 +1,26 @@
 # ContaHerCar 🚀
-### Sistema de Gestión Comercial, Punto de Venta (POS Móvil) y Registro Tributario SIRE SUNAT
+### Sistema Inteligente de Gestión Contable, POS Móvil y SIRE SUNAT
 
-![ContaHerCar Banner](https://img.shields.io/badge/Versi%C3%B3n-2.5.0%20SIRE%20Mobile-blue?style=for-the-badge)
-![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-MariaDB-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+[![Live Demo](https://img.shields.io/badge/DEMO%20EN%20VIVO-GitHub%20Pages-success?style=for-the-badge&logo=githubpages&logoColor=white)](https://gmph2007.github.io/contahercar/)
+[![Run in Codespaces](https://img.shields.io/badge/EJECUTAR%20EN%20LA%20NUBE-GitHub%20Codespaces-blue?style=for-the-badge&logo=github)](https://github.com/codespaces/new?repo=GMPH2007/contahercar)
+![Versión](https://img.shields.io/badge/Versi%C3%B3n-3.0.0%20ContaSmart-blueviolet?style=for-the-badge)
 ![SUNAT SIRE](https://img.shields.io/badge/SUNAT-SIRE%20RVIE%20%2F%20RCE-green?style=for-the-badge)
 ![Autor](https://img.shields.io/badge/Autor-GMPH2007%20%2F%20Misael%20Pintado-orange?style=for-the-badge&logo=github)
+
+---
+
+## 🌐 Enlaces Rápidos de Ejecución
+
+* 🚀 **Probar la Web en Vivo (GitHub Pages):**  
+  👉 **[https://gmph2007.github.io/contahercar/](https://gmph2007.github.io/contahercar/)**  
+  *(Funciona directamente en tu celular, tablet o PC sin instalar nada: Siri de voz, POS rápido, gráficos y tour guiado).*
+
+* ☁️ **Ejecutar el Servidor Completo en la Nube (Codespaces):**  
+  👉 **[Abrir en GitHub Codespaces](https://github.com/codespaces/new?repo=GMPH2007/contahercar)**  
+  *(Levanta Apache, PHP 8 y MySQL en 1 clic de forma autónoma).*
+
+* 📁 **Repositorio Oficial:**  
+  👉 **[https://github.com/GMPH2007/contahercar](https://github.com/GMPH2007/contahercar)**
 
 ---
 
