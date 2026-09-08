@@ -1,0 +1,11 @@
+﻿# Archivos temporales y del sistema
+.DS_Store
+Thumbs.db
+*.log
+scratch/
+temp/
+*.tmp
+
+# Entorno de desarrollo
+.vscode/
+.idea/
