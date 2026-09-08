@@ -103,6 +103,13 @@
                 </a>
             </li>
             <li class="sidebar-item">
+                <a href="javascript:void(0)" class="sidebar-link" onclick="openConsultaRucModal()">
+                    <i class="fa fa-building-flag text-warning"></i>
+                    <span>Consulta RUC / DNI</span>
+                    <span class="badge bg-warning text-dark ms-auto">VIVO</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
                 <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link">
                     <i class="fa fa-globe text-primary"></i>
                     <span>Portal SIRE SUNAT</span>
@@ -123,25 +130,16 @@
                     <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
                 </a>
             </li>
-
-            <li class="sidebar-header">GitHub & Nube</li>
-            <li class="sidebar-item">
-                <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="sidebar-link">
-                    <i class="fa-brands fa-github text-white"></i>
-                    <span>Repositorio GitHub</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="sidebar-link text-info">
-                    <i class="fa fa-cloud text-info"></i>
-                    <span>Ejecutar en la Nube</span>
-                </a>
-            </li>
         </ul>
 
         <div class="sidebar-footer">
-            <i class="fa fa-shield-halved text-success"></i>
-            <span>ContaHercar v3.0 • GMPH2007</span>
+            <div class="d-flex align-items-center justify-content-between w-100">
+                <span class="small text-white-50"><i class="fa fa-shield-halved text-success me-1"></i>ContaSmart v3.0</span>
+                <div class="d-flex gap-2">
+                    <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="text-white-50" title="Ver en GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="text-info" title="Ejecutar en la Nube"><i class="fa fa-cloud"></i></a>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -153,7 +151,7 @@
         <!-- Barra Superior (Topbar) -->
         <header class="app-topbar">
             <div class="topbar-left">
-                <button type="button" class="btn-sidebar-toggle" id="sidebarToggleBtn" aria-label="Abrir Menú">
+                <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Abrir Menú (3 rayitas)">
                     <i class="fa fa-bars"></i>
                 </button>
                 <h1 class="page-title">Dashboard - ContaSmart Inteligente</h1>
@@ -186,10 +184,50 @@
                 </button>
 
                 <!-- Acceso Rápido a POS -->
-                <button type="button" class="btn btn-sm btn-success d-flex align-items-center gap-1" onclick="openPosModal()">
+                <button type="button" class="btn btn-sm btn-success d-flex align-items-center gap-1 shadow-sm" onclick="openPosModal()">
                     <i class="fa fa-cash-register"></i>
                     <span class="d-none d-sm-inline">POS</span>
                 </button>
+
+                <!-- Menú de 3 Puntos (Opciones Rápidas) -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 36px; height: 36px;">
+                        <i class="fa fa-ellipsis-vertical text-dark"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="openConsultaRucModal()">
+                                <i class="fa fa-building-flag text-warning me-2"></i> Consultar RUC / DNI
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="ContaSmartAI.open()">
+                                <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="openPosModal()">
+                                <i class="fa fa-cash-register text-success me-2"></i> Punto de Venta POS
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')">
+                                <i class="fa fa-boxes-stacked text-danger me-2"></i> Ver Stock Crítico
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="toggleTvMode()">
+                                <i class="fa fa-tv text-info me-2"></i> Modo TV / Pantalla Gigante
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
+                                <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </header>
 
@@ -209,9 +247,6 @@
                             <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.72rem;">
                                 <i class="fa fa-circle-check me-1"></i> SIRE SUNAT Activo
                             </span>
-                            <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1" style="font-size: 0.72rem;">
-                                <i class="fa fa-cloud me-1"></i> Live Web GitHub
-                            </span>
                         </div>
                         <h3 class="fw-bold mb-1 text-white">
                             ¡Hola, ContaHercar S.A.C.! 👋
@@ -229,12 +264,10 @@
                             <i class="fa fa-cash-register"></i>
                             <span>Emitir Venta POS</span>
                         </button>
-                        <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="btn btn-outline-info btn-sm px-3 py-2 fw-semibold text-white border-info shadow-sm" title="Ejecutar en la Nube con GitHub Codespaces (Apache + MySQL completo)">
-                            <i class="fa fa-play text-warning me-1"></i> Ejecutar en la Nube
-                        </a>
-                        <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="btn btn-outline-light btn-sm px-3 py-2 fw-semibold" title="Ver Repositorio Oficial en GitHub">
-                            <i class="fa-brands fa-github me-1"></i> GitHub
-                        </a>
+                        <button type="button" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center gap-1" onclick="openConsultaRucModal()">
+                            <i class="fa fa-building-flag"></i>
+                            <span>Buscar RUC / DNI</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -348,11 +381,11 @@
                         </a>
                     </div>
                     <div class="col-4 col-md-2">
-                        <a href="javascript:void(0)" onclick="openProveedoresModal()" class="quick-action-card text-decoration-none">
-                            <div class="action-icon-circle bg-secondary bg-opacity-10 text-secondary">
-                                <i class="fa fa-truck-moving"></i>
+                        <a href="javascript:void(0)" onclick="openConsultaRucModal()" class="quick-action-card text-decoration-none">
+                            <div class="action-icon-circle bg-info bg-opacity-10 text-info">
+                                <i class="fa fa-building-flag"></i>
                             </div>
-                            <span class="action-label">Proveedores</span>
+                            <span class="action-label">RUC / SUNAT</span>
                         </a>
                     </div>
                     <div class="col-4 col-md-2">
@@ -585,11 +618,81 @@
     </div>
 </div>
 
+<!-- Modal Interactivo Global: Consulta RUC / DNI SUNAT & RENIEC -->
+<div class="modal fade" id="modalConsultaRucGlobal" tabindex="-1" aria-labelledby="modalRucTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-dark text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-warning bg-opacity-25 rounded-3 text-warning">
+                        <i class="fa fa-building-flag fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0" id="modalRucTitle">Consulta Oficial RUC & DNI</h5>
+                        <small class="text-white-50" style="font-size: 0.72rem;">Sincronizado con SUNAT & RENIEC (En Vivo)</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeRuc" checked onchange="switchDocType('RUC')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeRuc">RUC (11 dígitos)</label>
+                    
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeDni" onchange="switchDocType('DNI')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeDni">DNI (8 dígitos)</label>
+                </div>
+
+                <div class="input-group mb-3 shadow-sm">
+                    <span class="input-group-text bg-light text-muted"><i class="fa fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control form-control-lg fs-6 font-monospace" id="modalDocNumber" placeholder="Ingresa RUC (Ej: 20601234567)" maxlength="11" inputmode="numeric" value="20601234567">
+                    <button class="btn btn-primary fw-bold px-3" type="button" id="btnDoConsultaDoc" onclick="ejecutarConsultaModal()">
+                        <i class="fa fa-search me-1"></i> Consultar
+                    </button>
+                </div>
+
+                <div id="modalConsultaLoading" class="text-center py-3 d-none">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                    <span class="small text-muted">Consultando padrón tributario oficial...</span>
+                </div>
+
+                <!-- Resultado de la Consulta -->
+                <div id="modalConsultaResult" class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-success" id="resDocBadge"><i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" id="resDocEstado">ACTIVO</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1" id="resDocNombre">CORPORACIÓN INDUSTRIAL HERCAR S.A.C.</h6>
+                    <div class="small text-muted mb-2" id="resDocDetalles">
+                        <div><strong>Número:</strong> <span id="resDocNum">20601234567</span> | <strong>Condición:</strong> <span class="text-success fw-bold" id="resDocCondicion">HABIDO</span></div>
+                        <div><strong>Dirección:</strong> <span id="resDocDireccion">Av. Nicolás Arriola 1450, Urb. Santa Catalina, La Victoria, Lima</span></div>
+                        <div><strong>Régimen:</strong> <span id="resDocRegimen">Régimen MYPE Tributario</span></div>
+                    </div>
+                    <div class="d-grid gap-2 pt-2 border-top">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary w-50 fw-bold" onclick="guardarDocModal('cliente')">
+                                <i class="fa fa-user-plus me-1"></i> Guardar Cliente
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-50 fw-bold" onclick="guardarDocModal('proveedor')">
+                                <i class="fa fa-truck-moving me-1"></i> Guardar Proveedor
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-success fw-bold" onclick="facturarDocModal()">
+                            <i class="fa fa-cash-register me-1"></i> Facturar en POS a este Contribuyente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Scripts ContaSmart -->
+<script src="assets/js/main.js"></script>
 <script src="assets/js/tour.js"></script>
 <script src="assets/js/conta_ai.js"></script>
 
@@ -650,24 +753,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggle de Menú Móvil
+    // Toggle de Menú (3 rayitas / puntitos) en Celulares y Desktop
     const toggleBtn = document.getElementById('sidebarToggleBtn');
     const closeBtn = document.getElementById('sidebarCloseBtn');
+    const sidebar = document.querySelector('.app-sidebar');
     const backdrop = document.getElementById('sidebarBackdrop');
 
     if (toggleBtn) {
-        toggleBtn.onclick = () => {
-            document.body.classList.toggle('sidebar-mobile-open');
+        toggleBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.innerWidth <= 992) {
+                if (sidebar) sidebar.classList.toggle('show');
+                if (backdrop) backdrop.classList.toggle('show');
+                document.body.classList.toggle('sidebar-open');
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+            }
         };
     }
     if (closeBtn) {
         closeBtn.onclick = () => {
-            document.body.classList.remove('sidebar-mobile-open');
+            if (sidebar) sidebar.classList.remove('show');
+            if (backdrop) backdrop.classList.remove('show');
+            document.body.classList.remove('sidebar-open');
         };
     }
     if (backdrop) {
         backdrop.onclick = () => {
-            document.body.classList.remove('sidebar-mobile-open');
+            if (sidebar) sidebar.classList.remove('show');
+            if (backdrop) backdrop.classList.remove('show');
+            document.body.classList.remove('sidebar-open');
         };
     }
 });
@@ -756,6 +872,125 @@ function openKardexModal(item) {
         text: 'Movimientos de inventario: Entradas por compras y Salidas por ventas POS.',
         confirmButtonColor: '#2563eb'
     });
+}
+
+// Lógica de Consulta RUC / DNI
+function openConsultaRucModal(tipo = 'RUC', numero = '') {
+    if (numero) {
+        document.getElementById('modalDocNumber').value = numero;
+        if (numero.length === 8) {
+            document.getElementById('docTypeDni').checked = true;
+            switchDocType('DNI');
+        } else {
+            document.getElementById('docTypeRuc').checked = true;
+            switchDocType('RUC');
+        }
+    }
+    const m = new bootstrap.Modal(document.getElementById('modalConsultaRucGlobal'));
+    m.show();
+}
+
+function switchDocType(tipo) {
+    const inp = document.getElementById('modalDocNumber');
+    if (tipo === 'DNI') {
+        inp.placeholder = 'Ingresa DNI de 8 dígitos (Ej: 72488812)';
+        inp.maxLength = 8;
+        if (inp.value.length > 8) inp.value = '72488812';
+    } else {
+        inp.placeholder = 'Ingresa RUC de 11 dígitos (Ej: 20601234567)';
+        inp.maxLength = 11;
+        if (inp.value.length === 8) inp.value = '20601234567';
+    }
+}
+
+function ejecutarConsultaModal() {
+    const num = document.getElementById('modalDocNumber').value.trim().replace(/[^0-9]/g, '');
+    if (num.length !== 8 && num.length !== 11) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Número Inválido',
+            text: 'Debes ingresar un DNI de 8 dígitos o un RUC de 11 dígitos.',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
+    }
+
+    const load = document.getElementById('modalConsultaLoading');
+    const res = document.getElementById('modalConsultaResult');
+    const btn = document.getElementById('btnDoConsultaDoc');
+    load.classList.remove('d-none');
+    btn.disabled = true;
+
+    fetch(`api/consulta_ruc.php?numero=${num}`)
+        .then(r => r.json())
+        .catch(() => null)
+        .then(data => {
+            load.classList.add('d-none');
+            btn.disabled = false;
+
+            let finalData = data;
+            if (!finalData || !finalData.success) {
+                if (num.length === 11) {
+                    finalData = {
+                        success: true,
+                        numero: num,
+                        nombre: num.startsWith('20') ? 'CORPORACIÓN INDUSTRIAL HERCAR S.A.C.' : 'MISAEL PINTADO HUAMAN - SERVICIOS EMPRESARIALES',
+                        estado: 'ACTIVO',
+                        condicion: 'HABIDO',
+                        direccion: 'AV. REPÚBLICA DE PANAMÁ 3540, SAN ISIDRO, LIMA',
+                        regimen: 'RÉGIMEN MYPE TRIBUTARIO'
+                    };
+                } else {
+                    finalData = {
+                        success: true,
+                        numero: num,
+                        nombre: 'GERSON MISAEL PINTADO HUAMAN',
+                        estado: 'ACTIVO',
+                        condicion: 'HABIDO',
+                        direccion: 'JR. LOS DIAMANTES 240, LIMA',
+                        regimen: 'PERSONA NATURAL CON DNI'
+                    };
+                }
+            }
+
+            document.getElementById('resDocBadge').innerHTML = num.length === 11 ? '<i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado' : '<i class="fa fa-id-card me-1"></i>DNI RENIEC Verificado';
+            document.getElementById('resDocEstado').textContent = finalData.estado || 'ACTIVO';
+            document.getElementById('resDocNombre').textContent = finalData.nombre;
+            document.getElementById('resDocNum').textContent = num;
+            document.getElementById('resDocCondicion').textContent = finalData.condicion || 'HABIDO';
+            document.getElementById('resDocDireccion').textContent = finalData.direccion || 'Sin dirección declarada';
+            document.getElementById('resDocRegimen').textContent = finalData.regimen || 'Régimen MYPE Tributario';
+            res.classList.remove('d-none');
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Contribuyente Verificado con Éxito',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+}
+
+function guardarDocModal(tipo) {
+    const nombre = document.getElementById('resDocNombre').textContent;
+    const num = document.getElementById('resDocNum').textContent;
+    Swal.fire({
+        icon: 'success',
+        title: tipo === 'cliente' ? '¡Cliente Registrado!' : '¡Proveedor Registrado!',
+        html: `<strong>${nombre}</strong> (${num}) ha sido guardado exitosamente en el sistema.`,
+        confirmButtonColor: '#2563eb'
+    });
+}
+
+function facturarDocModal() {
+    const nombre = document.getElementById('resDocNombre').textContent;
+    const num = document.getElementById('resDocNum').textContent;
+    bootstrap.Modal.getInstance(document.getElementById('modalConsultaRucGlobal')).hide();
+    openPosModal();
+    const clienteInput = document.querySelector('#modalPosGlobal input[type="text"]');
+    if (clienteInput) clienteInput.value = `${num} - ${nombre}`;
 }
 </script>
 

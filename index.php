@@ -143,6 +143,10 @@ for ($i = 5; $i >= 0; $i--) {
                 <i class="fa fa-cash-register"></i>
                 <span>Emitir Venta POS</span>
             </a>
+            <a href="consulta_sunat.php" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center gap-1">
+                <i class="fa fa-building-flag"></i>
+                <span>Buscar RUC / DNI</span>
+            </a>
             <button type="button" class="btn btn-sm btn-outline-light text-white-50 border-0 btn-start-tour p-2" title="Reiniciar Recorrido Guiado (Tour)">
                 <i class="fa fa-circle-question"></i>
             </button>

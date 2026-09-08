@@ -33,20 +33,8 @@ const ContaSmartTour = (() => {
             });
         });
 
-        // Auto-iniciar solo si es primera visita del usuario y está en el Dashboard
-        const isCompleted = localStorage.getItem('contasmart_tour_completed');
-        const path = window.location.pathname.toLowerCase();
-        const isDashboard = path.endsWith('index.php') || 
-                            path.endsWith('index.html') ||
-                            path.endsWith('/contahercar/') ||
-                            path.endsWith('/contahercar') ||
-                            path === '/';
-
-        if (!isCompleted && isDashboard) {
-            setTimeout(() => {
-                startTour(false);
-            }, 1200);
-        }
+        // El tour sólo se inicia si el usuario hace clic voluntariamente en el botón de ayuda/tour
+        // para garantizar que la pantalla y los botones estén siempre 100% interactivos y clicables.
 
         // Atajos de teclado: Escape para salir, Flechas para navegar, Espacio para pausar
         document.addEventListener('keydown', handleKeydown);

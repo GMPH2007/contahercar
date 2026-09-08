@@ -80,7 +80,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </button>
 
                 <!-- Acceso Rápido a Nueva Venta / POS -->
-                <a href="venta_nueva.php" class="btn btn-sm btn-primary d-flex align-items-center gap-1">
+                <a href="venta_nueva.php" class="btn btn-sm btn-success d-flex align-items-center gap-1 shadow-sm">
                     <i class="fa fa-cash-register"></i>
                     <span class="d-none d-sm-inline">POS</span>
                 </a>
@@ -90,6 +90,46 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <i class="fa fa-cart-arrow-down"></i>
                     <span>+ Compra</span>
                 </a>
+
+                <!-- Menú de 3 Puntos (Opciones Rápidas) -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 36px; height: 36px;">
+                        <i class="fa fa-ellipsis-vertical text-dark"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
+                        <li>
+                            <a class="dropdown-item py-2" href="consulta_sunat.php">
+                                <i class="fa fa-building-flag text-warning me-2"></i> Consultar RUC / DNI
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="ContaSmartAI.open()">
+                                <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="venta_nueva.php">
+                                <i class="fa fa-cash-register text-success me-2"></i> Punto de Venta POS
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="inventario.php?filtro=stock_bajo">
+                                <i class="fa fa-boxes-stacked text-danger me-2"></i> Ver Stock Crítico
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="toggleTvMode()">
+                                <i class="fa fa-tv text-info me-2"></i> Modo TV / Pantalla Gigante
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
+                                <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </header>
 

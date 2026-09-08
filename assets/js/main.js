@@ -225,11 +225,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (toggleBtn) {
         toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            if (sidebar && sidebar.classList.contains('show')) {
-                closeSidebar();
+            if (window.innerWidth <= 992) {
+                if (sidebar && sidebar.classList.contains('show')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
             } else {
-                openSidebar();
+                document.body.classList.toggle('sidebar-collapsed');
             }
         });
     }
