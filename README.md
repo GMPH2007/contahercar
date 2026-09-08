@@ -1,0 +1,173 @@
+# ContaHerCar 🚀
+### Sistema de Gestión Comercial, Punto de Venta (POS Móvil) y Registro Tributario SIRE SUNAT
+
+![ContaHerCar Banner](https://img.shields.io/badge/Versi%C3%B3n-2.5.0%20SIRE%20Mobile-blue?style=for-the-badge)
+![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-MariaDB-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![SUNAT SIRE](https://img.shields.io/badge/SUNAT-SIRE%20RVIE%20%2F%20RCE-green?style=for-the-badge)
+![Autor](https://img.shields.io/badge/Autor-GMPH2007%20%2F%20Misael%20Pintado-orange?style=for-the-badge&logo=github)
+
+---
+
+## 📌 Marca de Agua y Créditos Oficiales
+
+> **Desarrollado por:** **Gerson Misael Pintado Huaman**  
+> **GitHub:** [@GMPH2007](https://github.com/GMPH2007)  
+> **Organización / Marca:** **Misael Pintado Empresarial**  
+> **Proyecto:** ContaHerCar - Sistema Integral de Contabilidad, Facturación, POS Móvil y Libros Electrónicos SUNAT SIRE.  
+> **Todos los derechos reservados © 2026 Gerson Misael Pintado Huaman (GMPH2007).**
+
+---
+
+## 🌟 Descripción General
+
+**ContaHerCar** es una solución web empresarial completa diseñada para micro, pequeñas y medianas empresas en el Perú. Permite gestionar ventas, compras, clientes, proveedores, inventario en tiempo real y la emisión contable oficial exigida por la **SUNAT**, incorporando el nuevo **Sistema Integrado de Registros Electrónicos (SIRE)** y soporte 100% responsivo para teléfonos inteligentes.
+
+---
+
+## ⚡ Módulos y Funcionalidades Destacadas
+
+### 1. 🏛️ Módulo SIRE SUNAT (Libros Electrónicos Oficiales)
+* **RVIE (Registro de Ventas e Ingresos Electrónico - Libro 140400)**:
+  * Generación de la propuesta local con estructura oficial de 33 campos delimitados por barra (`|`).
+  * Generación y validación del **CAR (Código de Anotación de Registro)** de 27 dígitos.
+  * Exportación en archivo plano `.txt` y archivo comprimido `.zip` con la nomenclatura oficial:  
+    `LE{RUC}{YYYYMM}00140400021111_1.zip`
+* **RCE (Registro de Compras Electrónico - Libro 080400)**:
+  * Resumen y detalle de adquisiciones gravadas destinadas a operaciones gravadas y no gravadas.
+  * Estructura completa de 38 campos con desglose de Base Imponible, IGV, No Gravado e Impuestos.
+  * Exportación oficial: `LE{RUC}{YYYYMM}00080400021111_1.zip`.
+* **Conexión API SIRE SUNAT**:
+  * Configuración de credenciales Clave SOL y Client ID / Secret desde el panel de control.
+  * Autenticación OAuth2 contra los servidores de SUNAT (`https://api-seguridad.sunat.gob.pe`).
+
+### 2. 📱 Formato y Experiencia Móvil Adaptativa (Smartphone / Tablet)
+* **Punto de Venta (POS) Táctil**:
+  * Alternador de vistas móviles `[Catálogo de Productos]` y `[Carrito de Compra (N)]`.
+  * Barra de cobro flotante inferior (`.pos-mobile-bar`) con total en soles y acceso rápido a pagar.
+  * Teclados numéricos directos (`inputmode="numeric"`) en cantidad, búsqueda de comprobantes y pagos para agilizar el despacho en teléfonos.
+* **Menú Lateral Móvil**:
+  * Botón de cierre `(X)` integrado y fondo oscuro difuminado (*backdrop*) que previene toques no deseados y se oculta al navegar.
+* **Tablas Responsivas**:
+  * Desplazamiento horizontal fluido con scroll táctil sin deformar datos ni botones de acción.
+
+### 3. 🔍 Consulta RUC y DNI SUNAT / RENIEC en Vivo
+* Búsqueda instantánea de RUC de 11 dígitos y DNI de 8 dígitos.
+* Autocompletado inmediato de Razón Social / Nombres, Condición de Domicilio (HABIDO / NO HABIDO), Estado de Contribuyente (ACTIVO / BAJA) y Ubigeo completo.
+* Conexión resiliente a API Decolecta con fallback seguro.
+* Botones de consulta rápida integrados en los formularios de Clientes, Proveedores y Compras.
+
+### 4. 🛒 Punto de Venta (POS) y Facturación
+* Registro de ventas por Boleta, Factura o Ticket de venta interna.
+* Búsqueda dinámica de productos por nombre, código de barras o categoría.
+* Control de stock en tiempo real con validación preventiva de sobreventa.
+* Emisión e impresión de tickets térmicos formateados en 80mm / 58mm.
+
+### 5. 📦 Inventario y Compras
+* Catálogo de productos con precios de costo, precios de venta, stock actual y stock mínimo.
+* Registro de facturas y comprobantes de compra que alimentan automáticamente el RCE del SIRE.
+* Actualización inmediata del stock al registrar adquisiciones.
+
+### 6. 📊 Reportes y Dashboard Ejecutivo
+* Gráficos interactivos de ventas mensuales, productos más vendidos y márgenes brutos.
+* KPIs en tiempo real de ingresos del día, compras, cuentas por cobrar y stock bajo.
+
+---
+
+## 🛠️ Requisitos del Sistema
+
+* **Servidor Web:** Apache (XAMPP, WampServer, Laragon o Linux LAMP)
+* **PHP:** Versión 8.0 o superior
+* **Extensiones PHP requeridas:**
+  * `pdo_mysql`
+  * `curl`
+  * `zip`
+  * `mbstring`
+  * `json`
+* **Base de Datos:** MySQL 5.7+ o MariaDB 10.4+
+
+---
+
+## 📥 Instalación y Puesta en Marcha
+
+### 1. Clonar o Descargar el Repositorio
+```bash
+git clone https://github.com/GMPH2007/contahercar.git
+```
+O descargue y copie los archivos en su directorio web:
+`C:\xampp\htdocs\contahercar\`
+
+### 2. Crear y Restaurar la Base de Datos
+1. Inicie **Apache** y **MySQL** desde el Panel de Control de XAMPP.
+2. Abra **phpMyAdmin** en `http://localhost/phpmyadmin/`.
+3. Cree una base de datos llamada `contahercar_db` con cotejamiento `utf8mb4_unicode_ci`.
+4. Importe el archivo `database.sql` incluido en la raíz del proyecto.
+
+### 3. Configuración de Conexión
+Verifique los datos de conexión en el archivo `config/db.php`:
+```php
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'contahercar_db');
+```
+
+### 4. Acceder a la Aplicación
+Abra su navegador web favorito e ingrese a:
+`http://localhost/contahercar/`
+
+---
+
+## 📂 Estructura del Proyecto
+
+```
+contahercar/
+├── api/
+│   ├── buscar_por_doc.php     # Endpoint de consulta DNI/RUC con Decolecta API
+│   ├── compra_detalle.php     # Detalle modal de adquisiciones
+│   ├── consulta_ruc.php       # Búsqueda rápida de RUC SUNAT
+│   ├── kardex_info.php        # Movimientos de kardex y stock
+│   ├── productos_search.php   # Búsqueda en vivo de catálogo
+│   ├── sire_api.php           # Conector OAuth2 y gestor del SIRE SUNAT
+│   ├── sire_export.php        # Generador de libros RVIE/RCE (TXT y ZIP)
+│   ├── tipo_cambio.php        # Consulta de tipo de cambio SBS/SUNAT
+│   └── venta_detalle.php      # Detalle modal de ventas
+├── assets/
+│   ├── css/
+│   │   └── style.css          # Estilos personalizados, modo oscuro y responsive móvil
+│   └── js/
+│       └── main.js            # Lógica global, backdrop móvil y listeners
+├── config/
+│   ├── app.php                # Constantes globales y buffer de salida ob_start()
+│   └── db.php                 # Conexión PDO segura y auto-instalación
+├── includes/
+│   ├── footer.php             # Pie de página y scripts
+│   ├── header.php             # Barra superior, botón hamburguesa y estilos
+│   └── sidebar.php            # Navegación principal y botón de cierre móvil
+├── clientes.php               # Gestión y búsqueda de clientes
+├── compras.php                # Listado de compras registradas
+├── compra_nueva.php           # Registro de compras con proveedor y comprobante
+├── configuracion.php          # Datos de empresa y tokens de API
+├── consulta_sunat.php         # Interfaz dedicada de consulta RUC/DNI
+├── database.sql               # Respaldo completo de la estructura y datos
+├── index.php                  # Dashboard interactivo y métricas
+├── inventario.php             # Control de catálogo y existencias
+├── proveedores.php            # Registro y búsqueda de proveedores
+├── reportes.php               # Análisis contable y gráficos financieros
+├── sire.php                   # Módulo oficial SIRE SUNAT (RVIE y RCE)
+├── ticket.php                 # Formato de impresión térmica de ventas
+├── ventas.php                 # Historial de ventas emitidas
+└── venta_nueva.php            # Punto de Venta (POS) responsivo móvil/desktop
+```
+
+---
+
+## 👤 Autor y Marca de Agua
+
+* **Autor:** Gerson Misael Pintado Huaman
+* **Perfil de GitHub:** [@GMPH2007](https://github.com/GMPH2007)
+* **Empresa:** Misael Pintado Empresarial
+* **Repositorio:** [https://github.com/GMPH2007/contahercar](https://github.com/GMPH2007/contahercar)
+
+---
+*Desarrollado con dedicación por GMPH2007.*
