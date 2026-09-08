@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Dashboard - Contadores & Métricas';
+$pageTitle = 'Dashboard - ContaSmart Inteligente';
 require_once __DIR__ . '/includes/header.php';
 
 $pdo = getDBConnection();
@@ -19,6 +19,18 @@ $ventasHoy = $stmtVentasHoy->fetch();
 $stmtVentasMes = $pdo->prepare("SELECT COUNT(*) as cant, COALESCE(SUM(total), 0) as total, COALESCE(SUM(subtotal), 0) as subtotal, COALESCE(SUM(impuesto), 0) as impuesto FROM ventas WHERE estado = 'COMPLETADA' AND fecha_venta BETWEEN ? AND ?");
 $stmtVentasMes->execute([$inicioMes, $finMes]);
 $ventasMes = $stmtVentasMes->fetch();
+
+// Ventas mes anterior para cálculo de variación %
+$inicioMesAnt = date('Y-m-01 00:00:00', strtotime('-1 month'));
+$finMesAnt = date('Y-m-t 23:59:59', strtotime('-1 month'));
+$stmtVentasAnt = $pdo->prepare("SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE estado = 'COMPLETADA' AND fecha_venta BETWEEN ? AND ?");
+$stmtVentasAnt->execute([$inicioMesAnt, $finMesAnt]);
+$totalVentasAnt = (float)$stmtVentasAnt->fetchColumn();
+
+$varVentasPct = 0;
+if ($totalVentasAnt > 0) {
+    $varVentasPct = round((((float)$ventasMes['total'] - $totalVentasAnt) / $totalVentasAnt) * 100, 1);
+}
 
 // 3. Compras del Mes
 $stmtComprasMes = $pdo->prepare("SELECT COUNT(*) as cant, COALESCE(SUM(total), 0) as total FROM compras WHERE estado = 'COMPLETADA' AND fecha_compra BETWEEN ? AND ?");
@@ -46,29 +58,38 @@ $stmtInventario = $pdo->query("SELECT
 FROM productos WHERE estado = 1");
 $invStats = $stmtInventario->fetch();
 
-// 6. Últimas 5 Ventas
+// Desglose de salud de inventario (Óptimo, Stock Bajo, Agotado) para gráfico Donut
+$stmtInvBreakdown = $pdo->query("SELECT 
+    COUNT(*) as total,
+    SUM(CASE WHEN stock <= 0 THEN 1 ELSE 0 END) as out_of_stock,
+    SUM(CASE WHEN stock > 0 AND stock <= stock_minimo THEN 1 ELSE 0 END) as low_stock,
+    SUM(CASE WHEN stock > stock_minimo THEN 1 ELSE 0 END) as in_stock
+FROM productos WHERE estado = 1");
+$invBreakdown = $stmtInvBreakdown->fetch();
+
+// 6. Lista de Productos para Monitoreo de Almacén
+$stmtProductosTable = $pdo->query("SELECT p.*, c.nombre as categoria_nombre 
+    FROM productos p 
+    LEFT JOIN categorias c ON p.categoria_id = c.id 
+    WHERE p.estado = 1 
+    ORDER BY (p.stock <= p.stock_minimo) DESC, p.stock ASC LIMIT 6");
+$productosTable = $stmtProductosTable->fetchAll();
+
+// 7. Últimas 5 Ventas
 $stmtUltimasVentas = $pdo->query("SELECT v.*, c.nombre_razon_social as cliente_nombre 
     FROM ventas v 
     INNER JOIN clientes c ON v.cliente_id = c.id 
     ORDER BY v.fecha_venta DESC, v.id DESC LIMIT 5");
 $ultimasVentas = $stmtUltimasVentas->fetchAll();
 
-// 7. Últimas 5 Compras
+// 8. Últimas 5 Compras
 $stmtUltimasCompras = $pdo->query("SELECT c.*, p.razon_social as proveedor_nombre 
     FROM compras c 
     INNER JOIN proveedores p ON c.proveedor_id = p.id 
     ORDER BY c.fecha_compra DESC, c.id DESC LIMIT 5");
 $ultimasCompras = $stmtUltimasCompras->fetchAll();
 
-// 8. Productos con Stock Bajo
-$stmtAlertasStock = $pdo->query("SELECT p.*, c.nombre as categoria_nombre 
-    FROM productos p 
-    LEFT JOIN categorias c ON p.categoria_id = c.id 
-    WHERE p.estado = 1 AND p.stock <= p.stock_minimo 
-    ORDER BY p.stock ASC LIMIT 5");
-$alertasStock = $stmtAlertasStock->fetchAll();
-
-// 9. Datos para el gráfico de los últimos 6 meses
+// 9. Datos para el gráfico de los últimos 6 meses (Cash Flow)
 $mesesChart = [];
 $ventasChart = [];
 $comprasChart = [];
@@ -94,161 +115,329 @@ for ($i = 5; $i >= 0; $i--) {
 }
 ?>
 
-<!-- Fila de Contadores Principales / KPIs -->
-<div class="row g-3 mb-4">
+<!-- ============================================================
+     1. BANNER EJECUTIVO CONTA SMART + ACTIVADOR DEL TOUR
+     ============================================================ -->
+<div class="card-custom p-4 mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 16px;" id="tourHeaderGreeting">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v2.5</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.72rem;">
+                    <i class="fa fa-circle-check me-1"></i> SIRE SUNAT Activo
+                </span>
+            </div>
+            <h3 class="fw-bold mb-1 text-white">
+                ¡Hola, <?= htmlspecialchars($cfg['nombre_empresa']) ?>! 👋
+            </h3>
+            <p class="text-light text-opacity-75 small mb-0">
+                Sistema inteligente de gestión contable, analítica financiera y registros electrónicos para MYPES.
+            </p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-outline-info btn-sm px-3 py-2 btn-start-tour fw-semibold text-white border-info" title="Iniciar recorrido guiado paso a paso">
+                <i class="fa fa-lightbulb text-warning me-1"></i> Iniciar Tour Guiado
+            </button>
+            <button type="button" class="btn btn-primary btn-sm px-3 py-2 btn-open-ai fw-bold shadow" title="Abrir Asistente Contable Inteligente">
+                <i class="fa fa-robot me-1"></i> Asistente ContaSmart IA
+            </button>
+            <button type="button" class="btn btn-danger btn-sm px-3 py-2 btn-open-ai fw-bold shadow" onclick="setTimeout(()=>ContaSmartAI.switchTab('voice'), 150)" title="Comando de Voz">
+                <i class="fa fa-microphone me-1"></i> ContaVoz
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     2. TARJETAS KPI INTELIGENTES (ESTILO INVENTO & INTUIT ASSIST)
+     ============================================================ -->
+<div class="row g-3 mb-4" id="tourKpiCards">
     <!-- Ventas del Mes -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="stat-card border-primary-accent">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="stat-title">Ventas del Mes</div>
-                    <div class="stat-value text-primary"><?= formatMoney($ventasMes['total']) ?></div>
-                    <div class="stat-subtitle"><?= $ventasMes['cant'] ?> comprobantes emitidos</div>
+        <div class="kpi-smart-card">
+            <div class="kpi-header">
+                <span class="kpi-title">Ventas del Mes</span>
+                <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
+                    <i class="fa fa-wallet"></i>
                 </div>
-                <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                    <i class="fa fa-cash-register"></i>
-                </div>
+            </div>
+            <div class="kpi-value text-primary"><?= formatMoney($ventasMes['total']) ?></div>
+            <div class="kpi-footer">
+                <span class="badge-trend-up">
+                    <i class="fa fa-arrow-trend-up me-1"></i><?= $varVentasPct >= 0 ? '+' : '' ?><?= $varVentasPct ?>%
+                </span>
+                <span><?= $ventasMes['cant'] ?> comprobantes</span>
             </div>
         </div>
     </div>
 
-    <!-- Compras del Mes -->
+    <!-- Compras & Egresos -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="stat-card border-warning-accent">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="stat-title">Compras del Mes</div>
-                    <div class="stat-value text-warning"><?= formatMoney($comprasMes['total']) ?></div>
-                    <div class="stat-subtitle"><?= $comprasMes['cant'] ?> compras a proveedores</div>
-                </div>
-                <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+        <div class="kpi-smart-card">
+            <div class="kpi-header">
+                <span class="kpi-title">Compras & Gastos</span>
+                <div class="kpi-icon-wrap bg-warning bg-opacity-10 text-warning">
                     <i class="fa fa-cart-shopping"></i>
                 </div>
             </div>
+            <div class="kpi-value text-dark"><?= formatMoney($comprasMes['total']) ?></div>
+            <div class="kpi-footer">
+                <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
+                    Insumos & Costos
+                </span>
+                <span><?= $comprasMes['cant'] ?> compras</span>
+            </div>
         </div>
     </div>
 
-    <!-- Ganancia Bruta Estimada -->
+    <!-- Margen Comercial / Utilidad -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="stat-card border-success-accent">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="stat-title">Margen Bruto (Utilidad)</div>
-                    <div class="stat-value text-success"><?= formatMoney($utilidadMes) ?></div>
-                    <div class="stat-subtitle">Ventas vs Costos de mercadería</div>
+        <div class="kpi-smart-card">
+            <div class="kpi-header">
+                <span class="kpi-title">Utilidad Bruta</span>
+                <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
+                    <i class="fa fa-sack-dollar"></i>
                 </div>
-                <div class="stat-icon bg-success bg-opacity-10 text-success">
-                    <i class="fa fa-chart-line"></i>
-                </div>
+            </div>
+            <div class="kpi-value text-success"><?= formatMoney($utilidadMes) ?></div>
+            <div class="kpi-footer">
+                <span class="badge-trend-up">
+                    <i class="fa fa-shield-check me-1"></i>Rentable
+                </span>
+                <span>Margen sobre costo</span>
             </div>
         </div>
     </div>
 
-    <!-- Inventario Valorizado -->
+    <!-- Alertas de Stock Bajo -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="stat-card border-info-accent">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="stat-title">Almacén Valorizado</div>
-                    <div class="stat-value text-info"><?= formatMoney($invStats['valor_costo']) ?></div>
-                    <div class="stat-subtitle"><?= (int)$invStats['total_unidades'] ?> unidades (<?= (int)$invStats['total_items'] ?> productos)</div>
-                </div>
-                <div class="stat-icon bg-info bg-opacity-10 text-info">
-                    <i class="fa fa-boxes-stacked"></i>
+        <div class="kpi-smart-card">
+            <div class="kpi-header">
+                <span class="kpi-title">Alerta de Stock</span>
+                <div class="kpi-icon-wrap bg-danger bg-opacity-10 text-danger">
+                    <i class="fa fa-triangle-exclamation"></i>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Fila Secundaria: Contadores Adicionales -->
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
-        <div class="card-custom p-3 text-center">
-            <div class="text-muted small fw-bold text-uppercase">Ventas de Hoy</div>
-            <div class="fs-4 fw-bold text-dark mt-1"><?= formatMoney($ventasHoy['total']) ?></div>
-            <span class="badge bg-light text-secondary border mt-1"><?= $ventasHoy['cant'] ?> operaciones</span>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card-custom p-3 text-center">
-            <div class="text-muted small fw-bold text-uppercase">Stock Bajo Alerta</div>
-            <div class="fs-4 fw-bold text-danger mt-1"><?= (int)$invStats['total_stock_bajo'] ?></div>
-            <a href="inventario.php?filtro=stock_bajo" class="small text-danger text-decoration-none">Ver productos en riesgo &rarr;</a>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card-custom p-3 text-center">
-            <div class="text-muted small fw-bold text-uppercase">Clientes Activos</div>
-            <div class="fs-4 fw-bold text-primary mt-1"><?= $quickCounters['clients'] ?></div>
-            <a href="clientes.php" class="small text-primary text-decoration-none">Gestionar cartera &rarr;</a>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card-custom p-3 text-center">
-            <div class="text-muted small fw-bold text-uppercase">Proveedores</div>
-            <div class="fs-4 fw-bold text-secondary mt-1"><?= $quickCounters['suppliers'] ?></div>
-            <a href="proveedores.php" class="small text-secondary text-decoration-none">Ver proveedores &rarr;</a>
-        </div>
-    </div>
-</div>
-
-<!-- Gráficos y Actividad -->
-<div class="row g-3 mb-4">
-    <!-- Gráfico Comparativo -->
-    <div class="col-12 col-lg-8">
-        <div class="card-custom h-100">
-            <div class="card-custom-header">
-                <h5><i class="fa fa-chart-column text-primary"></i> Ventas vs Compras (Últimos 6 Meses)</h5>
-                <span class="badge bg-light text-muted border">En <?= htmlspecialchars($cfg['moneda_simbolo']) ?></span>
-            </div>
-            <div class="card-custom-body">
-                <canvas id="chartVentasCompras" height="280"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alertas de Stock Urgentes -->
-    <div class="col-12 col-lg-4">
-        <div class="card-custom h-100">
-            <div class="card-custom-header">
-                <h5 class="text-danger"><i class="fa fa-triangle-exclamation"></i> Reabastecimiento Urgente</h5>
-                <a href="inventario.php?filtro=stock_bajo" class="btn btn-sm btn-outline-danger">Ver todos</a>
-            </div>
-            <div class="card-custom-body p-0">
-                <?php if (empty($alertasStock)): ?>
-                    <div class="p-4 text-center text-muted">
-                        <i class="fa fa-circle-check text-success fs-1 mb-2"></i>
-                        <p class="mb-0">Todo el inventario cuenta con stock por encima del mínimo.</p>
-                    </div>
+            <div class="kpi-value text-danger"><?= (int)$invStats['total_stock_bajo'] ?> <small class="fs-6 fw-normal text-muted">items</small></div>
+            <div class="kpi-footer">
+                <?php if ((int)$invStats['total_stock_bajo'] > 0): ?>
+                    <span class="badge-trend-down">
+                        <i class="fa fa-arrow-down me-1"></i>Reponer
+                    </span>
+                    <a href="inventario.php?filtro=stock_bajo" class="text-danger fw-semibold text-decoration-none small">Ver lista &rarr;</a>
                 <?php else: ?>
-                    <div class="list-group list-group-flush">
-                        <?php foreach ($alertasStock as $item): ?>
-                            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
-                                <div>
-                                    <div class="fw-semibold text-dark"><?= htmlspecialchars($item['nombre']) ?></div>
-                                    <small class="text-muted"><?= htmlspecialchars($item['codigo_barra']) ?> • <?= htmlspecialchars($item['categoria_nombre'] ?? 'Sin cat.') ?></small>
-                                </div>
-                                <div class="text-end">
-                                    <span class="badge bg-danger fs-6"><?= $item['stock'] ?> <?= htmlspecialchars($item['unidad_medida']) ?></span>
-                                    <div class="small text-muted">Mín: <?= $item['stock_minimo'] ?></div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <span class="badge-trend-up">
+                        <i class="fa fa-check me-1"></i>Óptimo
+                    </span>
+                    <span>Inventario en regla</span>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Tablas de Actividad Reciente -->
+<!-- ============================================================
+     3. CUADRÍCULA DE ACCIONES RÁPIDAS (ESTILO STOCK MATE)
+     ============================================================ -->
+<div class="mb-4" id="tourQuickActions">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <h6 class="fw-bold text-dark text-uppercase small mb-0">
+            <i class="fa fa-bolt text-warning me-1"></i> Acciones Rápidas del Sistema
+        </h6>
+        <small class="text-muted">Operaciones con 1 clic</small>
+    </div>
+    <div class="row g-2">
+        <div class="col-4 col-md-2">
+            <a href="venta_nueva.php" class="quick-action-card">
+                <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
+                    <i class="fa fa-cash-register"></i>
+                </div>
+                <span class="action-label">Venta POS</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="compra_nueva.php" class="quick-action-card">
+                <div class="action-icon-circle bg-warning bg-opacity-10 text-warning">
+                    <i class="fa fa-cart-arrow-down"></i>
+                </div>
+                <span class="action-label">+ Compra</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="clientes.php" class="quick-action-card">
+                <div class="action-icon-circle bg-success bg-opacity-10 text-success">
+                    <i class="fa fa-user-plus"></i>
+                </div>
+                <span class="action-label">+ Cliente</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="consulta_sunat.php" class="quick-action-card">
+                <div class="action-icon-circle bg-info bg-opacity-10 text-info">
+                    <i class="fa fa-building-flag"></i>
+                </div>
+                <span class="action-label">RUC / SUNAT</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="sire.php" class="quick-action-card">
+                <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
+                    <i class="fa fa-file-zipper"></i>
+                </div>
+                <span class="action-label">SIRE Libros</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <div class="quick-action-card btn-open-ai" style="border: 1px dashed #3b82f6;">
+                <div class="action-icon-circle bg-danger bg-opacity-10 text-danger">
+                    <i class="fa fa-microphone"></i>
+                </div>
+                <span class="action-label text-primary">ContaVoz IA</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     4. GRÁFICOS: FLUJO DE CAJA & SALUD DE INVENTARIO (INVENTO STYLE)
+     ============================================================ -->
+<div class="row g-3 mb-4" id="tourChartsSection">
+    <!-- Flujo de Caja (Cash Flow mensual) -->
+    <div class="col-12 col-lg-8">
+        <div class="card-custom h-100">
+            <div class="card-custom-header d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-0"><i class="fa fa-chart-column text-primary me-2"></i>Flujo de Caja (Cash Flow)</h5>
+                    <small class="text-muted">Comparativa de Ventas vs Compras de los últimos 6 meses</small>
+                </div>
+                <span class="badge bg-light text-secondary border">En <?= htmlspecialchars($cfg['moneda_simbolo']) ?></span>
+            </div>
+            <div class="card-custom-body">
+                <canvas id="chartVentasCompras" height="270"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donut de Salud de Inventario (Inventory Alerts) -->
+    <div class="col-12 col-lg-4">
+        <div class="card-custom h-100">
+            <div class="card-custom-header">
+                <h5 class="mb-0"><i class="fa fa-chart-pie text-success me-2"></i>Salud del Inventario</h5>
+                <small class="text-muted">Estado actual de existencias</small>
+            </div>
+            <div class="card-custom-body d-flex flex-column align-items-center justify-content-center">
+                <div style="width: 170px; height: 170px; position: relative;">
+                    <canvas id="chartDonutInventario"></canvas>
+                </div>
+                <div class="w-100 mt-3 pt-2 border-top">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span><i class="fa fa-circle text-success me-1"></i> En Stock Óptimo:</span>
+                        <strong class="text-success"><?= (int)$invBreakdown['in_stock'] ?> productos</strong>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span><i class="fa fa-circle text-warning me-1"></i> Stock Bajo (Riesgo):</span>
+                        <strong class="text-warning"><?= (int)$invBreakdown['low_stock'] ?> productos</strong>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span><i class="fa fa-circle text-danger me-1"></i> Agotados:</span>
+                        <strong class="text-danger"><?= (int)$invBreakdown['out_of_stock'] ?> productos</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     5. MONITOREO INTELIGENTE DE PRODUCTOS (INVENTO / INVENTORY REPORT)
+     ============================================================ -->
+<div class="card-custom mb-4" id="tourInventoryTable">
+    <div class="card-custom-header d-flex align-items-center justify-content-between">
+        <div>
+            <h5 class="mb-0"><i class="fa fa-boxes-stacked text-primary me-2"></i>Monitoreo Inteligente de Almacén</h5>
+            <small class="text-muted">Supervisión automática de stock y sugerencias de reabastecimiento</small>
+        </div>
+        <a href="inventario.php" class="btn btn-sm btn-outline-primary fw-semibold">
+            Ver Catálogo Completo &rarr;
+        </a>
+    </div>
+    <div class="card-custom-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Producto</th>
+                        <th>Código</th>
+                        <th>Categoría</th>
+                        <th>Precio Venta</th>
+                        <th>Stock Actual</th>
+                        <th>Estado Inteligente</th>
+                        <th class="text-end pe-3">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($productosTable as $p): ?>
+                        <?php 
+                            $esCritico = ($p['stock'] <= $p['stock_minimo']); 
+                            $esAgotado = ($p['stock'] <= 0);
+                        ?>
+                        <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-2 text-primary" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-box"></i>
+                                    </div>
+                                    <span><?= htmlspecialchars($p['nombre']) ?></span>
+                                </div>
+                            </td>
+                            <td class="font-monospace small text-muted"><?= htmlspecialchars($p['codigo_barra']) ?></td>
+                            <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($p['categoria_nombre'] ?? 'General') ?></span></td>
+                            <td class="fw-bold"><?= formatMoney($p['precio_venta']) ?></td>
+                            <td>
+                                <span class="fw-bold font-monospace <?= $esCritico ? 'text-danger' : 'text-dark' ?>">
+                                    <?= $p['stock'] ?> <?= htmlspecialchars($p['unidad_medida']) ?>
+                                </span>
+                                <small class="text-muted">(Mín: <?= $p['stock_minimo'] ?>)</small>
+                            </td>
+                            <td>
+                                <?php if ($esAgotado): ?>
+                                    <span class="badge bg-danger">Agotado</span>
+                                <?php elseif ($esCritico): ?>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fa fa-triangle-exclamation me-1"></i> Stock Bajo
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge bg-success">En Stock</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-end pe-3">
+                                <?php if ($esCritico): ?>
+                                    <a href="compra_nueva.php" class="btn btn-xs btn-outline-warning fw-bold py-1 px-2" title="Reponer este producto">
+                                        <i class="fa fa-cart-plus me-1"></i> Reponer
+                                    </a>
+                                <?php else: ?>
+                                    <a href="venta_nueva.php" class="btn btn-xs btn-outline-primary py-1 px-2" title="Vender en POS">
+                                        <i class="fa fa-cash-register me-1"></i> Vender
+                                    </a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     6. ACTIVIDAD RECIENTE: VENTAS Y COMPRAS
+     ============================================================ -->
 <div class="row g-3">
     <!-- Últimas Ventas -->
     <div class="col-12 col-lg-6">
-        <div class="card-custom">
-            <div class="card-custom-header">
-                <h5><i class="fa fa-receipt text-success"></i> Últimas Ventas Emitidas</h5>
+        <div class="card-custom h-100">
+            <div class="card-custom-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="fa fa-receipt text-success me-2"></i>Últimas Ventas Emitidas</h5>
                 <a href="ventas.php" class="btn btn-sm btn-outline-primary">Ver todas</a>
             </div>
             <div class="card-custom-body p-0">
@@ -293,9 +482,9 @@ for ($i = 5; $i >= 0; $i--) {
 
     <!-- Últimas Compras -->
     <div class="col-12 col-lg-6">
-        <div class="card-custom">
-            <div class="card-custom-header">
-                <h5><i class="fa fa-cart-shopping text-warning"></i> Últimas Compras Registradas</h5>
+        <div class="card-custom h-100">
+            <div class="card-custom-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="fa fa-cart-shopping text-warning me-2"></i>Últimas Compras</h5>
                 <a href="compras.php" class="btn btn-sm btn-outline-primary">Ver todas</a>
             </div>
             <div class="card-custom-body p-0">
@@ -339,71 +528,112 @@ for ($i = 5; $i >= 0; $i--) {
     </div>
 </div>
 
+<!-- Scripts de Gráficos Chart.js -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('chartVentasCompras');
-    if (!ctx) return;
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: <?= json_encode($mesesChart) ?>,
-            datasets: [
-                {
-                    label: 'Ventas (<?= $cfg['moneda_simbolo'] ?>)',
-                    data: <?= json_encode($ventasChart) ?>,
-                    backgroundColor: 'rgba(37, 99, 235, 0.85)',
-                    borderRadius: 6,
-                    borderWidth: 0
-                },
-                {
-                    label: 'Compras (<?= $cfg['moneda_simbolo'] ?>)',
-                    data: <?= json_encode($comprasChart) ?>,
-                    backgroundColor: 'rgba(245, 158, 11, 0.85)',
-                    borderRadius: 6,
-                    borderWidth: 0
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) label += ': ';
-                            if (context.parsed.y !== null) {
-                                label += '<?= $cfg['moneda_simbolo'] ?> ' + context.parsed.y.toLocaleString('es-PE', { minimumFractionDigits: 2 });
+    // 1. Gráfico de Barras Flujo de Caja
+    const ctxBar = document.getElementById('chartVentasCompras');
+    if (ctxBar) {
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($mesesChart) ?>,
+                datasets: [
+                    {
+                        label: 'Ventas (<?= $cfg['moneda_simbolo'] ?>)',
+                        data: <?= json_encode($ventasChart) ?>,
+                        backgroundColor: 'rgba(37, 99, 235, 0.85)',
+                        borderRadius: 6,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Compras (<?= $cfg['moneda_simbolo'] ?>)',
+                        data: <?= json_encode($comprasChart) ?>,
+                        backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) {
+                                    label += '<?= $cfg['moneda_simbolo'] ?> ' + context.parsed.y.toLocaleString('es-PE', { minimumFractionDigits: 2 });
+                                }
+                                return label;
                             }
-                            return label;
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '<?= $cfg['moneda_simbolo'] ?> ' + value.toLocaleString();
+                            }
+                        },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Gráfico Donut de Salud de Inventario (Invento Style)
+    const ctxDonut = document.getElementById('chartDonutInventario');
+    if (ctxDonut) {
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Óptimo', 'Stock Bajo', 'Agotado'],
+                datasets: [{
+                    data: [
+                        <?= (int)$invBreakdown['in_stock'] ?>,
+                        <?= (int)$invBreakdown['low_stock'] ?>,
+                        <?= (int)$invBreakdown['out_of_stock'] ?>
+                    ],
+                    backgroundColor: [
+                        '#10b981', // Verde
+                        '#f59e0b', // Amarillo
+                        '#ef4444'  // Rojo
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.parsed + ' productos';
+                            }
                         }
                     }
                 }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return '<?= $cfg['moneda_simbolo'] ?> ' + value.toLocaleString();
-                        }
-                    },
-                    grid: { color: '#f1f5f9' }
-                },
-                x: {
-                    grid: { display: false }
-                }
             }
-        }
-    });
+        });
+    }
 });
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
-

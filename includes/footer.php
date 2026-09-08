@@ -29,6 +29,10 @@
 <!-- Custom Main JS -->
 <script src="assets/js/main.js"></script>
 
+<!-- ContaSmart Onboarding Tour & AI Assistant -->
+<script src="assets/js/tour.js"></script>
+<script src="assets/js/conta_ai.js"></script>
+
 <?php
 // Mostrar alertas flash automáticas si existen
 $flash = getFlash();

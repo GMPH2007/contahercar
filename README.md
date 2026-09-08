@@ -21,13 +21,33 @@
 
 ## 🌟 Descripción General
 
-**ContaHerCar** es una solución web empresarial completa diseñada para micro, pequeñas y medianas empresas en el Perú. Permite gestionar ventas, compras, clientes, proveedores, inventario en tiempo real y la emisión contable oficial exigida por la **SUNAT**, incorporando el nuevo **Sistema Integrado de Registros Electrónicos (SIRE)** y soporte 100% responsivo para teléfonos inteligentes.
+**ContaHerCar / CONTA SMART** es un sistema inteligente de gestión contable, comercial y financiera diseñado para micro, pequeñas y medianas empresas en el Perú. No solo registra datos, sino que **analiza, alerta y orienta al usuario** mediante un asistente inteligente con reconocimiento de voz (**CONTA VOZ**), alertas predictivas de negocio (**CONTA ALERTA**), propuestas automáticas de asientos contables según el PCGE, un **Tour Interactivo Guiado** de bienvenida y la emisión contable oficial exigida por la **SUNAT** (SIRE RVIE/RCE).
 
 ---
 
 ## ⚡ Módulos y Funcionalidades Destacadas
 
-### 1. 🏛️ Módulo SIRE SUNAT (Libros Electrónicos Oficiales)
+### 1. 🤖 CONTA SMART: Asistente Contable IA & Comandos de Voz (CONTA VOZ)
+* **Reconocimiento de Voz en Tiempo Real (CONTA VOZ):**
+  * Dictado de operaciones comerciales mediante el micrófono: *"Hoy vendí 3 amoladoras por 855 soles"* o *"Compré mercadería por 1500 en efectivo"*.
+  * Procesamiento en lenguaje natural y cálculo automático de Base Imponible e IGV (18%).
+* **Generación Automática de Asientos Contables (PCGE):**
+  * Propuesta detallada de cuentas contables (Cuenta 601 Mercaderías, 4011 IGV, 421 Facturas por Pagar, 121 Cobranzas, 101 Caja y asientos de destino 201/611).
+* **CONTA ALERTA (Sistema Predictivo):**
+  * Detección preventiva de stock crítico y productos sin rotación.
+  * Supervisión de liquidez y márgenes comerciales brutos.
+  * Alertas de cumplimiento de cronograma tributario SIRE SUNAT.
+
+### 2. 💡 Tour Interactivo Guiado para Nuevos Usuarios (Onboarding Tour)
+* Guía interactiva paso a paso con efecto *spotlight* animado que resalta y enseña cada función clave:
+  * Saludo y control ejecutivo.
+  * Tarjetas KPI inteligentes con tendencias de variación.
+  * Cuadrícula de acciones rápidas para operar en 1 clic (estilo *Stock Mate*).
+  * Flujo de caja y gráfico Donut de salud de inventario (estilo *Invento*).
+  * Asistente IA y comandos de voz.
+* Botón siempre accesible en la cabecera: `[ 💡 Tour ]` para reiniciar el recorrido cuando se desee.
+
+### 3. 🏛️ Módulo SIRE SUNAT (Libros Electrónicos Oficiales)
 * **RVIE (Registro de Ventas e Ingresos Electrónico - Libro 140400)**:
   * Generación de la propuesta local con estructura oficial de 33 campos delimitados por barra (`|`).
   * Generación y validación del **CAR (Código de Anotación de Registro)** de 27 dígitos.
@@ -40,8 +60,10 @@
 * **Conexión API SIRE SUNAT**:
   * Configuración de credenciales Clave SOL y Client ID / Secret desde el panel de control.
   * Autenticación OAuth2 contra los servidores de SUNAT (`https://api-seguridad.sunat.gob.pe`).
+* **Enlaces Oficiales en Nueva Pestaña (target="_blank"):**
+  * Accesos directos integrados a los portales oficiales de SUNAT SIRE, Consulta RUC SUNAT y RENIEC.
 
-### 2. 📱 Formato y Experiencia Móvil Adaptativa (Smartphone / Tablet)
+### 4. 📱 Formato y Experiencia Móvil Adaptativa (Smartphone / Tablet)
 * **Punto de Venta (POS) Táctil**:
   * Alternador de vistas móviles `[Catálogo de Productos]` y `[Carrito de Compra (N)]`.
   * Barra de cobro flotante inferior (`.pos-mobile-bar`) con total en soles y acceso rápido a pagar.

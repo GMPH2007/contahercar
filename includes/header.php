@@ -67,16 +67,28 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 <?php endif; ?>
 
+                <!-- Acceso al Tour Guiado -->
+                <button type="button" class="btn btn-sm btn-outline-info btn-start-tour d-none d-md-flex align-items-center gap-1" title="Iniciar Tour Guiado del Sistema">
+                    <i class="fa fa-lightbulb"></i>
+                    <span>Tour</span>
+                </button>
+
+                <!-- Acceso a ContaSmart IA & ContaVoz -->
+                <button type="button" class="btn btn-sm btn-dark btn-open-ai d-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Abrir Asistente IA & ContaVoz">
+                    <i class="fa fa-robot text-info"></i>
+                    <span class="d-none d-sm-inline">ContaSmart IA</span>
+                </button>
+
                 <!-- Acceso Rápido a Nueva Venta / POS -->
                 <a href="venta_nueva.php" class="btn btn-sm btn-primary d-flex align-items-center gap-1">
                     <i class="fa fa-cash-register"></i>
-                    <span class="d-none d-sm-inline">Punto de Venta</span>
+                    <span class="d-none d-sm-inline">POS</span>
                 </a>
 
                 <!-- Acceso Rápido a Nueva Compra -->
-                <a href="compra_nueva.php" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+                <a href="compra_nueva.php" class="btn btn-sm btn-outline-secondary d-none d-lg-flex align-items-center gap-1">
                     <i class="fa fa-cart-arrow-down"></i>
-                    <span class="d-none d-sm-inline">+ Compra</span>
+                    <span>+ Compra</span>
                 </a>
             </div>
         </header>
