@@ -20,6 +20,34 @@ $config = getSystemConfig();
     </div>
 </div>
 
+<!-- Accesos Directos a Portales Oficiales SUNAT / RENIEC / SIRE en Nueva Pestaña -->
+<div class="row g-2 mb-4">
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-building-flag me-2 text-primary"></i>Portal RUC SUNAT</span>
+            <i class="fa fa-arrow-up-right-from-square small text-primary"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-info btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-id-card me-2 text-info"></i>Portal RENIEC Oficial</span>
+            <i class="fa fa-arrow-up-right-from-square small text-info"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="sire.php" target="_blank" class="btn btn-outline-success btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-book-bookmark me-2 text-success"></i>Módulo SIRE Libros</span>
+            <i class="fa fa-arrow-up-right-from-square small text-success"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://www.sunat.gob.pe/sol.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-key me-2 text-secondary"></i>SUNAT Clave SOL</span>
+            <i class="fa fa-arrow-up-right-from-square small text-secondary"></i>
+        </a>
+    </div>
+</div>
+
 <!-- Barra de Búsqueda Principal -->
 <div class="card-custom mb-4 border-primary border-top border-3">
     <div class="card-custom-body p-4">
@@ -120,6 +148,9 @@ $config = getSystemConfig();
                     </a>
                     <a href="#" class="btn btn-sm btn-outline-dark fw-semibold" id="btnNuevaCompra">
                         <i class="fa fa-cart-arrow-down me-1"></i> Registrar Compra
+                    </a>
+                    <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary fw-semibold" id="btnVerificarSunatOficial" title="Abrir en Portal SUNAT / RENIEC Oficial en nueva pestaña">
+                        <i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en SUNAT Oficial ↗
                     </a>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()" title="Imprimir Ficha">
                         <i class="fa fa-print"></i>
@@ -394,6 +425,15 @@ function mostrarFichaTributaria(d) {
     // Enlaces de Acciones
     document.getElementById('btnNuevaVentaPos').href = 'venta_nueva.php?ruc=' + encodeURIComponent(d.numero);
     document.getElementById('btnNuevaCompra').href = 'compra_nueva.php?ruc=' + encodeURIComponent(d.numero);
+
+    const btnVerif = document.getElementById('btnVerificarSunatOficial');
+    if (d.tipo === 'RUC') {
+        btnVerif.href = 'https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp';
+        btnVerif.innerHTML = '<i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en SUNAT Oficial ↗';
+    } else {
+        btnVerif.href = 'https://portaladminusuarios.reniec.gob.pe/';
+        btnVerif.innerHTML = '<i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en RENIEC Oficial ↗';
+    }
 
     // Locales Anexos
     const secLocales = document.getElementById('seccionLocalesAnexos');

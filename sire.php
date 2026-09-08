@@ -70,6 +70,33 @@ foreach ($comprasSire as $c) {
                 <i class="fa fa-rotate"></i>
             </button>
         </form>
+</div>
+
+<!-- Accesos Directos a Portales Oficiales SUNAT / SIRE en Nueva Pestaña -->
+<div class="row g-2 mb-3">
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-globe me-2"></i>Portal SIRE SUNAT</span>
+            <i class="fa fa-arrow-up-right-from-square small text-primary"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://www.sunat.gob.pe/sol.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-key me-2"></i>SUNAT Clave SOL</span>
+            <i class="fa fa-arrow-up-right-from-square small text-secondary"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="consulta_sunat.php" target="_blank" class="btn btn-outline-warning text-dark btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-building-flag me-2"></i>Consulta RUC / DNI</span>
+            <i class="fa fa-arrow-up-right-from-square small text-dark"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="btn btn-outline-info text-dark btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-magnifying-glass-chart me-2 text-info"></i>Portal RUC SUNAT</span>
+            <i class="fa fa-arrow-up-right-from-square small text-info"></i>
+        </a>
     </div>
 </div>
 
