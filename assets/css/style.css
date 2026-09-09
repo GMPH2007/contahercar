@@ -1393,100 +1393,91 @@ body.sidebar-collapsed .app-main {
 }
 
 /* ==========================================================================
-   MODO TV & PANTALLA GIGANTE (MONITORES 1080p, 4K, KIOSK)
+   OPTIMIZACIÓN EXCLUSIVA PARA MÓVIL Y SMARTPHONE (Android / iPhone)
    ========================================================================== */
-body.tv-mode {
-    font-size: 1.15rem;
-    background-color: #0b0f19 !important;
-    color: #f1f5f9;
-}
+@media (max-width: 575.98px) {
+    .app-main {
+        padding: 0.75rem 0.5rem 2rem !important;
+    }
 
-body.tv-mode .app-sidebar {
-    display: none !important;
-}
+    .executive-hero {
+        padding: 1rem 0.75rem !important;
+        border-radius: 14px !important;
+    }
 
-body.tv-mode .app-main {
-    margin-left: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 1.5rem !important;
-}
+    .executive-hero h1 {
+        font-size: 1.15rem !important;
+    }
 
-body.tv-mode .app-topbar {
-    background: #111827 !important;
-    border-bottom: 2px solid #1f2937 !important;
-    padding: 1rem 2rem !important;
-}
+    .executive-hero p {
+        font-size: 0.8rem !important;
+    }
 
-body.tv-mode .page-title {
-    font-size: 1.6rem !important;
-    color: #38bdf8 !important;
-}
+    /* KPI Cards en móvil: visualización 2x2 simétrica */
+    .kpi-smart-card {
+        padding: 0.85rem 0.75rem !important;
+        border-radius: 14px !important;
+        min-height: 110px;
+    }
 
-body.tv-mode .kpi-smart-card {
-    padding: 1.75rem !important;
-    border-radius: 20px !important;
-    border: 1px solid #374151 !important;
-    background: #1f2937 !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5) !important;
-}
+    .kpi-smart-card .kpi-icon {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+        border-radius: 10px !important;
+    }
 
-body.tv-mode .kpi-title {
-    font-size: 1.1rem !important;
-    color: #9ca3af !important;
-}
+    .kpi-smart-card .kpi-value {
+        font-size: 1.25rem !important;
+        letter-spacing: -0.5px;
+    }
 
-body.tv-mode .kpi-value {
-    font-size: 2.3rem !important;
-    font-weight: 800 !important;
-}
+    .kpi-smart-card .kpi-title {
+        font-size: 0.72rem !important;
+    }
 
-body.tv-mode .card-custom {
-    background: #1f2937 !important;
-    border: 1px solid #374151 !important;
-    color: #f3f4f6 !important;
-}
+    .kpi-smart-card .kpi-badge {
+        font-size: 0.65rem !important;
+        padding: 0.15rem 0.4rem !important;
+    }
 
-body.tv-mode .card-custom-header {
-    background: #111827 !important;
-    border-bottom: 1px solid #374151 !important;
-}
+    /* Acciones Rápidas en Móvil */
+    .quick-action-card {
+        padding: 0.75rem 0.4rem !important;
+        border-radius: 12px !important;
+        min-height: 75px;
+    }
 
-body.tv-mode .card-custom-header h5 {
-    font-size: 1.35rem !important;
-    color: #ffffff !important;
-}
+    .quick-action-card i {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.25rem !important;
+    }
 
-body.tv-mode .table {
-    font-size: 1.1rem !important;
-    color: #e5e7eb !important;
-}
+    .quick-action-card span {
+        font-size: 0.72rem !important;
+        line-height: 1.1;
+    }
 
-body.tv-mode .table thead th {
-    background: #111827 !important;
-    color: #9ca3af !important;
-    font-size: 1rem !important;
-}
+    /* Modales en móvil: ancho completo amigable al dedo */
+    .modal-dialog {
+        margin: 0.5rem !important;
+        max-width: calc(100% - 1rem) !important;
+    }
 
-/* Botón indicador de Modo TV en Topbar */
-.btn-tv-mode {
-    transition: all 0.2s ease;
-}
+    .modal-content {
+        border-radius: 16px !important;
+    }
 
-.btn-tv-mode.active {
-    background-color: #2563eb !important;
-    color: #ffffff !important;
-    border-color: #2563eb !important;
-}
-
-/* Ajustes de Alta Resolución (TV 1400px - 4K) */
-@media (min-width: 1400px) {
-    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-        max-width: 100% !important;
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
+    /* Siri FAB en móvil */
+    .btn-fab-siri {
+        bottom: 1.25rem !important;
+        right: 1.25rem !important;
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 1.4rem !important;
     }
 }
+
 
 
 

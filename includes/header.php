@@ -67,16 +67,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 <?php endif; ?>
 
-                <!-- Modo TV / Pantalla Gigante para Monitoreo -->
-                <button type="button" class="btn btn-sm btn-outline-secondary btn-tv-mode d-none d-xl-flex align-items-center gap-1 shadow-sm" id="btnToggleTvMode" onclick="toggleTvMode()" title="Modo TV / Pantalla Gigante para Monitoreo de Almacén o Tienda">
-                    <i class="fa fa-tv text-info"></i>
-                    <span>Modo TV</span>
-                </button>
-
                 <!-- Acceso a Siri ContaSmart (Asistente de Voz Inteligente) -->
-                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-2 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                     <i class="fa fa-microphone text-warning"></i>
-                    <span class="fw-bold">Siri ContaSmart</span>
+                    <span class="fw-bold d-none d-sm-inline">Siri</span>
                 </button>
 
                 <!-- Acceso Rápido a Nueva Venta / POS -->
@@ -119,11 +113,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="toggleTvMode()">
-                                <i class="fa fa-tv text-info me-2"></i> Modo TV / Pantalla Gigante
-                            </a>
-                        </li>
-                        <li>
                             <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
                                 <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
                             </a>
@@ -137,24 +126,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <button type="button" class="btn-fab-siri btn-open-ai" title="Hablar con Siri ContaSmart (ContaVoz)" onclick="ContaSmartAI.open()">
             <i class="fa fa-microphone"></i>
         </button>
-
-        <script>
-        function toggleTvMode() {
-            document.body.classList.toggle('tv-mode');
-            const btn = document.getElementById('btnToggleTvMode');
-            const isTv = document.body.classList.contains('tv-mode');
-            if (btn) {
-                btn.classList.toggle('active', isTv);
-                btn.innerHTML = isTv ? '<i class="fa fa-compress text-white"></i> <span>Salir TV</span>' : '<i class="fa fa-tv text-info"></i> <span>Modo TV</span>';
-            }
-            // Solicitar fullscreen opcional si es soportado
-            if (isTv && !document.fullscreenElement && document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(() => {});
-            } else if (!isTv && document.fullscreenElement && document.exitFullscreen) {
-                document.exitFullscreen().catch(() => {});
-            }
-        }
-        </script>
 
         <!-- Contenido de la Página -->
         <main class="app-content">

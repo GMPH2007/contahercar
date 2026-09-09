@@ -171,22 +171,16 @@
                     <span class="badge bg-warning text-dark">2</span>
                 </a>
 
-                <!-- Modo TV / Pantalla Gigante -->
-                <button type="button" class="btn btn-sm btn-outline-secondary btn-tv-mode d-none d-xl-flex align-items-center gap-1 shadow-sm" id="btnToggleTvMode" onclick="toggleTvMode()" title="Modo TV / Pantalla Gigante para Monitoreo">
-                    <i class="fa fa-tv text-info"></i>
-                    <span>Modo TV</span>
-                </button>
-
                 <!-- Acceso a Siri ContaSmart -->
-                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-2 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                     <i class="fa fa-microphone text-warning"></i>
-                    <span class="fw-bold">Siri ContaSmart</span>
+                    <span class="fw-bold d-none d-sm-inline">Siri ContaSmart</span>
                 </button>
 
                 <!-- Acceso Rápido a POS -->
                 <button type="button" class="btn btn-sm btn-success d-flex align-items-center gap-1 shadow-sm" onclick="openPosModal()">
                     <i class="fa fa-cash-register"></i>
-                    <span class="d-none d-sm-inline">POS</span>
+                    <span class="fw-semibold">POS</span>
                 </button>
 
                 <!-- Menú de 3 Puntos (Opciones Rápidas) -->
@@ -216,11 +210,6 @@
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="toggleTvMode()">
-                                <i class="fa fa-tv text-info me-2"></i> Modo TV / Pantalla Gigante
-                            </a>
-                        </li>
                         <li>
                             <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
                                 <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
@@ -255,16 +244,16 @@
                             Sistema inteligente de gestión contable, analítica financiera y registros electrónicos para MYPES.
                         </p>
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2">
-                        <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-lg-auto mt-2 mt-lg-0">
+                        <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center justify-content-center gap-2 flex-fill flex-sm-grow-0" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                             <i class="fa fa-microphone text-warning"></i>
                             <span>Hablar con Siri</span>
                         </button>
-                        <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center gap-1" onclick="openPosModal()">
+                        <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openPosModal()">
                             <i class="fa fa-cash-register"></i>
                             <span>Emitir Venta POS</span>
                         </button>
-                        <button type="button" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center gap-1" onclick="openConsultaRucModal()">
+                        <button type="button" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openConsultaRucModal()">
                             <i class="fa fa-building-flag"></i>
                             <span>Buscar RUC / DNI</span>
                         </button>
@@ -272,9 +261,9 @@
                 </div>
             </div>
 
-            <!-- 2. TARJETAS KPI INTELIGENTES -->
-            <div class="row g-3 mb-4" id="tourKpiCards">
-                <div class="col-12 col-sm-6 col-xl-3">
+            <!-- 2. TARJETAS KPI INTELIGENTES (Cuadrícula 2x2 en Celular) -->
+            <div class="row g-2 g-md-3 mb-4" id="tourKpiCards">
+                <div class="col-6 col-xl-3">
                     <div class="kpi-smart-card">
                         <div class="kpi-header">
                             <span class="kpi-title">Ventas del Mes</span>
@@ -287,12 +276,12 @@
                             <span class="badge-trend-up">
                                 <i class="fa fa-arrow-trend-up me-1"></i>+14.5%
                             </span>
-                            <span>38 comprobantes</span>
+                            <span class="d-none d-sm-inline">38 comprobantes</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-6 col-xl-3">
                     <div class="kpi-smart-card">
                         <div class="kpi-header">
                             <span class="kpi-title">Compras & Gastos</span>
@@ -303,14 +292,14 @@
                         <div class="kpi-value text-dark">S/. 14,250.00</div>
                         <div class="kpi-footer">
                             <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
-                                Insumos & Costos
+                                Insumos
                             </span>
-                            <span>12 compras</span>
+                            <span class="d-none d-sm-inline">12 compras</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-6 col-xl-3">
                     <div class="kpi-smart-card">
                         <div class="kpi-header">
                             <span class="kpi-title">Utilidad Bruta</span>
@@ -323,12 +312,12 @@
                             <span class="badge-trend-up">
                                 <i class="fa fa-shield-check me-1"></i>Rentable
                             </span>
-                            <span>Margen sobre costo</span>
+                            <span class="d-none d-sm-inline">Margen neto</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-6 col-xl-3">
                     <div class="kpi-smart-card">
                         <div class="kpi-header">
                             <span class="kpi-title">Alerta de Stock</span>
@@ -341,7 +330,7 @@
                             <span class="badge-trend-down">
                                 <i class="fa fa-arrow-down me-1"></i>Reponer
                             </span>
-                            <a href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')" class="text-danger fw-semibold text-decoration-none small">Ver lista &rarr;</a>
+                            <a href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')" class="text-danger fw-semibold text-decoration-none small">Ver &rarr;</a>
                         </div>
                     </div>
                 </div>
@@ -787,17 +776,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
-
-// Función de Modo TV
-function toggleTvMode() {
-    document.body.classList.toggle('tv-mode');
-    const btn = document.getElementById('btnToggleTvMode');
-    const isTv = document.body.classList.contains('tv-mode');
-    if (btn) {
-        btn.classList.toggle('active', isTv);
-        btn.innerHTML = isTv ? '<i class="fa fa-compress text-white"></i> <span>Salir TV</span>' : '<i class="fa fa-tv text-info"></i> <span>Modo TV</span>';
-    }
-}
 
 // Helpers de Interacción
 function scrollSection(id) {

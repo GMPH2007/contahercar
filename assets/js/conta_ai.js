@@ -15,30 +15,37 @@ const ContaSmartAI = (() => {
     let recognition = null;
     let cachedVoice = null;
 
-    // Inicializar voces del navegador con preferencia por voces humanas naturales en español
+    // Selección de voces con preferencia por voces humanas naturales en español
+    function pickVoice() {
+        if (!('speechSynthesis' in window)) return null;
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return null;
+        
+        // 1. Priorizar voces naturales/neurales premium de Google, Microsoft o Apple en español
+        cachedVoice = voices.find(v => v.lang.startsWith('es') && (
+            v.name.includes('Natural') || 
+            v.name.includes('Neural') || 
+            v.name.includes('Google español') ||
+            v.name.includes('Google') || 
+            v.name.includes('Sabina') || 
+            v.name.includes('Paulina') || 
+            v.name.includes('Elena') ||
+            v.name.includes('Alvaro') ||
+            v.name.includes('Raul') ||
+            v.name.includes('Jorge') ||
+            v.name.includes('Monica')
+        )) || 
+        // 2. Voces de Perú, México, Latinoamérica
+        voices.find(v => v.lang === 'es-PE' || v.lang === 'es-MX' || v.lang === 'es-US' || v.lang === 'es-419') ||
+        // 3. Cualquier voz en español
+        voices.find(v => v.lang.startsWith('es'));
+
+        return cachedVoice;
+    }
+
+    // Inicializar voces del navegador
     function initVoiceSynthesis() {
         if (!('speechSynthesis' in window)) return;
-        
-        const pickVoice = () => {
-            const voices = window.speechSynthesis.getVoices();
-            if (!voices || voices.length === 0) return;
-            
-            // 1. Priorizar voces naturales de Google, Microsoft o Apple en español
-            cachedVoice = voices.find(v => v.lang.startsWith('es') && (
-                v.name.includes('Natural') || 
-                v.name.includes('Google') || 
-                v.name.includes('Sabina') || 
-                v.name.includes('Paulina') || 
-                v.name.includes('Elena') ||
-                v.name.includes('Raul') ||
-                v.name.includes('Monica')
-            )) || 
-            // 2. Voces de Perú, México, Latinoamérica
-            voices.find(v => v.lang === 'es-PE' || v.lang === 'es-MX' || v.lang === 'es-US' || v.lang === 'es-419') ||
-            // 3. Cualquier voz en español
-            voices.find(v => v.lang.startsWith('es'));
-        };
-
         pickVoice();
         window.speechSynthesis.onvoiceschanged = pickVoice;
     }
@@ -49,7 +56,10 @@ const ContaSmartAI = (() => {
         let s = text;
         // Eliminar HTML y símbolos raros
         s = s.replace(/<[^>]*>/g, ' ');
-        s = s.replace(/[*_#`~🤖👋📦🛒⚠️💡⚡🎙️📊]/g, '');
+        s = s.replace(/[*_#`~🤖👋📦🛒⚠️💡⚡🎙️📊📈📉]/g, '');
+
+        // Quitar coma de miles para que el sintetizador pronuncie el número continuo y claro
+        s = s.replace(/(\d+),(\d{3})/g, '$1$2');
 
         // Formatear montos monetarios a pronunciación humana peruana
         s = s.replace(/S\/\.\s*(\d+)(?:\.00|\.0)?\b/gi, '$1 soles');
@@ -57,13 +67,15 @@ const ContaSmartAI = (() => {
         s = s.replace(/S\/\.?\s*(\d+)\.(\d{2})/gi, '$1 soles con $2 céntimos');
         s = s.replace(/S\/\.?/gi, ' soles ');
 
-        // Deletreo y modulación de siglas técnicas
+        // Deletreo y modulación de siglas técnicas con pausas suaves
         s = s.replace(/\bRUC\b/gi, 'R-U-C');
         s = s.replace(/\bDNI\b/gi, 'D-N-I');
         s = s.replace(/\bIGV\b/gi, 'I-G-V');
         s = s.replace(/\bPOS\b/gi, 'punto de venta');
         s = s.replace(/\bPCGE\b/gi, 'Plan Contable');
         s = s.replace(/\bSIRE\b/gi, 'sistema SIRE');
+        s = s.replace(/\bSUNAT\b/gi, 'Sunat');
+        s = s.replace(/\bRENIEC\b/gi, 'Reniec');
         s = s.replace(/\bunids?\b/gi, 'unidades');
         s = s.replace(/\bvs\b/gi, 'frente a');
 
@@ -74,19 +86,30 @@ const ContaSmartAI = (() => {
         return s;
     }
 
-    // Habla fluida de Siri con cadencia natural
+    // Habla fluida de Siri con cadencia natural y voz clara
     function speakHuman(text) {
         if (isVoiceMuted || !('speechSynthesis' in window)) return;
         try {
             window.speechSynthesis.cancel();
+            if (window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+            }
             const speechText = cleanSpeechForHuman(text);
             if (!speechText) return;
 
+            if (!cachedVoice) {
+                pickVoice();
+            }
+
             const utterance = new SpeechSynthesisUtterance(speechText);
-            if (cachedVoice) utterance.voice = cachedVoice;
-            utterance.lang = 'es-PE';
-            utterance.rate = 1.0; // Velocidad de conversación humana normal
-            utterance.pitch = 1.02; // Tono natural y cálido
+            if (cachedVoice) {
+                utterance.voice = cachedVoice;
+                utterance.lang = cachedVoice.lang;
+            } else {
+                utterance.lang = 'es-PE';
+            }
+            utterance.rate = 0.96; // Cadencia humana calmada, sumamente clara y nítida
+            utterance.pitch = 1.0;  // Tono cálido y natural
 
             utterance.onstart = () => {
                 isSpeaking = true;
@@ -625,8 +648,8 @@ const ContaSmartAI = (() => {
 
                 let humanText = `Hoy hemos registrado <strong>${data.ventas_hoy.total_formateado}</strong> en ventas (${cant} comprobantes emitidos). En lo que va del mes acumulamos <strong>${data.ventas_mes.total_formateado}</strong> con una ganancia bruta estimada de <strong>${data.utilidad_mes.total_formateado}</strong>.`;
                 let speechVoiceText = cant > 0 ? 
-                    `Hoy hemos vendido ${totalSoles} soles en ${cant} comprobantes. En el mes acumulas ${totalMesSoles} soles con una ganancia estimada de ${data.utilidad_mes.total} soles. Tu negocio marcha con buen ritmo.` : 
-                    `Hoy aún no se han registrado ventas. Pero en el mes acumulas ${totalMesSoles} soles. ¿Te gustaría abrir el punto de venta para registrar un comprobante?`;
+                    `¡Hola! Con gusto te informo. Hoy hemos vendido ${totalSoles} soles en ${cant} comprobantes emitidos. En lo que va del mes acumulas ${totalMesSoles} soles, con una ganancia bruta estimada de ${data.utilidad_mes.total} soles. Tu negocio marcha con excelente ritmo.` : 
+                    `¡Hola! Hoy aún no se han registrado ventas en el sistema. Pero en el mes acumulas ${totalMesSoles} soles. ¿Te gustaría abrir el punto de venta para registrar una boleta?`;
 
                 const actionCardHTML = `
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -690,10 +713,10 @@ const ContaSmartAI = (() => {
                 if (count > 0) {
                     const topItems = data.items.slice(0, 2).map(it => `${it.nombre} con solo ${it.stock} unidades`).join(', y ');
                     humanText = `Atención: he detectado <strong>${count} productos</strong> con existencias por debajo del stock mínimo recomendado, especialmente: <strong>${topItems}</strong>. Te sugiero reponerlos pronto para evitar roturas de stock.`;
-                    speechVoiceText = `Ojo con tu almacén. He detectado ${count} productos con existencias por debajo del mínimo, especialmente ${topItems}. Te sugiero reponerlos pronto para no quedarte sin mercadería.`;
+                    speechVoiceText = `Atención con tu almacén. He detectado ${count} productos con existencias por debajo del mínimo: ${topItems}. Te sugiero solicitar una reposición pronto para evitar quedarte sin mercadería.`;
                 } else {
                     humanText = `Excelente noticia: tu almacén está en estado óptimo. Todos los productos tienen existencias suficientes por encima de su stock mínimo.`;
-                    speechVoiceText = `Tu almacén está en regla. No hay productos en riesgo de agotarse.`;
+                    speechVoiceText = `Tu almacén está en orden. Todos los productos cuentan con existencias óptimas.`;
                 }
 
                 const actionCardHTML = count > 0 ? `
