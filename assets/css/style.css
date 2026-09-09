@@ -1392,6 +1392,80 @@ body.sidebar-collapsed .app-main {
     }
 }
 
+/* Botón Flotante Móvil POS (Venta Rápida con 1 toque en Celulares) */
+.btn-fab-pos {
+    position: fixed;
+    bottom: 22px;
+    left: 20px;
+    z-index: 1040;
+    height: 52px;
+    padding: 0 1.15rem;
+    border-radius: 26px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.45);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.btn-fab-pos:hover {
+    transform: scale(1.05);
+    box-shadow: 0 14px 30px rgba(16, 185, 129, 0.6);
+    color: #ffffff !important;
+}
+
+.btn-fab-pos:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 991.98px) {
+    .btn-fab-pos {
+        display: flex;
+    }
+}
+
+/* Barra Flotante Inferior de Venta / Carrito para Celulares */
+.pos-mobile-bar,
+.pos-mobile-floating-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1045;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-top: 2px solid #22c55e;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.pos-mobile-bar:hover,
+.pos-mobile-floating-bar:hover {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+.pos-mobile-bar:active,
+.pos-mobile-floating-bar:active {
+    transform: scale(0.98);
+}
+
+/* En la pantalla de Punto de Venta completa, ocultar el botón POS flotante y subir Siri para no solapar */
+body:has(.pos-wrapper) .btn-fab-pos {
+    display: none !important;
+}
+body:has(.pos-wrapper) .btn-fab-siri {
+    bottom: 75px !important;
+}
+
 /* ==========================================================================
    OPTIMIZACIÓN EXCLUSIVA PARA MÓVIL Y SMARTPHONE (Android / iPhone)
    ========================================================================== */

@@ -739,6 +739,9 @@ document.addEventListener('DOMContentLoaded', () => {
             buscarClientePorRucPos();
         }
     }
+    if (window.innerWidth <= 992) {
+        cambiarTabPos('productos');
+    }
 });
 </script>
 

@@ -116,13 +116,13 @@ for ($i = 5; $i >= 0; $i--) {
 ?>
 
 <!-- ============================================================
-     1. BANNER EJECUTIVO CONTA SMART + ACTIVADOR DEL TOUR
+     1. BANNER EJECUTIVO CONTA SMART (ENFOQUE MYPE PERUANA)
      ============================================================ -->
 <div class="card-custom p-4 mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 16px;" id="tourHeaderGreeting">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
             <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v2.5</span>
+                <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v3.3</span>
                 <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.72rem;">
                     <i class="fa fa-circle-check me-1"></i> SIRE SUNAT Activo
                 </span>
@@ -134,32 +134,29 @@ for ($i = 5; $i >= 0; $i--) {
                 Sistema inteligente de gestión contable, analítica financiera y registros electrónicos para MYPES.
             </p>
         </div>
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <button type="button" class="btn btn-gradient-siri btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center gap-2" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+        <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-lg-auto mt-2 mt-lg-0">
+            <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center justify-content-center gap-2 flex-fill flex-sm-grow-0" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" onclick="ContaSmartAI.open()" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                 <i class="fa fa-microphone text-warning"></i>
                 <span>Hablar con Siri</span>
             </button>
-            <a href="venta_nueva.php" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center gap-1">
+            <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openPosModal()" title="Abrir Venta POS Rápida Flotante">
                 <i class="fa fa-cash-register"></i>
                 <span>Emitir Venta POS</span>
-            </a>
-            <a href="consulta_sunat.php" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center gap-1">
+            </button>
+            <button type="button" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openConsultaRucModal()" title="Consultar RUC o DNI en Vivo">
                 <i class="fa fa-building-flag"></i>
                 <span>Buscar RUC / DNI</span>
-            </a>
-            <button type="button" class="btn btn-sm btn-outline-light text-white-50 border-0 btn-start-tour p-2" title="Reiniciar Recorrido Guiado (Tour)">
-                <i class="fa fa-circle-question"></i>
             </button>
         </div>
     </div>
 </div>
 
 <!-- ============================================================
-     2. TARJETAS KPI INTELIGENTES (ESTILO INVENTO & INTUIT ASSIST)
+     2. TARJETAS KPI INTELIGENTES (Cuadrícula 2x2 en Celular)
      ============================================================ -->
-<div class="row g-3 mb-4" id="tourKpiCards">
+<div class="row g-2 g-md-3 mb-4" id="tourKpiCards">
     <!-- Ventas del Mes -->
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-6 col-xl-3">
         <div class="kpi-smart-card">
             <div class="kpi-header">
                 <span class="kpi-title">Ventas del Mes</span>
@@ -172,13 +169,13 @@ for ($i = 5; $i >= 0; $i--) {
                 <span class="badge-trend-up">
                     <i class="fa fa-arrow-trend-up me-1"></i><?= $varVentasPct >= 0 ? '+' : '' ?><?= $varVentasPct ?>%
                 </span>
-                <span><?= $ventasMes['cant'] ?> comprobantes</span>
+                <span class="d-none d-sm-inline"><?= $ventasMes['cant'] ?> comprobantes</span>
             </div>
         </div>
     </div>
 
     <!-- Compras & Egresos -->
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-6 col-xl-3">
         <div class="kpi-smart-card">
             <div class="kpi-header">
                 <span class="kpi-title">Compras & Gastos</span>
@@ -189,15 +186,15 @@ for ($i = 5; $i >= 0; $i--) {
             <div class="kpi-value text-dark"><?= formatMoney($comprasMes['total']) ?></div>
             <div class="kpi-footer">
                 <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
-                    Insumos & Costos
+                    Insumos
                 </span>
-                <span><?= $comprasMes['cant'] ?> compras</span>
+                <span class="d-none d-sm-inline"><?= $comprasMes['cant'] ?> compras</span>
             </div>
         </div>
     </div>
 
     <!-- Margen Comercial / Utilidad -->
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-6 col-xl-3">
         <div class="kpi-smart-card">
             <div class="kpi-header">
                 <span class="kpi-title">Utilidad Bruta</span>
@@ -210,13 +207,13 @@ for ($i = 5; $i >= 0; $i--) {
                 <span class="badge-trend-up">
                     <i class="fa fa-shield-check me-1"></i>Rentable
                 </span>
-                <span>Margen sobre costo</span>
+                <span class="d-none d-sm-inline">Margen neto</span>
             </div>
         </div>
     </div>
 
     <!-- Alertas de Stock Bajo -->
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-6 col-xl-3">
         <div class="kpi-smart-card">
             <div class="kpi-header">
                 <span class="kpi-title">Alerta de Stock</span>
@@ -230,12 +227,12 @@ for ($i = 5; $i >= 0; $i--) {
                     <span class="badge-trend-down">
                         <i class="fa fa-arrow-down me-1"></i>Reponer
                     </span>
-                    <a href="inventario.php?filtro=stock_bajo" class="text-danger fw-semibold text-decoration-none small">Ver lista &rarr;</a>
+                    <a href="inventario.php?filtro=stock_bajo" class="text-danger fw-semibold text-decoration-none small">Ver &rarr;</a>
                 <?php else: ?>
                     <span class="badge-trend-up">
                         <i class="fa fa-check me-1"></i>Óptimo
                     </span>
-                    <span>Inventario en regla</span>
+                    <span class="d-none d-sm-inline">Inventario en regla</span>
                 <?php endif; ?>
             </div>
         </div>
@@ -254,7 +251,7 @@ for ($i = 5; $i >= 0; $i--) {
     </div>
     <div class="row g-2">
         <div class="col-4 col-md-2">
-            <a href="venta_nueva.php" class="quick-action-card">
+            <a href="javascript:void(0)" onclick="openPosModal()" class="quick-action-card text-decoration-none">
                 <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
                     <i class="fa fa-cash-register"></i>
                 </div>
@@ -262,7 +259,7 @@ for ($i = 5; $i >= 0; $i--) {
             </a>
         </div>
         <div class="col-4 col-md-2">
-            <a href="compra_nueva.php" class="quick-action-card">
+            <a href="compra_nueva.php" class="quick-action-card text-decoration-none">
                 <div class="action-icon-circle bg-warning bg-opacity-10 text-warning">
                     <i class="fa fa-cart-arrow-down"></i>
                 </div>
