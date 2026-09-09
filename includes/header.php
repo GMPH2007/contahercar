@@ -45,7 +45,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <!-- Barra Superior (Topbar) -->
         <header class="app-topbar">
             <div class="topbar-left">
-                <button class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Abrir Menú">
+                <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" onclick="if(window.toggleSidebar) window.toggleSidebar(event)" aria-label="Abrir Menú (3 rayitas)">
                     <i class="fa fa-bars"></i>
                 </button>
                 <h1 class="page-title"><?= htmlspecialchars($pageTitle ?? 'Panel de Control') ?></h1>

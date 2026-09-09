@@ -141,8 +141,7 @@
 <!-- Custom Main JS -->
 <script src="assets/js/main.js?v=<?= time() ?>"></script>
 
-<!-- ContaSmart Onboarding Tour & AI Assistant (Cache-busting) -->
-<script src="assets/js/tour.js?v=<?= time() ?>"></script>
+<!-- ContaSmart AI Assistant Siri (Cache-busting) -->
 <script src="assets/js/conta_ai.js?v=<?= time() ?>"></script>
 
 <?php

@@ -122,7 +122,7 @@ for ($i = 5; $i >= 0; $i--) {
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
             <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v3.3</span>
+                <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v3.4</span>
                 <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.72rem;">
                     <i class="fa fa-circle-check me-1"></i> SIRE SUNAT Activo
                 </span>
@@ -154,7 +154,7 @@ for ($i = 5; $i >= 0; $i--) {
 <!-- ============================================================
      2. TARJETAS KPI INTELIGENTES (Cuadrícula 2x2 en Celular)
      ============================================================ -->
-<div class="row g-2 g-md-3 mb-4" id="tourKpiCards">
+<div class="row g-3 g-md-3 mb-4" id="tourKpiCards">
     <!-- Ventas del Mes -->
     <div class="col-6 col-xl-3">
         <div class="kpi-smart-card">
@@ -249,7 +249,7 @@ for ($i = 5; $i >= 0; $i--) {
         </h6>
         <small class="text-muted">Operaciones con 1 clic</small>
     </div>
-    <div class="row g-2">
+    <div class="row g-3">
         <div class="col-4 col-md-2">
             <a href="javascript:void(0)" onclick="openPosModal()" class="quick-action-card text-decoration-none">
                 <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">

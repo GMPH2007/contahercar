@@ -97,18 +97,15 @@ const ContaSmartAI = (() => {
             const speechText = cleanSpeechForHuman(text);
             if (!speechText) return;
 
-            if (!cachedVoice) {
-                pickVoice();
-            }
-
+            const voice = pickVoice();
             const utterance = new SpeechSynthesisUtterance(speechText);
-            if (cachedVoice) {
-                utterance.voice = cachedVoice;
-                utterance.lang = cachedVoice.lang;
+            if (voice) {
+                utterance.voice = voice;
+                utterance.lang = voice.lang;
             } else {
                 utterance.lang = 'es-PE';
             }
-            utterance.rate = 0.96; // Cadencia humana calmada, sumamente clara y nítida
+            utterance.rate = 0.95; // Cadencia humana calmada, sumamente clara y nítida
             utterance.pitch = 1.0;  // Tono cálido y natural
 
             utterance.onstart = () => {
@@ -124,7 +121,9 @@ const ContaSmartAI = (() => {
                 setVisualizerState(false);
             };
 
-            window.speechSynthesis.speak(utterance);
+            setTimeout(() => {
+                window.speechSynthesis.speak(utterance);
+            }, 60);
         } catch (e) {
             console.warn('Speech synthesis error:', e);
         }
@@ -300,17 +299,20 @@ const ContaSmartAI = (() => {
     }
 
     function open() {
-        if (typeof ContaSmartTour !== 'undefined' && ContaSmartTour.endTour) {
-            ContaSmartTour.endTour();
-        }
         createSiriInterface();
         backdrop.classList.add('active');
         drawer.classList.add('active');
         playSiriChime('start');
+
+        // Saludo hablado de Siri al abrir
+        setTimeout(() => {
+            speakHuman("Hola, soy Siri ContaSmart. ¿Qué deseas consultar hoy?");
+        }, 300);
+
         setTimeout(() => {
             const input = document.getElementById('aiInputText');
             if (input && window.innerWidth >= 768) input.focus();
-        }, 300);
+        }, 400);
     }
 
     function close() {

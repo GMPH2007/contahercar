@@ -204,54 +204,69 @@ function cargarTipoCambio() {
         .catch(() => {});
 }
 
+// Funciones globales para control del Menú Lateral (3 rayitas)
+window.openSidebar = function() {
+    const sidebar = document.querySelector('.app-sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (sidebar) sidebar.classList.add('show');
+    if (backdrop) backdrop.classList.add('show');
+    document.body.classList.add('sidebar-open');
+};
+
+window.closeSidebar = function() {
+    const sidebar = document.querySelector('.app-sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (sidebar) sidebar.classList.remove('show');
+    if (backdrop) backdrop.classList.remove('show');
+    document.body.classList.remove('sidebar-open');
+};
+
+window.toggleSidebar = function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const sidebar = document.querySelector('.app-sidebar');
+    if (window.innerWidth <= 992) {
+        if (sidebar && sidebar.classList.contains('show')) {
+            window.closeSidebar();
+        } else {
+            window.openSidebar();
+        }
+    } else {
+        document.body.classList.toggle('sidebar-collapsed');
+    }
+};
+
 // Inicialización general en DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('sidebarToggleBtn');
     const closeBtn = document.getElementById('sidebarCloseBtn');
-    const sidebar = document.querySelector('.app-sidebar');
     const backdrop = document.getElementById('sidebarBackdrop');
 
-    function openSidebar() {
-        if (sidebar) sidebar.classList.add('show');
-        if (backdrop) backdrop.classList.add('show');
-        document.body.classList.add('sidebar-open');
-    }
-
-    function closeSidebar() {
-        if (sidebar) sidebar.classList.remove('show');
-        if (backdrop) backdrop.classList.remove('show');
-        document.body.classList.remove('sidebar-open');
-    }
-
     if (toggleBtn) {
-        toggleBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.innerWidth <= 992) {
-                if (sidebar && sidebar.classList.contains('show')) {
-                    closeSidebar();
-                } else {
-                    openSidebar();
-                }
-            } else {
-                document.body.classList.toggle('sidebar-collapsed');
-            }
-        });
+        toggleBtn.onclick = window.toggleSidebar;
     }
 
     if (closeBtn) {
-        closeBtn.addEventListener('click', closeSidebar);
+        closeBtn.onclick = function(e) {
+            e.preventDefault();
+            window.closeSidebar();
+        };
     }
 
     if (backdrop) {
-        backdrop.addEventListener('click', closeSidebar);
+        backdrop.onclick = function(e) {
+            e.preventDefault();
+            window.closeSidebar();
+        };
     }
 
     // Cerrar sidebar al hacer clic en cualquier enlace en móviles
-    document.querySelectorAll('.sidebar-link').forEach(link => {
+    document.querySelectorAll('.app-sidebar .sidebar-link').forEach(link => {
         link.addEventListener('click', () => {
             if (window.innerWidth <= 992) {
-                closeSidebar();
+                window.closeSidebar();
             }
         });
     });
@@ -430,15 +445,26 @@ function ejecutarConsultaModal() {
 function guardarDocModal(tipo) {
     const elNombre = document.getElementById('resDocNombre');
     const elNum = document.getElementById('resDocNum');
-    const nombre = elNombre ? elNombre.textContent : '';
-    const num = elNum ? elNum.textContent : '';
+    const nombre = elNombre ? elNombre.textContent.trim() : '';
+    const num = elNum ? elNum.textContent.trim() : '';
 
-    Swal.fire({
-        icon: 'success',
-        title: tipo === 'cliente' ? '¡Cliente Registrado!' : '¡Proveedor Registrado!',
-        html: `<strong>${nombre}</strong> (${num}) ha sido guardado exitosamente en el sistema.`,
-        confirmButtonColor: '#2563eb'
-    });
+    if (!num) {
+        Swal.fire('Atención', 'Primero realice una búsqueda de documento.', 'warning');
+        return;
+    }
+
+    // Auto-guardado en base de datos local
+    fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=${tipo}&auto_guardar=1`)
+        .then(r => r.json())
+        .catch(() => null)
+        .then(res => {
+            Swal.fire({
+                icon: 'success',
+                title: tipo === 'cliente' ? '¡Cliente Guardado en BD!' : '¡Proveedor Guardado en BD!',
+                html: `<strong>${nombre}</strong> (${num}) ha sido registrado exitosamente en la base de datos de ContaSmart.`,
+                confirmButtonColor: '#2563eb'
+            });
+        });
 }
 
 function facturarDocModal() {
