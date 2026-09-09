@@ -146,15 +146,19 @@ if (function_exists('curl_init') && !empty($url)) {
 // Fallback si la API no devolvió nombre
 if (empty(trim($nombreApi))) {
     $mockCatalog = [
-        '20100017491' => ['nombre' => 'INTEGRATEL PERÚ S.A.A.', 'direccion' => 'JR. DOMINGO MARTINEZ LUJAN NRO. 1130, SURQUILLO - LIMA'],
+        '20100017491' => ['nombre' => 'TELEFÓNICA DEL PERÚ S.A.A.', 'direccion' => 'JR. DOMINGO MARTINEZ LUJAN NRO. 1130, SURQUILLO - LIMA'],
         '10460278975' => ['nombre' => 'HUAMANI MENDOZA ERACLEO JUAN', 'direccion' => 'CAL. GARCILASO NRO. 210 - CUSCO'],
-        '20601030013' => ['nombre' => 'DECOLECTA TECNOLOGIAS DIGITALES S.A.C.', 'direccion' => 'AV. PARDO NRO. 601, MIRAFLORES - LIMA'],
+        '20601030013' => ['nombre' => 'REXTIE S.A.C. / DECOLECTA TECNOLOGIAS DIGITALES', 'direccion' => 'AV. PARDO NRO. 601, MIRAFLORES - LIMA'],
         '20100070970' => ['nombre' => 'SUPERMERCADOS PERUANOS S.A.', 'direccion' => 'CAL. MORELLI NRO. 181 URB. SAN BORJA - LIMA'],
         '20100128218' => ['nombre' => 'SAGA FALABELLA S.A.', 'direccion' => 'AV. PASEO DE LA REPUBLICA NRO. 3220 - SAN ISIDRO'],
-        '20601234567' => ['nombre' => 'CONTAHERCAR SOLUCIONES COMERCIALES S.A.C.', 'direccion' => 'AV. PRINCIPAL 123, SAN ISIDRO - LIMA'],
-        '20501234589' => ['nombre' => 'IMPORTADORA INDUSTRIAL HERCAR E.I.R.L.', 'direccion' => 'JR. PARURO 1024, LIMA CENTRO'],
-        '45891234'    => ['nombre' => 'JUAN CARLOS PÉREZ RÍOS', 'direccion' => 'AV. AREQUIPA 1420, LINCE - LIMA'],
-        '12345678'    => ['nombre' => 'MARÍA ELENA GONZALES RAMOS', 'direccion' => 'JR. HUANCAVELICA 450, LIMA']
+        '20100047218' => ['nombre' => 'BANCO DE CREDITO DEL PERU', 'direccion' => 'CALLE CENTENARIO NRO. 156, LA MOLINA - LIMA'],
+        '20601234567' => ['nombre' => 'CONTAHERCAR SOLUCIONES COMERCIALES S.A.C.', 'direccion' => 'AV. LA MARINA NRO. 450, PUEBLO LIBRE - LIMA'],
+        '20501234589' => ['nombre' => 'IMPORTADORA INDUSTRIAL HERCAR E.I.R.L.', 'direccion' => 'JR. PARURO NRO. 1024, CERCADO DE LIMA'],
+        '10702488915' => ['nombre' => 'PINTADO HUAMAN GERSON MISAEL', 'direccion' => 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL'],
+        '45871234'    => ['nombre' => 'JUAN CARLOS PÉREZ RÍOS', 'direccion' => 'AV. AREQUIPA NRO. 1420, LINCE - LIMA'],
+        '45891234'    => ['nombre' => 'JUAN CARLOS PÉREZ RÍOS', 'direccion' => 'AV. AREQUIPA NRO. 1420, LINCE - LIMA'],
+        '70248891'    => ['nombre' => 'GERSON MISAEL PINTADO HUAMAN', 'direccion' => 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL'],
+        '12345678'    => ['nombre' => 'MARÍA ELENA GONZALES RAMOS', 'direccion' => 'JR. HUANCAVELICA NRO. 450, LIMA']
     ];
 
     if (isset($mockCatalog[$numero])) {

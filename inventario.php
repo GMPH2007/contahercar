@@ -1,10 +1,9 @@
 <?php
-$pageTitle = 'Inventario & Catálogo de Productos';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/app.php';
 
 $pdo = getDBConnection();
 
-// Procesar Acciones POST (Crear, Editar, Ajuste de Stock, Categoría)
+// Procesar Acciones POST (Crear, Editar, Ajuste de Stock, Categoría) ANTES de enviar salida HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -124,6 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
+$pageTitle = 'Inventario & Catálogo de Productos';
+require_once __DIR__ . '/includes/header.php';
 
 // Filtros y Búsqueda
 $busqueda = isset($_GET['q']) ? trim($_GET['q']) : '';

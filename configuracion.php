@@ -1,10 +1,9 @@
 <?php
-$pageTitle = 'Configuración del Sistema & Integración API';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/app.php';
 
 $pdo = getDBConnection();
 
-// Procesar Actualización de Configuración
+// Procesar Actualización de Configuración ANTES de enviar salida HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -19,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $impuestoNombre = sanitize($_POST['impuesto_nombre'] ?? 'IGV');
         $impuestoPorcentaje = (float)($_POST['impuesto_porcentaje'] ?? 18.00);
 
-        $apiProvider = sanitize($_POST['api_ruc_provider'] ?? 'apisnet');
+        $apiProvider = sanitize($_POST['api_ruc_provider'] ?? 'decolecta');
         $apiRucUrl = trim($_POST['api_ruc_url'] ?? '');
         $apiDniUrl = trim($_POST['api_dni_url'] ?? '');
         $apiToken = trim($_POST['api_ruc_token'] ?? '');
@@ -48,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Cargar configuración actual
 $cfg = getSystemConfig();
+$pageTitle = 'Configuración del Sistema & Integración API';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">

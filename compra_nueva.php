@@ -1,11 +1,10 @@
 <?php
-$pageTitle = 'Registrar Nueva Compra / Ingreso';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/app.php';
 
 $pdo = getDBConnection();
 $cfg = getSystemConfig();
 
-// Procesar guardado de compra
+// Procesar guardado de compra ANTES de enviar salida HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $proveedorId = (int)($_POST['proveedor_id'] ?? 0);
     $tipoComprobante = sanitize($_POST['tipo_comprobante'] ?? 'Factura');
@@ -106,6 +105,9 @@ $proveedores = $pdo->query("SELECT id, razon_social, num_doc FROM proveedores OR
 
 // Cargar Productos Activos
 $productos = $pdo->query("SELECT id, codigo_barra, nombre, stock, precio_compra, unidad_medida FROM productos WHERE estado = 1 ORDER BY nombre ASC")->fetchAll();
+
+$pageTitle = 'Registrar Nueva Compra / Ingreso';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">

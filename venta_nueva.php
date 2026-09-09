@@ -1,11 +1,10 @@
 <?php
-$pageTitle = 'Punto de Venta (POS) - Nueva Venta';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/app.php';
 
 $pdo = getDBConnection();
 $cfg = getSystemConfig();
 
-// Procesar POST de Venta
+// Procesar POST de Venta ANTES de enviar salida HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clienteId = (int)($_POST['cliente_id'] ?? 0);
     $tipoComprobante = sanitize($_POST['tipo_comprobante'] ?? 'Boleta');
@@ -41,11 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $prod = $stmtCheckProd->fetch();
 
                     if (!$prod) {
-                        throw new Exception("El producto con ID #$pId no existe.");
+                        throw new Exception("Producto con ID $pId no existe.");
                     }
-
                     if ($prod['stock'] < $cant) {
-                        throw new Exception("Stock insuficiente para '{$prod['nombre']}'. Disponible: {$prod['stock']}, Solicitado: $cant.");
+                        throw new Exception("Stock insuficiente para '{$prod['nombre']}'. Disponible: {$prod['stock']}, solicitado: $cant.");
                     }
 
                     $itemSubtotal = $cant * $pUnit;
@@ -53,27 +51,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $itemsValidos[] = [
                         'producto_id' => $pId,
-                        'nombre' => $prod['nombre'],
                         'cantidad' => $cant,
                         'precio_unitario' => $pUnit,
                         'costo_unitario' => (float)$prod['precio_compra'],
-                        'stock_actual' => (int)$prod['stock'],
-                        'subtotal' => $itemSubtotal
+                        'subtotal' => $itemSubtotal,
+                        'stock_actual' => (int)$prod['stock']
                     ];
                 }
             }
 
             if (empty($itemsValidos)) {
-                throw new Exception('No hay productos válidos en la venta.');
+                throw new Exception("El carrito no contiene productos válidos con cantidades mayores a cero.");
             }
 
-            // Cálculo de desglose de impuestos
-            // En venta comercial en Perú, los precios de venta al público ya suelen incluir IGV o se desglosa:
-            // Subtotal = Total / 1.18, Impuesto = Total - Subtotal
+            // Desglosar Subtotal e Impuesto según porcentaje configurado
             $porcentajeImpuesto = (float)$cfg['impuesto_porcentaje'];
+            $divisor = 1 + ($porcentajeImpuesto / 100);
+            
+            $subtotalSinImpuesto = round($subtotalGeneral / $divisor, 2);
+            $impuestoVenta = round($subtotalGeneral - $subtotalSinImpuesto, 2);
             $totalVenta = $subtotalGeneral;
-            $subtotalSinImpuesto = round($totalVenta / (1 + ($porcentajeImpuesto / 100)), 2);
-            $impuestoVenta = $totalVenta - $subtotalSinImpuesto;
 
             // 1. Insertar Cabecera de Venta
             $stmtVenta = $pdo->prepare("INSERT INTO ventas 
@@ -148,6 +145,9 @@ $productos = $pdo->query("SELECT p.*, c.nombre as categoria_nombre
     LEFT JOIN categorias c ON p.categoria_id = c.id 
     WHERE p.estado = 1 AND p.stock > 0 
     ORDER BY p.nombre ASC")->fetchAll();
+
+$pageTitle = 'Punto de Venta (POS) - Nueva Venta';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Selector de Pestañas exclusivo para Celulares y Tablets -->

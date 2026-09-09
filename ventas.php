@@ -1,11 +1,10 @@
 <?php
-$pageTitle = 'Historial de Ventas & Facturación';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/app.php';
 
 $pdo = getDBConnection();
 $cfg = getSystemConfig();
 
-// Procesar Anulación de Venta
+// Procesar Anulación de Venta ANTES de enviar salida HTML
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'anular_venta') {
     $ventaId = (int)($_POST['venta_id'] ?? 0);
 
@@ -65,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     header('Location: ventas.php');
     exit;
 }
+
+$pageTitle = 'Historial de Ventas & Facturación';
+require_once __DIR__ . '/includes/header.php';
 
 // Filtros
 $fechaIni = $_GET['fecha_ini'] ?? date('Y-m-01');
