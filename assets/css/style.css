@@ -1345,85 +1345,118 @@ body.sidebar-collapsed .app-main {
 }
 
 /* ==========================================================================
-   BOTÓN FLOTANTE MÓVIL FAB (CELULAR / TABLET)
+   BARRA FLOTANTE INFERIOR MODERNA PARA CELULARES (MOBILE BOTTOM DOCK)
+   Reemplaza botones flotantes sueltos y evita solapamientos con modales
    ========================================================================== */
-.btn-fab-siri {
+.mobile-bottom-dock {
     position: fixed;
-    bottom: 22px;
-    right: 22px;
+    bottom: 12px;
+    left: 14px;
+    right: 14px;
+    max-width: 480px;
+    margin: 0 auto;
+    height: 64px;
     z-index: 1040;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #2563eb, #7c3aed);
-    color: #ffffff;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
     border: none;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.35rem;
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
-    cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
-}
-
-.btn-fab-siri:hover {
-    transform: scale(1.08);
-    box-shadow: 0 14px 30px rgba(124, 58, 237, 0.6);
-    color: #ffffff;
-}
-
-.btn-fab-siri:active {
-    transform: scale(0.95);
-}
-
-@media (max-width: 991.98px) {
-    .btn-fab-siri {
-        display: flex;
-    }
-}
-
-/* Botón Flotante Móvil POS (Venta Rápida con 1 toque en Celulares) */
-.btn-fab-pos {
-    position: fixed;
-    bottom: 22px;
-    left: 20px;
-    z-index: 1040;
-    height: 52px;
-    padding: 0 1.15rem;
-    border-radius: 26px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff !important;
-    border: 2px solid rgba(255, 255, 255, 0.25);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.88rem;
-    font-weight: 700;
-    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.45);
-    cursor: pointer;
+    color: rgba(255, 255, 255, 0.75);
     text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 5px 8px;
+    border-radius: 16px;
+    cursor: pointer;
+    min-width: 54px;
+    transition: color 0.2s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dock-item i {
+    font-size: 1.15rem;
+    margin-bottom: 2px;
+}
+
+.dock-item:hover,
+.dock-item:focus,
+.dock-item.active {
+    color: #38bdf8;
+}
+
+.dock-item:active {
+    transform: scale(0.92);
+}
+
+/* Botón Central Elevado POS (Venta Rápida) */
+.dock-item-pos {
+    position: relative;
+    color: #ffffff;
+    padding-top: 0;
+}
+
+.dock-pos-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -22px;
+    margin-bottom: 2px;
+    border: 3px solid #0f172a;
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.55);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
 }
 
-.btn-fab-pos:hover {
-    transform: scale(1.05);
-    box-shadow: 0 14px 30px rgba(16, 185, 129, 0.6);
-    color: #ffffff !important;
+.dock-pos-icon i {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 0;
 }
 
-.btn-fab-pos:active {
-    transform: scale(0.95);
+.dock-item-pos:active .dock-pos-icon {
+    transform: scale(0.92);
 }
 
+/* Ocultar dock automáticamente si hay modal, menú lateral o asistente abierto */
+body.modal-open .mobile-bottom-dock,
+body.sidebar-open .mobile-bottom-dock,
+body.siri-active .mobile-bottom-dock,
+body:has(.pos-wrapper) .mobile-bottom-dock {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(40px) !important;
+}
+
+/* Espacio inferior de seguridad en móvil para evitar que el dock cubra contenido */
 @media (max-width: 991.98px) {
-    .btn-fab-pos {
-        display: flex;
+    .app-content {
+        padding-bottom: 85px !important;
+    }
+    .app-main {
+        padding-bottom: 80px !important;
     }
 }
 
-/* Barra Flotante Inferior de Venta / Carrito para Celulares */
+/* Barra Flotante Inferior de Venta / Carrito para Celulares en Pantalla POS */
 .pos-mobile-bar,
 .pos-mobile-floating-bar {
     position: fixed;
@@ -1447,14 +1480,6 @@ body.sidebar-collapsed .app-main {
 .pos-mobile-bar:active,
 .pos-mobile-floating-bar:active {
     transform: scale(0.98);
-}
-
-/* En la pantalla de Punto de Venta completa, ocultar el botón POS flotante y subir Siri para no solapar */
-body:has(.pos-wrapper) .btn-fab-pos {
-    display: none !important;
-}
-body:has(.pos-wrapper) .btn-fab-siri {
-    bottom: 75px !important;
 }
 
 /* ==========================================================================
@@ -1523,23 +1548,15 @@ body:has(.pos-wrapper) .btn-fab-siri {
         line-height: 1.1;
     }
 
-    /* Modales en móvil: ancho completo amigable al dedo */
+    /* Modales en móvil: ancho óptimo, bordes suaves y gran ergonomía */
     .modal-dialog {
-        margin: 0.5rem !important;
-        max-width: calc(100% - 1rem) !important;
+        margin: 0.75rem auto !important;
+        max-width: calc(100% - 1.5rem) !important;
     }
 
     .modal-content {
-        border-radius: 16px !important;
-    }
-
-    /* Siri FAB en móvil */
-    .btn-fab-siri {
-        bottom: 1.25rem !important;
-        right: 1.25rem !important;
-        width: 52px !important;
-        height: 52px !important;
-        font-size: 1.4rem !important;
+        border-radius: 20px !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35) !important;
     }
 }
 

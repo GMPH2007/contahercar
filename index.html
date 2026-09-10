@@ -171,21 +171,21 @@
                     <span class="badge bg-warning text-dark">2</span>
                 </a>
 
-                <!-- Acceso a Siri ContaSmart -->
-                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <!-- Acceso a Siri ContaSmart (Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-none d-md-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                     <i class="fa fa-microphone text-warning"></i>
-                    <span class="fw-bold d-none d-sm-inline">Siri ContaSmart</span>
+                    <span class="fw-bold">Siri</span>
                 </button>
 
-                <!-- Acceso Rápido a POS -->
-                <button type="button" class="btn btn-sm btn-success d-flex align-items-center gap-1 shadow-sm" onclick="openPosModal()">
+                <!-- Acceso Rápido a POS (Desktop) -->
+                <button type="button" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm" onclick="openPosModal()">
                     <i class="fa fa-cash-register"></i>
                     <span class="fw-semibold">POS</span>
                 </button>
 
                 <!-- Menú de 3 Puntos (Opciones Rápidas) -->
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 36px; height: 36px;">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 38px; height: 38px;">
                         <i class="fa fa-ellipsis-vertical text-dark"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
@@ -219,11 +219,6 @@
                 </div>
             </div>
         </header>
-
-        <!-- Botón Flotante Móvil Siri / ContaVoz (FAB) -->
-        <button type="button" class="btn-fab-siri btn-open-ai" title="Hablar con Siri ContaSmart" onclick="ContaSmartAI.open()">
-            <i class="fa fa-microphone"></i>
-        </button>
 
         <!-- Contenido de la Página -->
         <main class="app-content">
@@ -573,11 +568,31 @@
     </div>
 </div>
 
-<!-- Botón Flotante Móvil de Venta Rápida (FAB POS para Celulares) -->
-<button type="button" class="btn-fab-pos" onclick="openPosModal()" title="Venta Rápida POS">
-    <i class="fa fa-cash-register"></i>
-    <span>Venta Rápida</span>
-</button>
+<!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
+<nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
+    <a href="index.html" class="dock-item active">
+        <i class="fa fa-chart-pie"></i>
+        <span>Inicio</span>
+    </a>
+    <button type="button" class="dock-item" onclick="openConsultaRucModal()">
+        <i class="fa fa-building-flag"></i>
+        <span>RUC/DNI</span>
+    </button>
+    <button type="button" class="dock-item dock-item-pos" onclick="openPosModal()" title="Venta Rápida POS">
+        <div class="dock-pos-icon">
+            <i class="fa fa-cash-register"></i>
+        </div>
+        <span>POS</span>
+    </button>
+    <button type="button" class="dock-item" onclick="if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri">
+        <i class="fa fa-microphone-lines text-info"></i>
+        <span>Siri AI</span>
+    </button>
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : document.getElementById('sidebarToggleBtn')?.click()" title="Menú Principal">
+        <i class="fa fa-bars"></i>
+        <span>Menú</span>
+    </button>
+</nav>
 
 <!-- Modal Global Interactivo para POS -->
 <div class="modal fade" id="modalPosGlobal" tabindex="-1" aria-hidden="true">

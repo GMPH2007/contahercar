@@ -87,6 +87,7 @@ const ContaSmartAI = (() => {
     }
 
     // Habla fluida de Siri con cadencia natural y voz clara
+    // Habla fluida de Siri con cadencia natural y voz clara (Optimizado para Celulares y PC)
     function speakHuman(text) {
         if (isVoiceMuted || !('speechSynthesis' in window)) return;
         try {
@@ -99,11 +100,15 @@ const ContaSmartAI = (() => {
 
             const voice = pickVoice();
             const utterance = new SpeechSynthesisUtterance(speechText);
+            // Anclar referencia global para evitar que el Garbage Collector de Chrome/Safari en Android/iOS corte la voz
+            window._siriActiveUtterance = utterance;
+
             if (voice) {
                 utterance.voice = voice;
                 utterance.lang = voice.lang;
             } else {
-                utterance.lang = 'es-PE';
+                // Fallback prioritario de dialecto en navegadores móviles
+                utterance.lang = 'es-419';
             }
             utterance.rate = 0.95; // Cadencia humana calmada, sumamente clara y nítida
             utterance.pitch = 1.0;  // Tono cálido y natural
@@ -115,15 +120,16 @@ const ContaSmartAI = (() => {
             utterance.onend = () => {
                 isSpeaking = false;
                 setVisualizerState(false);
+                window._siriActiveUtterance = null;
             };
-            utterance.onerror = () => {
+            utterance.onerror = (e) => {
                 isSpeaking = false;
                 setVisualizerState(false);
+                window._siriActiveUtterance = null;
             };
 
-            setTimeout(() => {
-                window.speechSynthesis.speak(utterance);
-            }, 60);
+            // Ejecución síncrona inmediata para respetar la política de interacción táctil en smartphones
+            window.speechSynthesis.speak(utterance);
         } catch (e) {
             console.warn('Speech synthesis error:', e);
         }
@@ -302,22 +308,22 @@ const ContaSmartAI = (() => {
         createSiriInterface();
         backdrop.classList.add('active');
         drawer.classList.add('active');
+        document.body.classList.add('siri-active');
         playSiriChime('start');
 
-        // Saludo hablado de Siri al abrir
-        setTimeout(() => {
-            speakHuman("Hola, soy Siri ContaSmart. ¿Qué deseas consultar hoy?");
-        }, 300);
+        // Hablar de inmediato con el gesto táctil del usuario (sin setTimeout largo) para compatibilidad móvil total
+        speakHuman("Hola, soy Siri ContaSmart. ¿Qué deseas consultar hoy?");
 
         setTimeout(() => {
             const input = document.getElementById('aiInputText');
             if (input && window.innerWidth >= 768) input.focus();
-        }, 400);
+        }, 300);
     }
 
     function close() {
         if (backdrop) backdrop.classList.remove('active');
         if (drawer) drawer.classList.remove('active');
+        document.body.classList.remove('siri-active');
         if (isRecording) stopVoice();
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }

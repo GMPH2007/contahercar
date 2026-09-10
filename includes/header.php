@@ -67,16 +67,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 <?php endif; ?>
 
-                <!-- Acceso a Siri ContaSmart (Asistente de Voz Inteligente) -->
-                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <!-- Acceso a Siri ContaSmart (Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-none d-md-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                     <i class="fa fa-microphone text-warning"></i>
-                    <span class="fw-bold d-none d-sm-inline">Siri</span>
+                    <span class="fw-bold">Siri</span>
                 </button>
 
-                <!-- Acceso Rápido a Nueva Venta / POS -->
-                <a href="venta_nueva.php" class="btn btn-sm btn-success d-flex align-items-center gap-1 shadow-sm">
+                <!-- Acceso Rápido a Nueva Venta / POS (Desktop) -->
+                <a href="venta_nueva.php" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm">
                     <i class="fa fa-cash-register"></i>
-                    <span class="d-none d-sm-inline">POS</span>
+                    <span>POS</span>
                 </a>
 
                 <!-- Acceso Rápido a Nueva Compra -->
@@ -87,7 +87,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
                 <!-- Menú de 3 Puntos (Opciones Rápidas) -->
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 36px; height: 36px;">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 38px; height: 38px;">
                         <i class="fa fa-ellipsis-vertical text-dark"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
@@ -121,11 +121,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </div>
             </div>
         </header>
-
-        <!-- Botón Flotante Móvil Siri / ContaVoz (FAB para Celulares y Tablets) -->
-        <button type="button" class="btn-fab-siri btn-open-ai" title="Hablar con Siri ContaSmart (ContaVoz)" onclick="ContaSmartAI.open()">
-            <i class="fa fa-microphone"></i>
-        </button>
 
         <!-- Contenido de la Página -->
         <main class="app-content">

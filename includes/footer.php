@@ -2,11 +2,31 @@
     </div> <!-- Fin .app-main -->
 </div> <!-- Fin .app-wrapper -->
 
-<!-- Botón Flotante Móvil de Venta Rápida (FAB POS para Celulares) -->
-<button type="button" class="btn-fab-pos" onclick="openPosModal()" title="Venta Rápida POS">
-    <i class="fa fa-cash-register"></i>
-    <span>Venta Rápida</span>
-</button>
+<!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
+<nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
+    <a href="index.php" class="dock-item active">
+        <i class="fa fa-chart-pie"></i>
+        <span>Inicio</span>
+    </a>
+    <button type="button" class="dock-item" onclick="openConsultaRucModal()">
+        <i class="fa fa-building-flag"></i>
+        <span>RUC/DNI</span>
+    </button>
+    <button type="button" class="dock-item dock-item-pos" onclick="openPosModal()" title="Venta Rápida POS">
+        <div class="dock-pos-icon">
+            <i class="fa fa-cash-register"></i>
+        </div>
+        <span>POS</span>
+    </button>
+    <button type="button" class="dock-item" onclick="if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri">
+        <i class="fa fa-microphone-lines text-info"></i>
+        <span>Siri AI</span>
+    </button>
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : document.getElementById('sidebarToggleBtn')?.click()" title="Menú Principal">
+        <i class="fa fa-bars"></i>
+        <span>Menú</span>
+    </button>
+</nav>
 
 <!-- Modal Global para Kardex de Productos -->
 <div class="modal fade" id="modalKardexGlobal" tabindex="-1" aria-labelledby="kardexModalTitle" aria-hidden="true">
