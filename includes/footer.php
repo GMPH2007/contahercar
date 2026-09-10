@@ -3,26 +3,27 @@
 </div> <!-- Fin .app-wrapper -->
 
 <!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
+<?php $curPage = basename($_SERVER['PHP_SELF'] ?? ''); ?>
 <nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
-    <a href="index.php" class="dock-item active">
+    <a href="index.php" class="dock-item <?= ($curPage == 'index.php' || $curPage == '') ? 'active' : '' ?>">
         <i class="fa fa-chart-pie"></i>
         <span>Inicio</span>
     </a>
-    <button type="button" class="dock-item" onclick="openConsultaRucModal()">
+    <a href="consulta_sunat.php" class="dock-item <?= ($curPage == 'consulta_sunat.php') ? 'active' : '' ?>" title="Consultar RUC y DNI SUNAT/RENIEC">
         <i class="fa fa-building-flag"></i>
         <span>RUC/DNI</span>
-    </button>
-    <button type="button" class="dock-item dock-item-pos" onclick="openPosModal()" title="Venta Rápida POS">
+    </a>
+    <a href="venta_nueva.php" class="dock-item dock-item-pos <?= ($curPage == 'venta_nueva.php') ? 'active' : '' ?>" title="Punto de Venta POS Móvil">
         <div class="dock-pos-icon">
             <i class="fa fa-cash-register"></i>
         </div>
         <span>POS</span>
-    </button>
-    <button type="button" class="dock-item" onclick="if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri">
+    </a>
+    <button type="button" class="dock-item" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart">
         <i class="fa fa-microphone-lines text-info"></i>
         <span>Siri AI</span>
     </button>
-    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : document.getElementById('sidebarToggleBtn')?.click()" title="Menú Principal">
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : (document.getElementById('sidebarToggleBtn') ? document.getElementById('sidebarToggleBtn').click() : null)" title="Menú Principal (3 Rayitas)">
         <i class="fa fa-bars"></i>
         <span>Menú</span>
     </button>

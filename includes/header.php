@@ -67,10 +67,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 <?php endif; ?>
 
-                <!-- Acceso a Siri ContaSmart (Desktop) -->
-                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-none d-md-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                     <i class="fa fa-microphone text-warning"></i>
-                    <span class="fw-bold">Siri</span>
+                    <span class="fw-bold d-none d-sm-inline">Siri</span>
                 </button>
 
                 <!-- Acceso Rápido a Nueva Venta / POS (Desktop) -->
@@ -97,7 +97,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="ContaSmartAI.open()">
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();">
                                 <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
                             </a>
                         </li>

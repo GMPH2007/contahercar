@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio de Clientes - ContaHercar S.A.C.</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS (con cache-buster dinámico) -->
+    <link rel="stylesheet" href="assets/css/style.css?v=6.0">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- Barra Lateral (Sidebar) -->
+    <aside class="app-sidebar">
+    <div class="sidebar-brand d-flex align-items-center justify-content-between">
+        <a href="index.html" class="brand-logo">
+            <i class="fa fa-cubes"></i>
+            <span>ContaHercar</span>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" id="sidebarCloseBtn" aria-label="Cerrar"></button>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="sidebar-header">Principal</li>
+        <li class="sidebar-item">
+            <a href="index.html" class="sidebar-link ">
+                <i class="fa fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="venta_nueva.html" class="sidebar-link ">
+                <i class="fa fa-cash-register text-success"></i>
+                <span>Punto de Venta</span>
+                <span class="badge bg-success ms-auto">POS</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Gestión Comercial</li>
+        <li class="sidebar-item">
+            <a href="ventas.html" class="sidebar-link ">
+                <i class="fa fa-receipt"></i>
+                <span>Historial de Ventas</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="compras.html" class="sidebar-link ">
+                <i class="fa fa-cart-arrow-down"></i>
+                <span>Compras & Gastos</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="inventario.html" class="sidebar-link ">
+                <i class="fa fa-boxes-stacked"></i>
+                <span>Inventario</span>
+                <span class="badge bg-danger ms-auto">2</span>            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="clientes.html" class="sidebar-link active">
+                <i class="fa fa-users"></i>
+                <span>Clientes</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="proveedores.html" class="sidebar-link ">
+                <i class="fa fa-truck-moving"></i>
+                <span>Proveedores</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header d-flex align-items-center justify-content-between">
+            <span>SUNAT & RENIEC</span>
+            <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.6rem;">OFICIAL</span>
+        </li>
+        <li class="sidebar-item">
+            <a href="sire.html" class="sidebar-link ">
+                <i class="fa fa-book-bookmark text-primary"></i>
+                <span>SIRE (RVIE / RCE)</span>
+                <span class="badge bg-primary ms-auto">SIRE</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="consulta_sunat.html" class="sidebar-link ">
+                <i class="fa fa-building-flag text-warning"></i>
+                <span>Consulta RUC / DNI</span>
+                <span class="badge bg-warning text-dark ms-auto">VIVO</span>
+            </a>
+        </li>
+        <!-- Enlaces Web Oficiales en Nueva Pestaña (target="_blank") -->
+        <li class="sidebar-item">
+            <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial SIRE SUNAT en nueva pestaña">
+                <i class="fa fa-globe text-primary"></i>
+                <span>Portal SIRE SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir consulta oficial de RUC en SUNAT en nueva pestaña">
+                <i class="fa fa-magnifying-glass-chart text-warning"></i>
+                <span>Portal RUC SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
+                <i class="fa fa-id-card-clip text-info"></i>
+                <span>Portal RENIEC Oficial</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Sistema</li>
+        <li class="sidebar-item">
+            <a href="reportes.html" class="sidebar-link ">
+                <i class="fa fa-file-invoice-dollar"></i>
+                <span>Reportes & Cierres</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="configuracion.html" class="sidebar-link ">
+                <i class="fa fa-sliders"></i>
+                <span>Configuración & API</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <i class="fa fa-shield-halved text-success"></i>
+        <span>ContaHercar v2.5 • GMPH2007</span>
+    </div>
+</aside>
+
+
+    <!-- Telón de Fondo para Móviles (Backdrop) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Contenido Principal -->
+    <div class="app-main">
+        <!-- Barra Superior (Topbar) -->
+        <header class="app-topbar">
+            <div class="topbar-left">
+                <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" onclick="if(window.toggleSidebar) window.toggleSidebar(event)" aria-label="Abrir Menú (3 rayitas)">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h1 class="page-title">Directorio de Clientes</h1>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Indicador de Tipo de Cambio SUNAT (Decolecta) -->
+                <div class="badge bg-light text-secondary border d-none d-lg-flex align-items-center gap-2 py-2 px-3" id="topbarTipoCambio" title="Tipo de Cambio Oficial SUNAT del día">
+                    <i class="fa fa-dollar-sign text-success"></i>
+                    <span class="small fw-semibold" id="tcTexto">USD SUNAT: C: S/. ... | V: S/. ...</span>
+                </div>
+
+                <!-- Indicador de Stock Bajo si hay alertas -->
+                                    <a href="inventario.html" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2" title="Productos con stock bajo">
+                        <i class="fa fa-exclamation-triangle text-warning"></i>
+                        <span class="d-none d-md-inline">Stock Crítico:</span>
+                        <span class="badge bg-warning text-dark">2</span>
+                    </a>
+                
+                <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <i class="fa fa-microphone text-warning"></i>
+                    <span class="fw-bold d-none d-sm-inline">Siri</span>
+                </button>
+
+                <!-- Acceso Rápido a Nueva Venta / POS (Desktop) -->
+                <a href="venta_nueva.html" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm">
+                    <i class="fa fa-cash-register"></i>
+                    <span>POS</span>
+                </a>
+
+                <!-- Acceso Rápido a Nueva Compra -->
+                <a href="compra_nueva.html" class="btn btn-sm btn-outline-secondary d-none d-lg-flex align-items-center gap-1">
+                    <i class="fa fa-cart-arrow-down"></i>
+                    <span>+ Compra</span>
+                </a>
+
+                <!-- Menú de 3 Puntos (Opciones Rápidas) -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 38px; height: 38px;">
+                        <i class="fa fa-ellipsis-vertical text-dark"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
+                        <li>
+                            <a class="dropdown-item py-2" href="consulta_sunat.html">
+                                <i class="fa fa-building-flag text-warning me-2"></i> Consultar RUC / DNI
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();">
+                                <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="venta_nueva.html">
+                                <i class="fa fa-cash-register text-success me-2"></i> Punto de Venta POS
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="inventario.html">
+                                <i class="fa fa-boxes-stacked text-danger me-2"></i> Ver Stock Crítico
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
+                                <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido de la Página -->
+        <main class="app-content">
+
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h4 class="mb-1 text-dark fw-bold">Cartera de Clientes</h4>
+        <p class="text-muted small mb-0">Gestión de clientes, historial de ventas e integración directa con consultas RUC / DNI.</p>
+    </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCliente" onclick="abrirModalNuevoCliente()">
+        <i class="fa fa-user-plus me-1"></i> Nuevo Cliente
+    </button>
+</div>
+
+<!-- Filtro de Búsqueda -->
+<div class="card-custom mb-4">
+    <div class="card-custom-body py-3">
+        <form method="GET" action="clientes.php" class="row g-2 align-items-center">
+            <div class="col-12 col-md-10">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
+                    <input type="text" name="q" class="form-control border-start-0" placeholder="Buscar por DNI, RUC o Nombre..." value="">
+                </div>
+            </div>
+            <div class="col-12 col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-primary w-100"><i class="fa fa-search me-1"></i> Buscar</button>
+                            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de Clientes -->
+<div class="card-custom">
+    <div class="card-custom-body p-0">
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Tipo / Doc</th>
+                        <th>Nombre / Razón Social</th>
+                        <th>Dirección</th>
+                        <th>Contacto</th>
+                        <th>SUNAT / Condición</th>
+                        <th>Compras Realizadas</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                                                        <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border">DNI</span><br>
+                                    <span class="fw-bold font-monospace">10610197413</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">EMPRESA / RUC 10610197413 S.A.C.</div>
+                                    <small class="text-muted">08/09/2026</small>
+                                </td>
+                                <td><small class="text-secondary">AV. COMERCIAL NRO. 413, LIMA</small></td>
+                                <td>
+                                                                                                                                                    <small class="text-muted">-</small>
+                                                                    </td>
+                                <td>
+                                    <span class="badge badge-soft-success">ACTIVO</span>
+                                    <span class="badge badge-soft-info">HABIDO</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-success">S/. 0.00</div>
+                                    <small class="text-muted">0 ventas</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Cliente" onclick="editarCliente({&quot;id&quot;:8,&quot;tipo_doc&quot;:&quot;DNI&quot;,&quot;num_doc&quot;:&quot;10610197413&quot;,&quot;nombre_razon_social&quot;:&quot;EMPRESA \/ RUC 10610197413 S.A.C.&quot;,&quot;direccion&quot;:&quot;AV. COMERCIAL NRO. 413, LIMA&quot;,&quot;telefono&quot;:&quot;&quot;,&quot;email&quot;:&quot;&quot;,&quot;condicion&quot;:&quot;HABIDO&quot;,&quot;estado_sunat&quot;:&quot;ACTIVO&quot;,&quot;created_at&quot;:&quot;2026-09-08 19:05:30&quot;,&quot;total_compras&quot;:0,&quot;total_gastado&quot;:&quot;0.00&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                                                                    <button type="button" class="btn btn-outline-danger" title="Eliminar Cliente" onclick="confirmarEliminarCliente(8, 'EMPRESA / RUC 10610197413 S.A.C.')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                                                            </div>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border">RUC</span><br>
+                                    <span class="fw-bold font-monospace">20601030013</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">REXTIE S.A.C.</div>
+                                    <small class="text-muted">07/09/2026</small>
+                                </td>
+                                <td><small class="text-secondary">CAL. LAS CAMELIAS NRO 256 INT. 701A URB. JARDIN</small></td>
+                                <td>
+                                                                                                                                                    <small class="text-muted">-</small>
+                                                                    </td>
+                                <td>
+                                    <span class="badge badge-soft-success">ACTIVO</span>
+                                    <span class="badge badge-soft-info">HABIDO</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-success">S/. 0.00</div>
+                                    <small class="text-muted">0 ventas</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Cliente" onclick="editarCliente({&quot;id&quot;:6,&quot;tipo_doc&quot;:&quot;RUC&quot;,&quot;num_doc&quot;:&quot;20601030013&quot;,&quot;nombre_razon_social&quot;:&quot;REXTIE S.A.C.&quot;,&quot;direccion&quot;:&quot;CAL. LAS CAMELIAS NRO 256 INT. 701A URB. JARDIN&quot;,&quot;telefono&quot;:&quot;&quot;,&quot;email&quot;:&quot;&quot;,&quot;condicion&quot;:&quot;HABIDO&quot;,&quot;estado_sunat&quot;:&quot;ACTIVO&quot;,&quot;created_at&quot;:&quot;2026-09-07 12:59:38&quot;,&quot;total_compras&quot;:0,&quot;total_gastado&quot;:&quot;0.00&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                                                                    <button type="button" class="btn btn-outline-danger" title="Eliminar Cliente" onclick="confirmarEliminarCliente(6, 'REXTIE S.A.C.')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                                                            </div>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border">RUC</span><br>
+                                    <span class="fw-bold font-monospace">20601987654</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">CONSTRUCTORA E INMOBILIARIA DEL VALLE S.A.C.</div>
+                                    <small class="text-muted">07/09/2026</small>
+                                </td>
+                                <td><small class="text-secondary">Av. Javier Prado Este 2450, San Borja</small></td>
+                                <td>
+                                                                            <div><i class="fa fa-phone text-muted me-1 small"></i> <small>01 719-5500</small></div>
+                                                                                                                <div><i class="fa fa-envelope text-muted me-1 small"></i> <small>logistica@constructordelvalle.pe</small></div>
+                                                                                                        </td>
+                                <td>
+                                    <span class="badge badge-soft-success">ACTIVO</span>
+                                    <span class="badge badge-soft-info">HABIDO</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-success">S/. 0.00</div>
+                                    <small class="text-muted">0 ventas</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Cliente" onclick="editarCliente({&quot;id&quot;:3,&quot;tipo_doc&quot;:&quot;RUC&quot;,&quot;num_doc&quot;:&quot;20601987654&quot;,&quot;nombre_razon_social&quot;:&quot;CONSTRUCTORA E INMOBILIARIA DEL VALLE S.A.C.&quot;,&quot;direccion&quot;:&quot;Av. Javier Prado Este 2450, San Borja&quot;,&quot;telefono&quot;:&quot;01 719-5500&quot;,&quot;email&quot;:&quot;logistica@constructordelvalle.pe&quot;,&quot;condicion&quot;:&quot;HABIDO&quot;,&quot;estado_sunat&quot;:&quot;ACTIVO&quot;,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;total_compras&quot;:0,&quot;total_gastado&quot;:&quot;0.00&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                                                                    <button type="button" class="btn btn-outline-danger" title="Eliminar Cliente" onclick="confirmarEliminarCliente(3, 'CONSTRUCTORA E INMOBILIARIA DEL VALLE S.A.C.')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                                                            </div>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border">DNI</span><br>
+                                    <span class="fw-bold font-monospace">45891234</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">JUAN CARLOS PÉREZ RÍOS</div>
+                                    <small class="text-muted">07/09/2026</small>
+                                </td>
+                                <td><small class="text-secondary">Av. Arequipa 1420, Lince</small></td>
+                                <td>
+                                                                            <div><i class="fa fa-phone text-muted me-1 small"></i> <small>987 654 321</small></div>
+                                                                                                                <div><i class="fa fa-envelope text-muted me-1 small"></i> <small>jperez@gmail.com</small></div>
+                                                                                                        </td>
+                                <td>
+                                    <span class="badge badge-soft-success">ACTIVO</span>
+                                    <span class="badge badge-soft-info">HABIDO</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-success">S/. 0.00</div>
+                                    <small class="text-muted">0 ventas</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Cliente" onclick="editarCliente({&quot;id&quot;:2,&quot;tipo_doc&quot;:&quot;DNI&quot;,&quot;num_doc&quot;:&quot;45891234&quot;,&quot;nombre_razon_social&quot;:&quot;JUAN CARLOS P\u00c9REZ R\u00cdOS&quot;,&quot;direccion&quot;:&quot;Av. Arequipa 1420, Lince&quot;,&quot;telefono&quot;:&quot;987 654 321&quot;,&quot;email&quot;:&quot;jperez@gmail.com&quot;,&quot;condicion&quot;:&quot;HABIDO&quot;,&quot;estado_sunat&quot;:&quot;ACTIVO&quot;,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;total_compras&quot;:0,&quot;total_gastado&quot;:&quot;0.00&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                                                                    <button type="button" class="btn btn-outline-danger" title="Eliminar Cliente" onclick="confirmarEliminarCliente(2, 'JUAN CARLOS PÉREZ RÍOS')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                                                            </div>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border">DNI</span><br>
+                                    <span class="fw-bold font-monospace">00000000</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">CLIENTE VARIOS / GENERAL</div>
+                                    <small class="text-muted">07/09/2026</small>
+                                </td>
+                                <td><small class="text-secondary">Lima - Perú</small></td>
+                                <td>
+                                                                            <div><i class="fa fa-phone text-muted me-1 small"></i> <small>999999999</small></div>
+                                                                                                                <div><i class="fa fa-envelope text-muted me-1 small"></i> <small>ventas@contahercar.com</small></div>
+                                                                                                        </td>
+                                <td>
+                                    <span class="badge badge-soft-success">ACTIVO</span>
+                                    <span class="badge badge-soft-info">HABIDO</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-success">S/. 306.00</div>
+                                    <small class="text-muted">2 ventas</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Cliente" onclick="editarCliente({&quot;id&quot;:1,&quot;tipo_doc&quot;:&quot;DNI&quot;,&quot;num_doc&quot;:&quot;00000000&quot;,&quot;nombre_razon_social&quot;:&quot;CLIENTE VARIOS \/ GENERAL&quot;,&quot;direccion&quot;:&quot;Lima - Per\u00fa&quot;,&quot;telefono&quot;:&quot;999999999&quot;,&quot;email&quot;:&quot;ventas@contahercar.com&quot;,&quot;condicion&quot;:&quot;HABIDO&quot;,&quot;estado_sunat&quot;:&quot;ACTIVO&quot;,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;total_compras&quot;:2,&quot;total_gastado&quot;:&quot;306.00&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                                                            </div>
+                                </td>
+                            </tr>
+                                                            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nuevo / Editar Cliente con Consulta RUC/DNI -->
+<div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalClienteTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="clientes.php" id="formCliente">
+                <input type="hidden" name="action" value="guardar_cliente">
+                <input type="hidden" name="id" id="cliente_id" value="0">
+
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fs-6 fw-bold" id="modalClienteTitle">Registrar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Tipo de Documento</label>
+                            <select name="tipo_doc" id="cliente_tipo_doc" class="form-select" onchange="ajustarTipoDocumento()">
+                                <option value="DNI">DNI (8 dígitos)</option>
+                                <option value="RUC">RUC (11 dígitos)</option>
+                                <option value="RUT">RUT / CI</option>
+                                <option value="OTRO">Otro Documento</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold">Número de Documento <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" name="num_doc" id="cliente_num_doc" class="form-control font-monospace" placeholder="Ingrese DNI o RUC (presione Enter o botón)..." onkeydown="if(event.key==='Enter'){event.preventDefault(); ejecutarConsultaDocumento();}" required>
+                                <button type="button" class="btn btn-primary" id="btnConsultarDoc" onclick="ejecutarConsultaDocumento()">
+                                    <i class="fa fa-magnifying-glass me-1"></i> Consultar RUC/DNI
+                                </button>
+                            </div>
+                            <small class="text-muted">Consulta directa a la API configurada para autocompletar datos oficiales (Presione Enter para buscar).</small>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Nombre Completo o Razón Social <span class="text-danger">*</span></label>
+                            <input type="text" name="nombre_razon_social" id="cliente_nombre" class="form-control" placeholder="Nombre del cliente o empresa" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Dirección / Domicilio Fiscal</label>
+                            <input type="text" name="direccion" id="cliente_direccion" class="form-control" placeholder="Dirección completa">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Teléfono / Celular</label>
+                            <input type="text" name="telefono" id="cliente_telefono" class="form-control" placeholder="+51 987654321">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Correo Electrónico</label>
+                            <input type="email" name="email" id="cliente_email" class="form-control" placeholder="correo@ejemplo.com">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Estado en SUNAT</label>
+                            <input type="text" name="estado_sunat" id="cliente_estado_sunat" class="form-control" value="ACTIVO">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Condición</label>
+                            <input type="text" name="condicion" id="cliente_condicion" class="form-control" value="HABIDO">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save me-1"></i> Guardar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Form oculto para eliminación -->
+<form method="POST" action="clientes.php" id="formEliminarCliente" style="display:none;">
+    <input type="hidden" name="action" value="eliminar_cliente">
+    <input type="hidden" name="id" id="eliminar_cliente_id">
+</form>
+
+<script>
+function abrirModalNuevoCliente() {
+    document.getElementById('modalClienteTitle').textContent = 'Registrar Nuevo Cliente';
+    document.getElementById('cliente_id').value = '0';
+    document.getElementById('cliente_tipo_doc').value = 'DNI';
+    document.getElementById('cliente_num_doc').value = '';
+    document.getElementById('cliente_nombre').value = '';
+    document.getElementById('cliente_direccion').value = '';
+    document.getElementById('cliente_telefono').value = '';
+    document.getElementById('cliente_email').value = '';
+    document.getElementById('cliente_estado_sunat').value = 'ACTIVO';
+    document.getElementById('cliente_condicion').value = 'HABIDO';
+}
+
+function editarCliente(c) {
+    document.getElementById('modalClienteTitle').textContent = 'Editar Cliente: ' + c.nombre_razon_social;
+    document.getElementById('cliente_id').value = c.id;
+    document.getElementById('cliente_tipo_doc').value = c.tipo_doc;
+    document.getElementById('cliente_num_doc').value = c.num_doc;
+    document.getElementById('cliente_nombre').value = c.nombre_razon_social;
+    document.getElementById('cliente_direccion').value = c.direccion || '';
+    document.getElementById('cliente_telefono').value = c.telefono || '';
+    document.getElementById('cliente_email').value = c.email || '';
+    document.getElementById('cliente_estado_sunat').value = c.estado_sunat || 'ACTIVO';
+    document.getElementById('cliente_condicion').value = c.condicion || 'HABIDO';
+
+    const modal = new bootstrap.Modal(document.getElementById('modalCliente'));
+    modal.show();
+}
+
+function ajustarTipoDocumento() {
+    const tipo = document.getElementById('cliente_tipo_doc').value;
+    const inputNum = document.getElementById('cliente_num_doc');
+    if (tipo === 'DNI') {
+        inputNum.placeholder = 'DNI de 8 dígitos';
+        inputNum.maxLength = 8;
+    } else if (tipo === 'RUC') {
+        inputNum.placeholder = 'RUC de 11 dígitos';
+        inputNum.maxLength = 11;
+    } else {
+        inputNum.placeholder = 'Número de documento';
+        inputNum.removeAttribute('maxLength');
+    }
+}
+
+function ejecutarConsultaDocumento() {
+    consultarDocumento('cliente_num_doc', 'cliente_nombre', 'cliente_direccion', 'cliente_estado_sunat', 'btnConsultarDoc');
+}
+
+function confirmarEliminarCliente(id, nombre) {
+    Swal.fire({
+        title: '¿Eliminar cliente?',
+        text: `¿Estás seguro de eliminar a "${nombre}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('eliminar_cliente_id').value = id;
+            document.getElementById('formEliminarCliente').submit();
+        }
+    });
+}
+</script>
+
+        </main> <!-- Fin .app-content -->
+    </div> <!-- Fin .app-main -->
+</div> <!-- Fin .app-wrapper -->
+
+<!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
+<nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
+    <a href="index.html" class="dock-item ">
+        <i class="fa fa-chart-pie"></i>
+        <span>Inicio</span>
+    </a>
+    <a href="consulta_sunat.html" class="dock-item " title="Consultar RUC y DNI SUNAT/RENIEC">
+        <i class="fa fa-building-flag"></i>
+        <span>RUC/DNI</span>
+    </a>
+    <a href="venta_nueva.html" class="dock-item dock-item-pos " title="Punto de Venta POS Móvil">
+        <div class="dock-pos-icon">
+            <i class="fa fa-cash-register"></i>
+        </div>
+        <span>POS</span>
+    </a>
+    <button type="button" class="dock-item" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart">
+        <i class="fa fa-microphone-lines text-info"></i>
+        <span>Siri AI</span>
+    </button>
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : (document.getElementById('sidebarToggleBtn') ? document.getElementById('sidebarToggleBtn').click() : null)" title="Menú Principal (3 Rayitas)">
+        <i class="fa fa-bars"></i>
+        <span>Menú</span>
+    </button>
+</nav>
+
+<!-- Modal Global para Kardex de Productos -->
+<div class="modal fade" id="modalKardexGlobal" tabindex="-1" aria-labelledby="kardexModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6" id="kardexModalTitle">Historial de Kardex</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="kardexModalContent">
+                <!-- Se llena vía AJAX -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Global Interactivo para POS Rápido / Flotante -->
+<div class="modal fade" id="modalPosGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fs-6"><i class="fa fa-cash-register me-2"></i>Punto de Venta (POS) Rápido Flotante</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Cliente:</label>
+                    <input type="text" class="form-control" value="00000000 - CLIENTE VARIOS / GENERAL">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Producto a Facturar:</label>
+                    <select class="form-select" id="posSelectProd">
+                        <option value="245">Taladro Percutor Bosch - S/. 245.00</option>
+                        <option value="285">Amoladora Angular Dewalt - S/. 285.00</option>
+                        <option value="24">Cinta Métrica 5m Stanley - S/. 24.00</option>
+                        <option value="160">Cable Mellizo 2x14 Indeco - S/. 160.00</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between p-3 bg-light rounded-3 mb-3 border">
+                    <span class="fw-bold">Total a Cobrar:</span>
+                    <strong class="text-success fs-5" id="posTotalLabel">S/. 245.00</strong>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success py-2 fw-bold" onclick="simulateSale()">
+                        <i class="fa fa-print me-1"></i> Emitir Boleta Rápida
+                    </button>
+                    <a href="venta_nueva.html" class="btn btn-outline-primary py-2 fw-semibold">
+                        <i class="fa fa-arrow-up-right-from-square me-1"></i> Ir a Pantalla Completa de POS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Interactivo Global: Consulta RUC / DNI SUNAT & RENIEC -->
+<div class="modal fade" id="modalConsultaRucGlobal" tabindex="-1" aria-labelledby="modalRucTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-dark text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-warning bg-opacity-25 rounded-3 text-warning">
+                        <i class="fa fa-building-flag fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0" id="modalRucTitle">Consulta Oficial RUC & DNI</h5>
+                        <small class="text-white-50" style="font-size: 0.72rem;">Sincronizado con SUNAT & RENIEC (En Vivo)</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeRuc" checked onchange="switchDocType('RUC')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeRuc">RUC (11 dígitos)</label>
+                    
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeDni" onchange="switchDocType('DNI')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeDni">DNI (8 dígitos)</label>
+                </div>
+
+                <div class="input-group mb-3 shadow-sm">
+                    <span class="input-group-text bg-light text-muted"><i class="fa fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control form-control-lg fs-6 font-monospace" id="modalDocNumber" placeholder="Ingresa RUC (Ej: 20601234567)" maxlength="11" inputmode="numeric" value="20601234567">
+                    <button class="btn btn-primary fw-bold px-3" type="button" id="btnDoConsultaDoc" onclick="ejecutarConsultaModal()">
+                        <i class="fa fa-search me-1"></i> Consultar
+                    </button>
+                </div>
+
+                <div id="modalConsultaLoading" class="text-center py-3 d-none">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                    <span class="small text-muted">Consultando padrón tributario oficial...</span>
+                </div>
+
+                <!-- Resultado de la Consulta -->
+                <div id="modalConsultaResult" class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-success" id="resDocBadge"><i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" id="resDocEstado">ACTIVO</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1" id="resDocNombre">CORPORACIÓN INDUSTRIAL HERCAR S.A.C.</h6>
+                    <div class="small text-muted mb-2" id="resDocDetalles">
+                        <div><strong>Número:</strong> <span id="resDocNum">20601234567</span> | <strong>Condición:</strong> <span class="text-success fw-bold" id="resDocCondicion">HABIDO</span></div>
+                        <div><strong>Dirección:</strong> <span id="resDocDireccion">Av. Nicolás Arriola 1450, Urb. Santa Catalina, La Victoria, Lima</span></div>
+                        <div><strong>Régimen:</strong> <span id="resDocRegimen">Régimen MYPE Tributario</span></div>
+                    </div>
+                    <div class="d-grid gap-2 pt-2 border-top">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary w-50 fw-bold" onclick="guardarDocModal('cliente')">
+                                <i class="fa fa-user-plus me-1"></i> Guardar Cliente
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-50 fw-bold" onclick="guardarDocModal('proveedor')">
+                                <i class="fa fa-truck-moving me-1"></i> Guardar Proveedor
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-success fw-bold" onclick="facturarDocModal()">
+                            <i class="fa fa-cash-register me-1"></i> Facturar en POS a este Contribuyente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Modal Global: Ticket Térmico Impreso Interactivo -->
+<div class="modal fade" id="modalTicketGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
+        <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
+            <div class="modal-header bg-dark text-white p-2">
+                <h6 class="modal-title small fw-bold mb-0"><i class="fa fa-receipt me-1"></i>Ticket Electrónico Impreso</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white" id="ticketPrintArea" style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: #111;">
+                <div class="text-center mb-3">
+                    <div class="fw-bold fs-6">HERCAR COMERCIAL S.A.C.</div>
+                    <div>RUC: 20601234567</div>
+                    <div class="small">Av. Principal 123 - Lima, Perú</div>
+                    <div class="border-bottom my-2"></div>
+                    <div class="fw-bold text-uppercase" id="ticketTipoDoc">BOLETA ELECTRÓNICA</div>
+                    <div class="fw-bold" id="ticketNumero">B001-000428</div>
+                    <div class="text-muted small" id="ticketFecha">09/09/2026 18:40</div>
+                </div>
+                <div class="mb-2">
+                    <strong>Cliente:</strong> <span id="ticketCliente">CLIENTE VARIOS</span>
+                </div>
+                <div class="border-bottom border-top py-2 my-2">
+                    <div class="d-flex justify-content-between fw-bold mb-1">
+                        <span>Cant. / Detalle</span>
+                        <span>Total</span>
+                    </div>
+                    <div class="d-flex justify-content-between" id="ticketItems">
+                        <span>1x Taladro Bosch 650W</span>
+                        <span>S/ 245.00</span>
+                    </div>
+                </div>
+                <div class="text-end mb-3">
+                    <div>Op. Gravada: <span id="ticketBase">S/ 207.63</span></div>
+                    <div>IGV (18%): <span id="ticketIgv">S/ 37.37</span></div>
+                    <div class="fs-6 fw-bold border-top pt-1 mt-1">TOTAL: <span id="ticketTotal">S/ 245.00</span></div>
+                </div>
+                <div class="text-center">
+                    <div class="p-2 border rounded d-inline-block bg-light mb-2">
+                        <i class="fa fa-qrcode fa-4x text-dark"></i>
+                    </div>
+                    <div class="small text-muted" style="font-size: 0.65rem;">
+                        Representación impresa de Comprobante Electrónico.<br>
+                        Autorizado por SUNAT mediante RS 097-2012.<br>
+                        <strong>Hash: a7F8e9K2mP9==</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="window.print()">
+                    <i class="fa fa-print me-1"></i> Imprimir Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Custom Main JS -->
+<script src="assets/js/main.js?v=6.0"></script>
+
+<!-- ContaSmart AI Assistant Siri (Cache-busting) -->
+<script src="assets/js/conta_ai.js?v=6.0"></script>
+
+
+</body>
+</html>
+
+

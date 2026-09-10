@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario &amp; Catálogo de Productos - ContaHercar S.A.C.</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS (con cache-buster dinámico) -->
+    <link rel="stylesheet" href="assets/css/style.css?v=6.0">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- Barra Lateral (Sidebar) -->
+    <aside class="app-sidebar">
+    <div class="sidebar-brand d-flex align-items-center justify-content-between">
+        <a href="index.html" class="brand-logo">
+            <i class="fa fa-cubes"></i>
+            <span>ContaHercar</span>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" id="sidebarCloseBtn" aria-label="Cerrar"></button>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="sidebar-header">Principal</li>
+        <li class="sidebar-item">
+            <a href="index.html" class="sidebar-link ">
+                <i class="fa fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="venta_nueva.html" class="sidebar-link ">
+                <i class="fa fa-cash-register text-success"></i>
+                <span>Punto de Venta</span>
+                <span class="badge bg-success ms-auto">POS</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Gestión Comercial</li>
+        <li class="sidebar-item">
+            <a href="ventas.html" class="sidebar-link ">
+                <i class="fa fa-receipt"></i>
+                <span>Historial de Ventas</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="compras.html" class="sidebar-link ">
+                <i class="fa fa-cart-arrow-down"></i>
+                <span>Compras & Gastos</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="inventario.html" class="sidebar-link active">
+                <i class="fa fa-boxes-stacked"></i>
+                <span>Inventario</span>
+                <span class="badge bg-danger ms-auto">2</span>            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="clientes.html" class="sidebar-link ">
+                <i class="fa fa-users"></i>
+                <span>Clientes</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="proveedores.html" class="sidebar-link ">
+                <i class="fa fa-truck-moving"></i>
+                <span>Proveedores</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header d-flex align-items-center justify-content-between">
+            <span>SUNAT & RENIEC</span>
+            <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.6rem;">OFICIAL</span>
+        </li>
+        <li class="sidebar-item">
+            <a href="sire.html" class="sidebar-link ">
+                <i class="fa fa-book-bookmark text-primary"></i>
+                <span>SIRE (RVIE / RCE)</span>
+                <span class="badge bg-primary ms-auto">SIRE</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="consulta_sunat.html" class="sidebar-link ">
+                <i class="fa fa-building-flag text-warning"></i>
+                <span>Consulta RUC / DNI</span>
+                <span class="badge bg-warning text-dark ms-auto">VIVO</span>
+            </a>
+        </li>
+        <!-- Enlaces Web Oficiales en Nueva Pestaña (target="_blank") -->
+        <li class="sidebar-item">
+            <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial SIRE SUNAT en nueva pestaña">
+                <i class="fa fa-globe text-primary"></i>
+                <span>Portal SIRE SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir consulta oficial de RUC en SUNAT en nueva pestaña">
+                <i class="fa fa-magnifying-glass-chart text-warning"></i>
+                <span>Portal RUC SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
+                <i class="fa fa-id-card-clip text-info"></i>
+                <span>Portal RENIEC Oficial</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Sistema</li>
+        <li class="sidebar-item">
+            <a href="reportes.html" class="sidebar-link ">
+                <i class="fa fa-file-invoice-dollar"></i>
+                <span>Reportes & Cierres</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="configuracion.html" class="sidebar-link ">
+                <i class="fa fa-sliders"></i>
+                <span>Configuración & API</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <i class="fa fa-shield-halved text-success"></i>
+        <span>ContaHercar v2.5 • GMPH2007</span>
+    </div>
+</aside>
+
+
+    <!-- Telón de Fondo para Móviles (Backdrop) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Contenido Principal -->
+    <div class="app-main">
+        <!-- Barra Superior (Topbar) -->
+        <header class="app-topbar">
+            <div class="topbar-left">
+                <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" onclick="if(window.toggleSidebar) window.toggleSidebar(event)" aria-label="Abrir Menú (3 rayitas)">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h1 class="page-title">Inventario &amp; Catálogo de Productos</h1>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Indicador de Tipo de Cambio SUNAT (Decolecta) -->
+                <div class="badge bg-light text-secondary border d-none d-lg-flex align-items-center gap-2 py-2 px-3" id="topbarTipoCambio" title="Tipo de Cambio Oficial SUNAT del día">
+                    <i class="fa fa-dollar-sign text-success"></i>
+                    <span class="small fw-semibold" id="tcTexto">USD SUNAT: C: S/. ... | V: S/. ...</span>
+                </div>
+
+                <!-- Indicador de Stock Bajo si hay alertas -->
+                                    <a href="inventario.html" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2" title="Productos con stock bajo">
+                        <i class="fa fa-exclamation-triangle text-warning"></i>
+                        <span class="d-none d-md-inline">Stock Crítico:</span>
+                        <span class="badge bg-warning text-dark">2</span>
+                    </a>
+                
+                <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <i class="fa fa-microphone text-warning"></i>
+                    <span class="fw-bold d-none d-sm-inline">Siri</span>
+                </button>
+
+                <!-- Acceso Rápido a Nueva Venta / POS (Desktop) -->
+                <a href="venta_nueva.html" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm">
+                    <i class="fa fa-cash-register"></i>
+                    <span>POS</span>
+                </a>
+
+                <!-- Acceso Rápido a Nueva Compra -->
+                <a href="compra_nueva.html" class="btn btn-sm btn-outline-secondary d-none d-lg-flex align-items-center gap-1">
+                    <i class="fa fa-cart-arrow-down"></i>
+                    <span>+ Compra</span>
+                </a>
+
+                <!-- Menú de 3 Puntos (Opciones Rápidas) -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 38px; height: 38px;">
+                        <i class="fa fa-ellipsis-vertical text-dark"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
+                        <li>
+                            <a class="dropdown-item py-2" href="consulta_sunat.html">
+                                <i class="fa fa-building-flag text-warning me-2"></i> Consultar RUC / DNI
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();">
+                                <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="venta_nueva.html">
+                                <i class="fa fa-cash-register text-success me-2"></i> Punto de Venta POS
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="inventario.html">
+                                <i class="fa fa-boxes-stacked text-danger me-2"></i> Ver Stock Crítico
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
+                                <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido de la Página -->
+        <main class="app-content">
+
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h4 class="mb-1 text-dark fw-bold">Control de Inventario & Kardex</h4>
+        <p class="text-muted small mb-0">Gestión de productos, existencias en almacén y registro de movimientos fiables.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCategoria">
+            <i class="fa fa-folder-plus me-1"></i> Categorías
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProducto" onclick="abrirModalNuevoProducto()">
+            <i class="fa fa-plus me-1"></i> Nuevo Producto
+        </button>
+    </div>
+</div>
+
+<!-- Barra de Filtros y Búsqueda -->
+<div class="card-custom mb-4">
+    <div class="card-custom-body py-3">
+        <form method="GET" action="inventario.php" class="row g-2 align-items-center">
+            <div class="col-12 col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
+                    <input type="text" name="q" class="form-control border-start-0" placeholder="Buscar por código de barra o nombre..." value="">
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <select name="categoria_id" class="form-select">
+                    <option value="0">-- Todas las Categorías --</option>
+                                            <option value="4" >
+                            Electricidad e Iluminación                        </option>
+                                            <option value="2" >
+                            Herramientas Eléctricas                        </option>
+                                            <option value="1" >
+                            Herramientas Manuales                        </option>
+                                            <option value="3" >
+                            Materiales de Construcción                        </option>
+                                            <option value="5" >
+                            Pinturas y Acabados                        </option>
+                                    </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <select name="filtro" class="form-select">
+                    <option value="">-- Todos los Stocks --</option>
+                    <option value="stock_bajo" >Stock Crítico / Bajo</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-primary w-100"><i class="fa fa-filter me-1"></i> Filtrar</button>
+                            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de Productos -->
+<div class="card-custom">
+    <div class="card-custom-body p-0">
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Código / SKU</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>P. Compra</th>
+                        <th>P. Venta</th>
+                        <th>Stock Actual</th>
+                        <th>Mínimo</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                                                                                    <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501008</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Silicona Multiuso Transparente 280ml Tekbond</div>
+                                                                            <small class="text-muted">Excelente adherencia para sellados generales</small>
+                                                                    </td>
+                                <td>Materiales de Construcción</td>
+                                <td class="text-secondary">S/. 11.00</td>
+                                <td class="fw-bold text-dark">S/. 18.00</td>
+                                <td>
+                                                                            <span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> 45 UNID</span>
+                                                                    </td>
+                                <td><span class="text-muted">10 UNID</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:8,&quot;codigo_barra&quot;:&quot;77501008&quot;,&quot;nombre&quot;:&quot;Silicona Multiuso Transparente 280ml Tekbond&quot;,&quot;categoria_id&quot;:3,&quot;descripcion&quot;:&quot;Excelente adherencia para sellados generales&quot;,&quot;precio_compra&quot;:&quot;11.00&quot;,&quot;precio_venta&quot;:&quot;18.00&quot;,&quot;stock&quot;:45,&quot;stock_minimo&quot;:10,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Materiales de Construcci\u00f3n&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(8)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:8,&quot;codigo_barra&quot;:&quot;77501008&quot;,&quot;nombre&quot;:&quot;Silicona Multiuso Transparente 280ml Tekbond&quot;,&quot;categoria_id&quot;:3,&quot;descripcion&quot;:&quot;Excelente adherencia para sellados generales&quot;,&quot;precio_compra&quot;:&quot;11.00&quot;,&quot;precio_venta&quot;:&quot;18.00&quot;,&quot;stock&quot;:45,&quot;stock_minimo&quot;:10,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Materiales de Construcci\u00f3n&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                                                <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501007</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Cable Mellizo 2x14 AWG Indeco (Rollo 100m)</div>
+                                                                            <small class="text-muted">Conductor de cobre electrolítico recocido</small>
+                                                                    </td>
+                                <td>Electricidad e Iluminación</td>
+                                <td class="text-secondary">S/. 115.00</td>
+                                <td class="fw-bold text-dark">S/. 160.00</td>
+                                <td>
+                                                                            <span class="badge badge-soft-warning"><i class="fa fa-triangle-exclamation me-1"></i> 3 ROLLO (Bajo)</span>
+                                                                    </td>
+                                <td><span class="text-muted">5 ROLLO</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:7,&quot;codigo_barra&quot;:&quot;77501007&quot;,&quot;nombre&quot;:&quot;Cable Mellizo 2x14 AWG Indeco (Rollo 100m)&quot;,&quot;categoria_id&quot;:4,&quot;descripcion&quot;:&quot;Conductor de cobre electrol\u00edtico recocido&quot;,&quot;precio_compra&quot;:&quot;115.00&quot;,&quot;precio_venta&quot;:&quot;160.00&quot;,&quot;stock&quot;:3,&quot;stock_minimo&quot;:5,&quot;unidad_medida&quot;:&quot;ROLLO&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Electricidad e Iluminaci\u00f3n&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(7)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:7,&quot;codigo_barra&quot;:&quot;77501007&quot;,&quot;nombre&quot;:&quot;Cable Mellizo 2x14 AWG Indeco (Rollo 100m)&quot;,&quot;categoria_id&quot;:4,&quot;descripcion&quot;:&quot;Conductor de cobre electrol\u00edtico recocido&quot;,&quot;precio_compra&quot;:&quot;115.00&quot;,&quot;precio_venta&quot;:&quot;160.00&quot;,&quot;stock&quot;:3,&quot;stock_minimo&quot;:5,&quot;unidad_medida&quot;:&quot;ROLLO&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Electricidad e Iluminaci\u00f3n&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                                                <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501006</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Foco LED 12W Luz Blanca E27 Philips</div>
+                                                                            <small class="text-muted">Ahorro de energía hasta 85%</small>
+                                                                    </td>
+                                <td>Electricidad e Iluminación</td>
+                                <td class="text-secondary">S/. 6.20</td>
+                                <td class="fw-bold text-dark">S/. 10.50</td>
+                                <td>
+                                                                            <span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> 58 UNID</span>
+                                                                    </td>
+                                <td><span class="text-muted">15 UNID</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:6,&quot;codigo_barra&quot;:&quot;77501006&quot;,&quot;nombre&quot;:&quot;Foco LED 12W Luz Blanca E27 Philips&quot;,&quot;categoria_id&quot;:4,&quot;descripcion&quot;:&quot;Ahorro de energ\u00eda hasta 85%&quot;,&quot;precio_compra&quot;:&quot;6.20&quot;,&quot;precio_venta&quot;:&quot;10.50&quot;,&quot;stock&quot;:58,&quot;stock_minimo&quot;:15,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:53:09&quot;,&quot;categoria_nombre&quot;:&quot;Electricidad e Iluminaci\u00f3n&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(6)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:6,&quot;codigo_barra&quot;:&quot;77501006&quot;,&quot;nombre&quot;:&quot;Foco LED 12W Luz Blanca E27 Philips&quot;,&quot;categoria_id&quot;:4,&quot;descripcion&quot;:&quot;Ahorro de energ\u00eda hasta 85%&quot;,&quot;precio_compra&quot;:&quot;6.20&quot;,&quot;precio_venta&quot;:&quot;10.50&quot;,&quot;stock&quot;:58,&quot;stock_minimo&quot;:15,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:53:09&quot;,&quot;categoria_nombre&quot;:&quot;Electricidad e Iluminaci\u00f3n&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                                                <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501005</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Cinta Métrica 5m / 16ft Global Plus Stanley</div>
+                                                                            <small class="text-muted">Cinta recubierta de polímero</small>
+                                                                    </td>
+                                <td>Herramientas Manuales</td>
+                                <td class="text-secondary">S/. 14.50</td>
+                                <td class="fw-bold text-dark">S/. 24.00</td>
+                                <td>
+                                                                            <span class="badge badge-soft-warning"><i class="fa fa-triangle-exclamation me-1"></i> 4 UNID (Bajo)</span>
+                                                                    </td>
+                                <td><span class="text-muted">10 UNID</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:5,&quot;codigo_barra&quot;:&quot;77501005&quot;,&quot;nombre&quot;:&quot;Cinta M\u00e9trica 5m \/ 16ft Global Plus Stanley&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Cinta recubierta de pol\u00edmero&quot;,&quot;precio_compra&quot;:&quot;14.50&quot;,&quot;precio_venta&quot;:&quot;24.00&quot;,&quot;stock&quot;:4,&quot;stock_minimo&quot;:10,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 22:19:18&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(5)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:5,&quot;codigo_barra&quot;:&quot;77501005&quot;,&quot;nombre&quot;:&quot;Cinta M\u00e9trica 5m \/ 16ft Global Plus Stanley&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Cinta recubierta de pol\u00edmero&quot;,&quot;precio_compra&quot;:&quot;14.50&quot;,&quot;precio_venta&quot;:&quot;24.00&quot;,&quot;stock&quot;:4,&quot;stock_minimo&quot;:10,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 22:19:18&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                                                <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501004</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Martillo Carpintero 16oz Mango Fibra Truper</div>
+                                                                            <small class="text-muted">Cabeza de acero forjado pulido</small>
+                                                                    </td>
+                                <td>Herramientas Manuales</td>
+                                <td class="text-secondary">S/. 22.00</td>
+                                <td class="fw-bold text-dark">S/. 36.00</td>
+                                <td>
+                                                                            <span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> 30 UNID</span>
+                                                                    </td>
+                                <td><span class="text-muted">8 UNID</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:4,&quot;codigo_barra&quot;:&quot;77501004&quot;,&quot;nombre&quot;:&quot;Martillo Carpintero 16oz Mango Fibra Truper&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Cabeza de acero forjado pulido&quot;,&quot;precio_compra&quot;:&quot;22.00&quot;,&quot;precio_venta&quot;:&quot;36.00&quot;,&quot;stock&quot;:30,&quot;stock_minimo&quot;:8,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(4)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:4,&quot;codigo_barra&quot;:&quot;77501004&quot;,&quot;nombre&quot;:&quot;Martillo Carpintero 16oz Mango Fibra Truper&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Cabeza de acero forjado pulido&quot;,&quot;precio_compra&quot;:&quot;22.00&quot;,&quot;precio_venta&quot;:&quot;36.00&quot;,&quot;stock&quot;:30,&quot;stock_minimo&quot;:8,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                                                <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501003</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)</div>
+                                                                            <small class="text-muted">Acero cromo vanadio forjado</small>
+                                                                    </td>
+                                <td>Herramientas Manuales</td>
+                                <td class="text-secondary">S/. 75.00</td>
+                                <td class="fw-bold text-dark">S/. 115.00</td>
+                                <td>
+                                                                            <span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> 25 JGO</span>
+                                                                    </td>
+                                <td><span class="text-muted">6 JGO</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:3,&quot;codigo_barra&quot;:&quot;77501003&quot;,&quot;nombre&quot;:&quot;Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Acero cromo vanadio forjado&quot;,&quot;precio_compra&quot;:&quot;75.00&quot;,&quot;precio_venta&quot;:&quot;115.00&quot;,&quot;stock&quot;:25,&quot;stock_minimo&quot;:6,&quot;unidad_medida&quot;:&quot;JGO&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(3)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:3,&quot;codigo_barra&quot;:&quot;77501003&quot;,&quot;nombre&quot;:&quot;Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Acero cromo vanadio forjado&quot;,&quot;precio_compra&quot;:&quot;75.00&quot;,&quot;precio_venta&quot;:&quot;115.00&quot;,&quot;stock&quot;:25,&quot;stock_minimo&quot;:6,&quot;unidad_medida&quot;:&quot;JGO&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                                                <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501002</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Amoladora Angular 4-1/2 pulg 850W Dewalt</div>
+                                                                            <small class="text-muted">Motor protegido contra la abrasión</small>
+                                                                    </td>
+                                <td>Herramientas Eléctricas</td>
+                                <td class="text-secondary">S/. 210.00</td>
+                                <td class="fw-bold text-dark">S/. 285.00</td>
+                                <td>
+                                                                            <span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> 11 UNID</span>
+                                                                    </td>
+                                <td><span class="text-muted">4 UNID</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:2,&quot;codigo_barra&quot;:&quot;77501002&quot;,&quot;nombre&quot;:&quot;Amoladora Angular 4-1\/2 pulg 850W Dewalt&quot;,&quot;categoria_id&quot;:2,&quot;descripcion&quot;:&quot;Motor protegido contra la abrasi\u00f3n&quot;,&quot;precio_compra&quot;:&quot;210.00&quot;,&quot;precio_venta&quot;:&quot;285.00&quot;,&quot;stock&quot;:11,&quot;stock_minimo&quot;:4,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 13:14:00&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas El\u00e9ctricas&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(2)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:2,&quot;codigo_barra&quot;:&quot;77501002&quot;,&quot;nombre&quot;:&quot;Amoladora Angular 4-1\/2 pulg 850W Dewalt&quot;,&quot;categoria_id&quot;:2,&quot;descripcion&quot;:&quot;Motor protegido contra la abrasi\u00f3n&quot;,&quot;precio_compra&quot;:&quot;210.00&quot;,&quot;precio_venta&quot;:&quot;285.00&quot;,&quot;stock&quot;:11,&quot;stock_minimo&quot;:4,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 13:14:00&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas El\u00e9ctricas&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                                                <tr>
+                                <td>
+                                    <span class="badge bg-light text-dark border font-monospace">77501001</span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">Taladro Percutor 1/2 pulg 650W Bosch</div>
+                                                                            <small class="text-muted">Taladro con velocidad variable y reversa</small>
+                                                                    </td>
+                                <td>Herramientas Eléctricas</td>
+                                <td class="text-secondary">S/. 180.00</td>
+                                <td class="fw-bold text-dark">S/. 245.00</td>
+                                <td>
+                                                                            <span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> 18 UNID</span>
+                                                                    </td>
+                                <td><span class="text-muted">5 UNID</span></td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Activo                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <!-- Ajuste Rápido de Stock -->
+                                        <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick="abrirAjusteStock({&quot;id&quot;:1,&quot;codigo_barra&quot;:&quot;77501001&quot;,&quot;nombre&quot;:&quot;Taladro Percutor 1\/2 pulg 650W Bosch&quot;,&quot;categoria_id&quot;:2,&quot;descripcion&quot;:&quot;Taladro con velocidad variable y reversa&quot;,&quot;precio_compra&quot;:&quot;180.00&quot;,&quot;precio_venta&quot;:&quot;245.00&quot;,&quot;stock&quot;:18,&quot;stock_minimo&quot;:5,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:55:45&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas El\u00e9ctricas&quot;})">
+                                            <i class="fa fa-sliders"></i>
+                                        </button>
+                                        <!-- Kardex -->
+                                        <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(1)">
+                                            <i class="fa fa-clock-rotate-left"></i>
+                                        </button>
+                                        <!-- Editar -->
+                                        <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick="editarProducto({&quot;id&quot;:1,&quot;codigo_barra&quot;:&quot;77501001&quot;,&quot;nombre&quot;:&quot;Taladro Percutor 1\/2 pulg 650W Bosch&quot;,&quot;categoria_id&quot;:2,&quot;descripcion&quot;:&quot;Taladro con velocidad variable y reversa&quot;,&quot;precio_compra&quot;:&quot;180.00&quot;,&quot;precio_venta&quot;:&quot;245.00&quot;,&quot;stock&quot;:18,&quot;stock_minimo&quot;:5,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:55:45&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas El\u00e9ctricas&quot;})">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                                                            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nuevo / Editar Producto -->
+<div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="inventario.php">
+                <input type="hidden" name="action" value="guardar_producto">
+                <input type="hidden" name="id" id="prod_id" value="0">
+
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fs-6 fw-bold" id="modalProductoTitle">Registrar Nuevo Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">Código de Barras / SKU <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-barcode"></i></span>
+                                <input type="text" name="codigo_barra" id="prod_codigo" class="form-control" placeholder="Ej: 77501009" required>
+                                <button type="button" class="btn btn-outline-secondary" onclick="generarCodigoAleatorio()" title="Generar código automático"><i class="fa fa-arrows-rotate"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <label class="form-label fw-semibold">Nombre del Producto <span class="text-danger">*</span></label>
+                            <input type="text" name="nombre" id="prod_nombre" class="form-control" placeholder="Ej: Taladro Percutor 650W" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Categoría</label>
+                            <select name="categoria_id" id="prod_categoria" class="form-select">
+                                <option value="">-- Seleccionar Categoría --</option>
+                                                                    <option value="4">Electricidad e Iluminación</option>
+                                                                    <option value="2">Herramientas Eléctricas</option>
+                                                                    <option value="1">Herramientas Manuales</option>
+                                                                    <option value="3">Materiales de Construcción</option>
+                                                                    <option value="5">Pinturas y Acabados</option>
+                                                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Unidad de Medida</label>
+                            <select name="unidad_medida" id="prod_unidad" class="form-select">
+                                <option value="UNID">UNIDAD (UNID)</option>
+                                <option value="JGO">JUEGO (JGO)</option>
+                                <option value="ROLLO">ROLLO (ROLLO)</option>
+                                <option value="CAJA">CAJA (CAJA)</option>
+                                <option value="KG">KILOGRAMO (KG)</option>
+                                <option value="MT">METRO (MT)</option>
+                                <option value="GLN">GALÓN (GLN)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Precio de Compra (Costo)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">S/.</span>
+                                <input type="number" step="0.01" min="0" name="precio_compra" id="prod_pcompra" class="form-control" value="0.00" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Precio de Venta</label>
+                            <div class="input-group">
+                                <span class="input-group-text">S/.</span>
+                                <input type="number" step="0.01" min="0" name="precio_venta" id="prod_pventa" class="form-control" value="0.00" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Stock Mínimo (Alerta)</label>
+                            <input type="number" min="0" name="stock_minimo" id="prod_stock_minimo" class="form-control" value="5" required>
+                        </div>
+
+                        <!-- Solo visible cuando es producto nuevo -->
+                        <div class="col-md-6" id="divStockInicial">
+                            <label class="form-label fw-semibold">Stock Inicial en Almacén</label>
+                            <input type="number" min="0" name="stock_inicial" id="prod_stock_inicial" class="form-control" value="0">
+                            <small class="text-muted">Se registrará automáticamente en el Kardex.</small>
+                        </div>
+
+                        <div class="col-md-6 d-flex align-items-center pt-3" id="divEstado">
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" name="estado" id="prod_estado" value="1" checked>
+                                <label class="form-check-label fw-semibold" for="prod_estado">Producto Habilitado / Activo</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Descripción o Especificaciones</label>
+                            <textarea name="descripcion" id="prod_descripcion" class="form-control" rows="2" placeholder="Detalles técnicos, marca, modelo..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save me-1"></i> Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ajuste de Stock -->
+<div class="modal fade" id="modalAjusteStock" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="inventario.php">
+                <input type="hidden" name="action" value="ajuste_stock">
+                <input type="hidden" name="producto_id" id="ajuste_prod_id">
+
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fs-6 fw-bold"><i class="fa fa-sliders text-warning me-1"></i> Ajuste Manual de Stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-secondary py-2">
+                        <strong id="ajuste_prod_nombre">Producto</strong><br>
+                        <small>Stock actual en sistema: <span class="badge bg-dark" id="ajuste_stock_actual">0</span></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tipo de Ajuste</label>
+                        <select name="tipo_ajuste" class="form-select" required>
+                            <option value="INGRESO">Ingreso / Entrada (+ Sumar unidades)</option>
+                            <option value="SALIDA">Salida / Retiro (- Restar unidades)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Cantidad a Ajustar</label>
+                        <input type="number" min="1" name="cantidad" class="form-control" placeholder="1" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Motivo del Ajuste</label>
+                        <input type="text" name="motivo" class="form-control" placeholder="Ej: Conteo físico, merma, calibración, muestra..." required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning"><i class="fa fa-check me-1"></i> Confirmar Ajuste</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Categorías -->
+<div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="inventario.php">
+                <input type="hidden" name="action" value="guardar_categoria">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fs-6 fw-bold"><i class="fa fa-folder-plus text-primary me-1"></i> Nueva Categoría</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre de la Categoría</label>
+                        <input type="text" name="cat_nombre" class="form-control" placeholder="Ej: Pinturas y Acabados" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Descripción (Opcional)</label>
+                        <textarea name="cat_desc" class="form-control" rows="2" placeholder="Breve detalle de los artículos que agrupa"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Registrar Categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModalNuevoProducto() {
+    document.getElementById('modalProductoTitle').textContent = 'Registrar Nuevo Producto';
+    document.getElementById('prod_id').value = '0';
+    document.getElementById('prod_codigo').value = '';
+    document.getElementById('prod_nombre').value = '';
+    document.getElementById('prod_categoria').value = '';
+    document.getElementById('prod_unidad').value = 'UNID';
+    document.getElementById('prod_pcompra').value = '0.00';
+    document.getElementById('prod_pventa').value = '0.00';
+    document.getElementById('prod_stock_minimo').value = '5';
+    document.getElementById('prod_stock_inicial').value = '0';
+    document.getElementById('prod_descripcion').value = '';
+    document.getElementById('prod_estado').checked = true;
+    document.getElementById('divStockInicial').style.display = 'block';
+}
+
+function editarProducto(p) {
+    document.getElementById('modalProductoTitle').textContent = 'Editar Producto: ' + p.nombre;
+    document.getElementById('prod_id').value = p.id;
+    document.getElementById('prod_codigo').value = p.codigo_barra;
+    document.getElementById('prod_nombre').value = p.nombre;
+    document.getElementById('prod_categoria').value = p.categoria_id || '';
+    document.getElementById('prod_unidad').value = p.unidad_medida || 'UNID';
+    document.getElementById('prod_pcompra').value = p.precio_compra;
+    document.getElementById('prod_pventa').value = p.precio_venta;
+    document.getElementById('prod_stock_minimo').value = p.stock_minimo;
+    document.getElementById('prod_descripcion').value = p.descripcion || '';
+    document.getElementById('prod_estado').checked = (p.estado == 1);
+    document.getElementById('divStockInicial').style.display = 'none'; // No se edita stock directo aquí, se usa ajuste o compras
+
+    const modal = new bootstrap.Modal(document.getElementById('modalProducto'));
+    modal.show();
+}
+
+function abrirAjusteStock(p) {
+    document.getElementById('ajuste_prod_id').value = p.id;
+    document.getElementById('ajuste_prod_nombre').textContent = p.nombre + ' (' + p.codigo_barra + ')';
+    document.getElementById('ajuste_stock_actual').textContent = p.stock + ' ' + (p.unidad_medida || 'UNID');
+
+    const modal = new bootstrap.Modal(document.getElementById('modalAjusteStock'));
+    modal.show();
+}
+
+function generarCodigoAleatorio() {
+    const randomNum = Math.floor(10000000 + Math.random() * 90000000);
+    document.getElementById('prod_codigo').value = '775' + randomNum.toString().substring(0, 5);
+}
+</script>
+
+        </main> <!-- Fin .app-content -->
+    </div> <!-- Fin .app-main -->
+</div> <!-- Fin .app-wrapper -->
+
+<!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
+<nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
+    <a href="index.html" class="dock-item ">
+        <i class="fa fa-chart-pie"></i>
+        <span>Inicio</span>
+    </a>
+    <a href="consulta_sunat.html" class="dock-item " title="Consultar RUC y DNI SUNAT/RENIEC">
+        <i class="fa fa-building-flag"></i>
+        <span>RUC/DNI</span>
+    </a>
+    <a href="venta_nueva.html" class="dock-item dock-item-pos " title="Punto de Venta POS Móvil">
+        <div class="dock-pos-icon">
+            <i class="fa fa-cash-register"></i>
+        </div>
+        <span>POS</span>
+    </a>
+    <button type="button" class="dock-item" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart">
+        <i class="fa fa-microphone-lines text-info"></i>
+        <span>Siri AI</span>
+    </button>
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : (document.getElementById('sidebarToggleBtn') ? document.getElementById('sidebarToggleBtn').click() : null)" title="Menú Principal (3 Rayitas)">
+        <i class="fa fa-bars"></i>
+        <span>Menú</span>
+    </button>
+</nav>
+
+<!-- Modal Global para Kardex de Productos -->
+<div class="modal fade" id="modalKardexGlobal" tabindex="-1" aria-labelledby="kardexModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6" id="kardexModalTitle">Historial de Kardex</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="kardexModalContent">
+                <!-- Se llena vía AJAX -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Global Interactivo para POS Rápido / Flotante -->
+<div class="modal fade" id="modalPosGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fs-6"><i class="fa fa-cash-register me-2"></i>Punto de Venta (POS) Rápido Flotante</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Cliente:</label>
+                    <input type="text" class="form-control" value="00000000 - CLIENTE VARIOS / GENERAL">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Producto a Facturar:</label>
+                    <select class="form-select" id="posSelectProd">
+                        <option value="245">Taladro Percutor Bosch - S/. 245.00</option>
+                        <option value="285">Amoladora Angular Dewalt - S/. 285.00</option>
+                        <option value="24">Cinta Métrica 5m Stanley - S/. 24.00</option>
+                        <option value="160">Cable Mellizo 2x14 Indeco - S/. 160.00</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between p-3 bg-light rounded-3 mb-3 border">
+                    <span class="fw-bold">Total a Cobrar:</span>
+                    <strong class="text-success fs-5" id="posTotalLabel">S/. 245.00</strong>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success py-2 fw-bold" onclick="simulateSale()">
+                        <i class="fa fa-print me-1"></i> Emitir Boleta Rápida
+                    </button>
+                    <a href="venta_nueva.html" class="btn btn-outline-primary py-2 fw-semibold">
+                        <i class="fa fa-arrow-up-right-from-square me-1"></i> Ir a Pantalla Completa de POS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Interactivo Global: Consulta RUC / DNI SUNAT & RENIEC -->
+<div class="modal fade" id="modalConsultaRucGlobal" tabindex="-1" aria-labelledby="modalRucTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-dark text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-warning bg-opacity-25 rounded-3 text-warning">
+                        <i class="fa fa-building-flag fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0" id="modalRucTitle">Consulta Oficial RUC & DNI</h5>
+                        <small class="text-white-50" style="font-size: 0.72rem;">Sincronizado con SUNAT & RENIEC (En Vivo)</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeRuc" checked onchange="switchDocType('RUC')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeRuc">RUC (11 dígitos)</label>
+                    
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeDni" onchange="switchDocType('DNI')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeDni">DNI (8 dígitos)</label>
+                </div>
+
+                <div class="input-group mb-3 shadow-sm">
+                    <span class="input-group-text bg-light text-muted"><i class="fa fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control form-control-lg fs-6 font-monospace" id="modalDocNumber" placeholder="Ingresa RUC (Ej: 20601234567)" maxlength="11" inputmode="numeric" value="20601234567">
+                    <button class="btn btn-primary fw-bold px-3" type="button" id="btnDoConsultaDoc" onclick="ejecutarConsultaModal()">
+                        <i class="fa fa-search me-1"></i> Consultar
+                    </button>
+                </div>
+
+                <div id="modalConsultaLoading" class="text-center py-3 d-none">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                    <span class="small text-muted">Consultando padrón tributario oficial...</span>
+                </div>
+
+                <!-- Resultado de la Consulta -->
+                <div id="modalConsultaResult" class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-success" id="resDocBadge"><i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" id="resDocEstado">ACTIVO</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1" id="resDocNombre">CORPORACIÓN INDUSTRIAL HERCAR S.A.C.</h6>
+                    <div class="small text-muted mb-2" id="resDocDetalles">
+                        <div><strong>Número:</strong> <span id="resDocNum">20601234567</span> | <strong>Condición:</strong> <span class="text-success fw-bold" id="resDocCondicion">HABIDO</span></div>
+                        <div><strong>Dirección:</strong> <span id="resDocDireccion">Av. Nicolás Arriola 1450, Urb. Santa Catalina, La Victoria, Lima</span></div>
+                        <div><strong>Régimen:</strong> <span id="resDocRegimen">Régimen MYPE Tributario</span></div>
+                    </div>
+                    <div class="d-grid gap-2 pt-2 border-top">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary w-50 fw-bold" onclick="guardarDocModal('cliente')">
+                                <i class="fa fa-user-plus me-1"></i> Guardar Cliente
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-50 fw-bold" onclick="guardarDocModal('proveedor')">
+                                <i class="fa fa-truck-moving me-1"></i> Guardar Proveedor
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-success fw-bold" onclick="facturarDocModal()">
+                            <i class="fa fa-cash-register me-1"></i> Facturar en POS a este Contribuyente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Modal Global: Ticket Térmico Impreso Interactivo -->
+<div class="modal fade" id="modalTicketGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
+        <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
+            <div class="modal-header bg-dark text-white p-2">
+                <h6 class="modal-title small fw-bold mb-0"><i class="fa fa-receipt me-1"></i>Ticket Electrónico Impreso</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white" id="ticketPrintArea" style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: #111;">
+                <div class="text-center mb-3">
+                    <div class="fw-bold fs-6">HERCAR COMERCIAL S.A.C.</div>
+                    <div>RUC: 20601234567</div>
+                    <div class="small">Av. Principal 123 - Lima, Perú</div>
+                    <div class="border-bottom my-2"></div>
+                    <div class="fw-bold text-uppercase" id="ticketTipoDoc">BOLETA ELECTRÓNICA</div>
+                    <div class="fw-bold" id="ticketNumero">B001-000428</div>
+                    <div class="text-muted small" id="ticketFecha">09/09/2026 18:40</div>
+                </div>
+                <div class="mb-2">
+                    <strong>Cliente:</strong> <span id="ticketCliente">CLIENTE VARIOS</span>
+                </div>
+                <div class="border-bottom border-top py-2 my-2">
+                    <div class="d-flex justify-content-between fw-bold mb-1">
+                        <span>Cant. / Detalle</span>
+                        <span>Total</span>
+                    </div>
+                    <div class="d-flex justify-content-between" id="ticketItems">
+                        <span>1x Taladro Bosch 650W</span>
+                        <span>S/ 245.00</span>
+                    </div>
+                </div>
+                <div class="text-end mb-3">
+                    <div>Op. Gravada: <span id="ticketBase">S/ 207.63</span></div>
+                    <div>IGV (18%): <span id="ticketIgv">S/ 37.37</span></div>
+                    <div class="fs-6 fw-bold border-top pt-1 mt-1">TOTAL: <span id="ticketTotal">S/ 245.00</span></div>
+                </div>
+                <div class="text-center">
+                    <div class="p-2 border rounded d-inline-block bg-light mb-2">
+                        <i class="fa fa-qrcode fa-4x text-dark"></i>
+                    </div>
+                    <div class="small text-muted" style="font-size: 0.65rem;">
+                        Representación impresa de Comprobante Electrónico.<br>
+                        Autorizado por SUNAT mediante RS 097-2012.<br>
+                        <strong>Hash: a7F8e9K2mP9==</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="window.print()">
+                    <i class="fa fa-print me-1"></i> Imprimir Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Custom Main JS -->
+<script src="assets/js/main.js?v=6.0"></script>
+
+<!-- ContaSmart AI Assistant Siri (Cache-busting) -->
+<script src="assets/js/conta_ai.js?v=6.0"></script>
+
+
+</body>
+</html>
+
+

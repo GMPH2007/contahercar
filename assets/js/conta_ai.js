@@ -107,11 +107,12 @@ const ContaSmartAI = (() => {
                 utterance.voice = voice;
                 utterance.lang = voice.lang;
             } else {
-                // Fallback prioritario de dialecto en navegadores móviles
-                utterance.lang = 'es-419';
+                // Dialecto en español universal para navegadores móviles
+                utterance.lang = 'es-PE';
             }
-            utterance.rate = 0.95; // Cadencia humana calmada, sumamente clara y nítida
+            utterance.rate = 0.96; // Cadencia humana calmada, sumamente clara y nítida
             utterance.pitch = 1.0;  // Tono cálido y natural
+            utterance.volume = 1.0; // Volumen al 100% nítido
 
             utterance.onstart = () => {
                 isSpeaking = true;
@@ -135,12 +136,15 @@ const ContaSmartAI = (() => {
         }
     }
 
-    // Chimes armónicos nativos de Siri con Web Audio API
+    // Chimes armónicos nativos de Siri con Web Audio API (liberación inmediata de recursos)
     function playSiriChime(type = 'start') {
         try {
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
             if (!AudioCtx) return;
             const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') {
+                ctx.resume();
+            }
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.connect(gain);
@@ -166,6 +170,10 @@ const ContaSmartAI = (() => {
                 osc.start(now);
                 osc.stop(now + 0.29);
             }
+            // Cerrar AudioContext para liberar el canal de hardware de audio en móviles
+            setTimeout(() => {
+                try { if (ctx.state !== 'closed') ctx.close(); } catch(err){}
+            }, 350);
         } catch (e) {
             // Ignorar políticas de autoplay si aplica
         }
@@ -186,19 +194,30 @@ const ContaSmartAI = (() => {
     }
 
     function createSiriInterface() {
-        if (document.getElementById('aiAssistantDrawer')) return;
+        backdrop = document.getElementById('aiAssistantBackdrop');
+        drawer = document.getElementById('aiAssistantDrawer');
 
-        backdrop = document.createElement('div');
-        backdrop.className = 'ai-assistant-backdrop';
-        backdrop.id = 'aiAssistantBackdrop';
-        backdrop.onclick = close;
-        document.body.appendChild(backdrop);
+        if (drawer && backdrop) return;
 
-        drawer = document.createElement('div');
-        drawer.className = 'ai-assistant-drawer siri-drawer-premium';
-        drawer.id = 'aiAssistantDrawer';
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'ai-assistant-backdrop';
+            backdrop.id = 'aiAssistantBackdrop';
+            backdrop.onclick = close;
+            document.body.appendChild(backdrop);
+        }
 
-        drawer.innerHTML = `
+        if (!drawer) {
+            drawer = document.createElement('div');
+            drawer.className = 'ai-assistant-drawer siri-drawer-premium';
+            drawer.id = 'aiAssistantDrawer';
+
+            drawer.innerHTML = `
+            <!-- Handle táctil para celulares (tocar para cerrar) -->
+            <div class="siri-sheet-handle d-md-none text-center pt-2 pb-1" onclick="ContaSmartAI.close()" style="background: #0b1329; cursor: pointer;">
+                <div style="width: 42px; height: 5px; background: rgba(255,255,255,0.4); border-radius: 10px; margin: 0 auto;"></div>
+            </div>
+
             <!-- Cabecera de Siri Inteligente -->
             <div class="ai-drawer-header p-3 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
@@ -305,27 +324,35 @@ const ContaSmartAI = (() => {
     }
 
     function open() {
-        createSiriInterface();
-        backdrop.classList.add('active');
-        drawer.classList.add('active');
-        document.body.classList.add('siri-active');
-        playSiriChime('start');
+        try {
+            createSiriInterface();
+            if (backdrop) backdrop.classList.add('active');
+            if (drawer) drawer.classList.add('active');
+            document.body.classList.add('siri-active');
 
-        // Hablar de inmediato con el gesto táctil del usuario (sin setTimeout largo) para compatibilidad móvil total
-        speakHuman("Hola, soy Siri ContaSmart. ¿Qué deseas consultar hoy?");
+            // Reproducir chime suave y activar sintetizador de inmediato con el gesto táctil del usuario
+            playSiriChime('start');
+            speakHuman("Hola, soy Siri ContaSmart. ¿Qué deseas consultar hoy?");
 
-        setTimeout(() => {
-            const input = document.getElementById('aiInputText');
-            if (input && window.innerWidth >= 768) input.focus();
-        }, 300);
+            setTimeout(() => {
+                const input = document.getElementById('aiInputText');
+                if (input && window.innerWidth >= 768) input.focus();
+            }, 300);
+        } catch (e) {
+            console.error('Error opening Siri AI:', e);
+        }
     }
 
     function close() {
-        if (backdrop) backdrop.classList.remove('active');
-        if (drawer) drawer.classList.remove('active');
-        document.body.classList.remove('siri-active');
-        if (isRecording) stopVoice();
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        try {
+            if (backdrop) backdrop.classList.remove('active');
+            if (drawer) drawer.classList.remove('active');
+            document.body.classList.remove('siri-active');
+            if (isRecording) stopVoice();
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        } catch (e) {
+            console.error('Error closing Siri AI:', e);
+        }
     }
 
     function toggleMute() {
@@ -873,6 +900,12 @@ const ContaSmartAI = (() => {
         processQuery
     };
 })();
+
+// Exposición global inequívoca en window para compatibilidad total con eventos onclick en móviles y desktop
+window.ContaSmartAI = ContaSmartAI;
+window.openSiri = function() {
+    ContaSmartAI.open();
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     ContaSmartAI.init();

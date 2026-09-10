@@ -135,18 +135,18 @@ for ($i = 5; $i >= 0; $i--) {
             </p>
         </div>
         <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-lg-auto mt-2 mt-lg-0">
-            <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center justify-content-center gap-2 flex-fill flex-sm-grow-0" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" onclick="ContaSmartAI.open()" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+            <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center justify-content-center gap-2 flex-fill flex-sm-grow-0" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                 <i class="fa fa-microphone text-warning"></i>
                 <span>Hablar con Siri</span>
             </button>
-            <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openPosModal()" title="Abrir Venta POS Rápida Flotante">
+            <a href="venta_nueva.php" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" title="Ir al Punto de Venta POS">
                 <i class="fa fa-cash-register"></i>
                 <span>Emitir Venta POS</span>
-            </button>
-            <button type="button" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openConsultaRucModal()" title="Consultar RUC o DNI en Vivo">
+            </a>
+            <a href="consulta_sunat.php" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" title="Consultar RUC o DNI en Vivo SUNAT/RENIEC">
                 <i class="fa fa-building-flag"></i>
                 <span>Buscar RUC / DNI</span>
-            </button>
+            </a>
         </div>
     </div>
 </div>
@@ -299,7 +299,7 @@ for ($i = 5; $i >= 0; $i--) {
             </a>
         </div>
         <div class="col-4 col-md-2">
-            <div class="quick-action-card btn-open-ai" style="border: 1px dashed #3b82f6;">
+            <div class="quick-action-card btn-open-ai" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" style="border: 1px dashed #3b82f6; cursor: pointer;" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                 <div class="action-icon-circle bg-danger bg-opacity-10 text-danger">
                     <i class="fa fa-microphone"></i>
                 </div>

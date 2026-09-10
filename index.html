@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ContaSmart - Sistema Inteligente de Gestión Contable, POS & SIRE SUNAT</title>
-    
-    <!-- Metadatos SEO & PWA -->
-    <meta name="description" content="ContaSmart v3.0 - Sistema de Gestión Contable, POS Móvil, Control de Inventario con Utilidades Reales y Sincronización SIRE SUNAT. Desarrollado por Gerson Misael Pintado Huaman (GMPH2007)">
-    <meta name="author" content="Gerson Misael Pintado Huaman (GMPH2007) - Misael Pintado Empresarial">
+    <title>Dashboard - ContaSmart Inteligente - ContaHercar S.A.C.</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,124 +22,134 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    <!-- Custom CSS ContaSmart -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Custom CSS (con cache-buster dinámico) -->
+    <link rel="stylesheet" href="assets/css/style.css?v=6.0">
 </head>
 <body>
 
 <div class="app-wrapper">
     <!-- Barra Lateral (Sidebar) -->
     <aside class="app-sidebar">
-        <div class="sidebar-brand d-flex align-items-center justify-content-between">
-            <a href="index.html" class="brand-logo">
-                <i class="fa fa-cubes"></i>
-                <span>ContaHercar</span>
+    <div class="sidebar-brand d-flex align-items-center justify-content-between">
+        <a href="index.html" class="brand-logo">
+            <i class="fa fa-cubes"></i>
+            <span>ContaHercar</span>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" id="sidebarCloseBtn" aria-label="Cerrar"></button>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="sidebar-header">Principal</li>
+        <li class="sidebar-item">
+            <a href="index.html" class="sidebar-link active">
+                <i class="fa fa-chart-pie"></i>
+                <span>Dashboard</span>
             </a>
-            <button type="button" class="btn-close btn-close-white d-lg-none" id="sidebarCloseBtn" aria-label="Cerrar"></button>
-        </div>
+        </li>
+        <li class="sidebar-item">
+            <a href="venta_nueva.html" class="sidebar-link ">
+                <i class="fa fa-cash-register text-success"></i>
+                <span>Punto de Venta</span>
+                <span class="badge bg-success ms-auto">POS</span>
+            </a>
+        </li>
 
-        <ul class="sidebar-menu">
-            <li class="sidebar-header">Principal</li>
-            <li class="sidebar-item">
-                <a href="index.html" class="sidebar-link active">
-                    <i class="fa fa-chart-pie"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="openPosModal()">
-                    <i class="fa fa-cash-register text-success"></i>
-                    <span>Punto de Venta</span>
-                    <span class="badge bg-success ms-auto">POS</span>
-                </a>
-            </li>
+        <li class="sidebar-header">Gestión Comercial</li>
+        <li class="sidebar-item">
+            <a href="ventas.html" class="sidebar-link ">
+                <i class="fa fa-receipt"></i>
+                <span>Historial de Ventas</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="compras.html" class="sidebar-link ">
+                <i class="fa fa-cart-arrow-down"></i>
+                <span>Compras & Gastos</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="inventario.html" class="sidebar-link ">
+                <i class="fa fa-boxes-stacked"></i>
+                <span>Inventario</span>
+                <span class="badge bg-danger ms-auto">2</span>            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="clientes.html" class="sidebar-link ">
+                <i class="fa fa-users"></i>
+                <span>Clientes</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="proveedores.html" class="sidebar-link ">
+                <i class="fa fa-truck-moving"></i>
+                <span>Proveedores</span>
+            </a>
+        </li>
 
-            <li class="sidebar-header">Gestión Comercial</li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="openHistoryModal()">
-                    <i class="fa fa-receipt"></i>
-                    <span>Historial de Ventas</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="openComprasModal()">
-                    <i class="fa fa-cart-arrow-down"></i>
-                    <span>Compras & Gastos</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="scrollSection('tourInventoryTable')">
-                    <i class="fa fa-boxes-stacked"></i>
-                    <span>Inventario</span>
-                    <span class="badge bg-danger ms-auto">2</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="openClientesModal()">
-                    <i class="fa fa-users"></i>
-                    <span>Clientes</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="openProveedoresModal()">
-                    <i class="fa fa-truck-moving"></i>
-                    <span>Proveedores</span>
-                </a>
-            </li>
+        <li class="sidebar-header d-flex align-items-center justify-content-between">
+            <span>SUNAT & RENIEC</span>
+            <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.6rem;">OFICIAL</span>
+        </li>
+        <li class="sidebar-item">
+            <a href="sire.html" class="sidebar-link ">
+                <i class="fa fa-book-bookmark text-primary"></i>
+                <span>SIRE (RVIE / RCE)</span>
+                <span class="badge bg-primary ms-auto">SIRE</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="consulta_sunat.html" class="sidebar-link ">
+                <i class="fa fa-building-flag text-warning"></i>
+                <span>Consulta RUC / DNI</span>
+                <span class="badge bg-warning text-dark ms-auto">VIVO</span>
+            </a>
+        </li>
+        <!-- Enlaces Web Oficiales en Nueva Pestaña (target="_blank") -->
+        <li class="sidebar-item">
+            <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial SIRE SUNAT en nueva pestaña">
+                <i class="fa fa-globe text-primary"></i>
+                <span>Portal SIRE SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir consulta oficial de RUC en SUNAT en nueva pestaña">
+                <i class="fa fa-magnifying-glass-chart text-warning"></i>
+                <span>Portal RUC SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
+                <i class="fa fa-id-card-clip text-info"></i>
+                <span>Portal RENIEC Oficial</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
 
-            <li class="sidebar-header d-flex align-items-center justify-content-between">
-                <span>SUNAT & RENIEC</span>
-                <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.6rem;">OFICIAL</span>
-            </li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="openSireModal()">
-                    <i class="fa fa-book-bookmark text-primary"></i>
-                    <span>SIRE (RVIE / RCE)</span>
-                    <span class="badge bg-primary ms-auto">SIRE</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="javascript:void(0)" class="sidebar-link" onclick="openConsultaRucModal()">
-                    <i class="fa fa-building-flag text-warning"></i>
-                    <span>Consulta RUC / DNI</span>
-                    <span class="badge bg-warning text-dark ms-auto">VIVO</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link">
-                    <i class="fa fa-globe text-primary"></i>
-                    <span>Portal SIRE SUNAT</span>
-                    <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link">
-                    <i class="fa fa-magnifying-glass-chart text-warning"></i>
-                    <span>Portal RUC SUNAT</span>
-                    <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link">
-                    <i class="fa fa-id-card-clip text-info"></i>
-                    <span>Portal RENIEC Oficial</span>
-                    <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
-                </a>
-            </li>
-        </ul>
+        <li class="sidebar-header">Sistema</li>
+        <li class="sidebar-item">
+            <a href="reportes.html" class="sidebar-link ">
+                <i class="fa fa-file-invoice-dollar"></i>
+                <span>Reportes & Cierres</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="configuracion.html" class="sidebar-link ">
+                <i class="fa fa-sliders"></i>
+                <span>Configuración & API</span>
+            </a>
+        </li>
+    </ul>
 
-        <div class="sidebar-footer">
-            <div class="d-flex align-items-center justify-content-between w-100">
-                <span class="small text-white-50"><i class="fa fa-shield-halved text-success me-1"></i>ContaSmart v3.0</span>
-                <div class="d-flex gap-2">
-                    <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="text-white-50" title="Ver en GitHub"><i class="fa-brands fa-github"></i></a>
-                    <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="text-info" title="Ejecutar en la Nube"><i class="fa fa-cloud"></i></a>
-                </div>
-            </div>
-        </div>
-    </aside>
+    <div class="sidebar-footer">
+        <i class="fa fa-shield-halved text-success"></i>
+        <span>ContaHercar v2.5 • GMPH2007</span>
+    </div>
+</aside>
 
-    <!-- Telón de Fondo para Móviles -->
+
+    <!-- Telón de Fondo para Móviles (Backdrop) -->
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <!-- Contenido Principal -->
@@ -158,30 +164,36 @@
             </div>
 
             <div class="topbar-right">
-                <!-- Indicador de Tipo de Cambio SUNAT -->
-                <div class="badge bg-light text-secondary border d-none d-lg-flex align-items-center gap-2 py-2 px-3" id="topbarTipoCambio">
+                <!-- Indicador de Tipo de Cambio SUNAT (Decolecta) -->
+                <div class="badge bg-light text-secondary border d-none d-lg-flex align-items-center gap-2 py-2 px-3" id="topbarTipoCambio" title="Tipo de Cambio Oficial SUNAT del día">
                     <i class="fa fa-dollar-sign text-success"></i>
-                    <span class="small fw-semibold" id="tcTexto">USD SUNAT: C: S/. 3.742 | V: S/. 3.750</span>
+                    <span class="small fw-semibold" id="tcTexto">USD SUNAT: C: S/. ... | V: S/. ...</span>
                 </div>
 
-                <!-- Indicador de Stock Bajo -->
-                <a href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2" title="Productos con stock bajo">
-                    <i class="fa fa-exclamation-triangle text-warning"></i>
-                    <span class="d-none d-md-inline">Stock Crítico:</span>
-                    <span class="badge bg-warning text-dark">2</span>
+                <!-- Indicador de Stock Bajo si hay alertas -->
+                                    <a href="inventario.html" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2" title="Productos con stock bajo">
+                        <i class="fa fa-exclamation-triangle text-warning"></i>
+                        <span class="d-none d-md-inline">Stock Crítico:</span>
+                        <span class="badge bg-warning text-dark">2</span>
+                    </a>
+                
+                <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <i class="fa fa-microphone text-warning"></i>
+                    <span class="fw-bold d-none d-sm-inline">Siri</span>
+                </button>
+
+                <!-- Acceso Rápido a Nueva Venta / POS (Desktop) -->
+                <a href="venta_nueva.html" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm">
+                    <i class="fa fa-cash-register"></i>
+                    <span>POS</span>
                 </a>
 
-                <!-- Acceso a Siri ContaSmart (Desktop) -->
-                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-none d-md-flex align-items-center gap-1 shadow-sm" id="tourAiAssistantBtn" title="Hablar con Siri ContaSmart (Comandos de Voz)">
-                    <i class="fa fa-microphone text-warning"></i>
-                    <span class="fw-bold">Siri</span>
-                </button>
-
-                <!-- Acceso Rápido a POS (Desktop) -->
-                <button type="button" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm" onclick="openPosModal()">
-                    <i class="fa fa-cash-register"></i>
-                    <span class="fw-semibold">POS</span>
-                </button>
+                <!-- Acceso Rápido a Nueva Compra -->
+                <a href="compra_nueva.html" class="btn btn-sm btn-outline-secondary d-none d-lg-flex align-items-center gap-1">
+                    <i class="fa fa-cart-arrow-down"></i>
+                    <span>+ Compra</span>
+                </a>
 
                 <!-- Menú de 3 Puntos (Opciones Rápidas) -->
                 <div class="dropdown">
@@ -190,22 +202,22 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
                         <li>
-                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="openConsultaRucModal()">
+                            <a class="dropdown-item py-2" href="consulta_sunat.html">
                                 <i class="fa fa-building-flag text-warning me-2"></i> Consultar RUC / DNI
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="ContaSmartAI.open()">
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();">
                                 <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="openPosModal()">
+                            <a class="dropdown-item py-2" href="venta_nueva.html">
                                 <i class="fa fa-cash-register text-success me-2"></i> Punto de Venta POS
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')">
+                            <a class="dropdown-item py-2" href="inventario.html">
                                 <i class="fa fa-boxes-stacked text-danger me-2"></i> Ver Stock Crítico
                             </a>
                         </li>
@@ -222,351 +234,649 @@
 
         <!-- Contenido de la Página -->
         <main class="app-content">
-            <!-- 1. BANNER EJECUTIVO CONTA SMART -->
-            <div class="card-custom p-4 mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 16px;" id="tourHeaderGreeting">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v3.0</span>
-                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.72rem;">
-                                <i class="fa fa-circle-check me-1"></i> SIRE SUNAT Activo
-                            </span>
-                        </div>
-                        <h3 class="fw-bold mb-1 text-white">
-                            ¡Hola, ContaHercar S.A.C.! 👋
-                        </h3>
-                        <p class="text-light text-opacity-75 small mb-0">
-                            Sistema inteligente de gestión contable, analítica financiera y registros electrónicos para MYPES.
-                        </p>
-                    </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-lg-auto mt-2 mt-lg-0">
-                        <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center justify-content-center gap-2 flex-fill flex-sm-grow-0" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" title="Hablar con Siri ContaSmart (Comandos de Voz)">
-                            <i class="fa fa-microphone text-warning"></i>
-                            <span>Hablar con Siri</span>
-                        </button>
-                        <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openPosModal()">
-                            <i class="fa fa-cash-register"></i>
-                            <span>Emitir Venta POS</span>
-                        </button>
-                        <button type="button" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" onclick="openConsultaRucModal()">
-                            <i class="fa fa-building-flag"></i>
-                            <span>Buscar RUC / DNI</span>
-                        </button>
-                    </div>
-                </div>
+
+
+<!-- ============================================================
+     1. BANNER EJECUTIVO CONTA SMART (ENFOQUE MYPE PERUANA)
+     ============================================================ -->
+<div class="card-custom p-4 mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 16px;" id="tourHeaderGreeting">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.75rem;">CONTA SMART v3.4</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.72rem;">
+                    <i class="fa fa-circle-check me-1"></i> SIRE SUNAT Activo
+                </span>
             </div>
-
-            <!-- 2. TARJETAS KPI INTELIGENTES (Cuadrícula 2x2 en Celular) -->
-            <div class="row g-3 g-md-3 mb-4" id="tourKpiCards">
-                <div class="col-6 col-xl-3">
-                    <div class="kpi-smart-card h-100" onclick="openHistoryModal()" role="button" style="cursor: pointer;" title="Ver Historial de Ventas Completo">
-                        <div class="kpi-header">
-                            <span class="kpi-title">Ventas del Mes</span>
-                            <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
-                                <i class="fa fa-wallet"></i>
-                            </div>
-                        </div>
-                        <div class="kpi-value text-primary">S/. 38,420.00</div>
-                        <div class="kpi-footer">
-                            <span class="badge-trend-up">
-                                <i class="fa fa-arrow-trend-up me-1"></i>+14.5%
-                            </span>
-                            <span class="d-none d-sm-inline">38 comprobantes</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-xl-3">
-                    <div class="kpi-smart-card h-100" onclick="openComprasModal()" role="button" style="cursor: pointer;" title="Ver Compras y Egresos">
-                        <div class="kpi-header">
-                            <span class="kpi-title">Compras & Gastos</span>
-                            <div class="kpi-icon-wrap bg-warning bg-opacity-10 text-warning">
-                                <i class="fa fa-cart-shopping"></i>
-                            </div>
-                        </div>
-                        <div class="kpi-value text-dark">S/. 14,250.00</div>
-                        <div class="kpi-footer">
-                            <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
-                                Insumos
-                            </span>
-                            <span class="d-none d-sm-inline">12 compras</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-xl-3">
-                    <div class="kpi-smart-card h-100" onclick="openSireModal()" role="button" style="cursor: pointer;" title="Ver Liquidación y Utilidad SIRE">
-                        <div class="kpi-header">
-                            <span class="kpi-title">Utilidad Bruta</span>
-                            <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
-                                <i class="fa fa-sack-dollar"></i>
-                            </div>
-                        </div>
-                        <div class="kpi-value text-success">S/. 24,170.00</div>
-                        <div class="kpi-footer">
-                            <span class="badge-trend-up">
-                                <i class="fa fa-shield-check me-1"></i>Rentable
-                            </span>
-                            <span class="d-none d-sm-inline">Margen neto</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-xl-3">
-                    <div class="kpi-smart-card">
-                        <div class="kpi-header">
-                            <span class="kpi-title">Alerta de Stock</span>
-                            <div class="kpi-icon-wrap bg-danger bg-opacity-10 text-danger">
-                                <i class="fa fa-triangle-exclamation"></i>
-                            </div>
-                        </div>
-                        <div class="kpi-value text-danger">2 <small class="fs-6 fw-normal text-muted">items</small></div>
-                        <div class="kpi-footer">
-                            <span class="badge-trend-down">
-                                <i class="fa fa-arrow-down me-1"></i>Reponer
-                            </span>
-                            <a href="javascript:void(0)" onclick="scrollSection('tourInventoryTable')" class="text-danger fw-semibold text-decoration-none small">Ver &rarr;</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. CUADRÍCULA DE ACCIONES RÁPIDAS -->
-            <div class="mb-4" id="tourQuickActions">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <h6 class="fw-bold text-dark text-uppercase small mb-0">
-                        <i class="fa fa-bolt text-warning me-1"></i> Acciones Rápidas del Sistema
-                    </h6>
-                    <small class="text-muted">Operaciones con 1 clic</small>
-                </div>
-                <div class="row g-3">
-                    <div class="col-4 col-md-2">
-                        <a href="javascript:void(0)" onclick="openPosModal()" class="quick-action-card text-decoration-none">
-                            <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
-                                <i class="fa fa-cash-register"></i>
-                            </div>
-                            <span class="action-label">Venta POS</span>
-                        </a>
-                    </div>
-                    <div class="col-4 col-md-2">
-                        <a href="javascript:void(0)" onclick="openComprasModal()" class="quick-action-card text-decoration-none">
-                            <div class="action-icon-circle bg-warning bg-opacity-10 text-warning">
-                                <i class="fa fa-cart-arrow-down"></i>
-                            </div>
-                            <span class="action-label">+ Compra</span>
-                        </a>
-                    </div>
-                    <div class="col-4 col-md-2">
-                        <a href="javascript:void(0)" onclick="openClientesModal()" class="quick-action-card text-decoration-none">
-                            <div class="action-icon-circle bg-success bg-opacity-10 text-success">
-                                <i class="fa fa-users"></i>
-                            </div>
-                            <span class="action-label">Clientes</span>
-                        </a>
-                    </div>
-                    <div class="col-4 col-md-2">
-                        <a href="javascript:void(0)" onclick="openConsultaRucModal()" class="quick-action-card text-decoration-none">
-                            <div class="action-icon-circle bg-info bg-opacity-10 text-info">
-                                <i class="fa fa-building-flag"></i>
-                            </div>
-                            <span class="action-label">RUC / SUNAT</span>
-                        </a>
-                    </div>
-                    <div class="col-4 col-md-2">
-                        <a href="javascript:void(0)" onclick="openSireModal()" class="quick-action-card text-decoration-none">
-                            <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
-                                <i class="fa fa-file-zipper"></i>
-                            </div>
-                            <span class="action-label">SIRE Libros</span>
-                        </a>
-                    </div>
-                    <div class="col-4 col-md-2">
-                        <div class="quick-action-card btn-open-ai" style="border: 1px dashed #3b82f6; cursor: pointer;">
-                            <div class="action-icon-circle bg-danger bg-opacity-10 text-danger">
-                                <i class="fa fa-microphone"></i>
-                            </div>
-                            <span class="action-label text-primary">Siri ContaVoz</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. GRÁFICOS: FLUJO DE CAJA & SALUD DE INVENTARIO -->
-            <div class="row g-3 mb-4" id="tourChartsSection">
-                <div class="col-12 col-lg-8">
-                    <div class="card-custom h-100">
-                        <div class="card-custom-header d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="mb-0"><i class="fa fa-chart-column text-primary me-2"></i>Flujo de Caja (Cash Flow)</h5>
-                                <small class="text-muted">Comparativa de Ventas vs Compras de los últimos 6 meses</small>
-                            </div>
-                            <span class="badge bg-light text-secondary border">En S/.</span>
-                        </div>
-                        <div class="card-custom-body">
-                            <canvas id="chartVentasCompras" height="270"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-4">
-                    <div class="card-custom h-100">
-                        <div class="card-custom-header">
-                            <h5 class="mb-0"><i class="fa fa-chart-pie text-success me-2"></i>Salud del Inventario</h5>
-                            <small class="text-muted">Estado actual de existencias</small>
-                        </div>
-                        <div class="card-custom-body d-flex flex-column align-items-center justify-content-center">
-                            <div style="width: 170px; height: 170px; position: relative;">
-                                <canvas id="chartDonutInventario"></canvas>
-                            </div>
-                            <div class="w-100 mt-3 pt-2 border-top">
-                                <div class="d-flex justify-content-between small mb-1">
-                                    <span><i class="fa fa-circle text-success me-1"></i> En Stock Óptimo:</span>
-                                    <strong class="text-success">6 productos</strong>
-                                </div>
-                                <div class="d-flex justify-content-between small mb-1">
-                                    <span><i class="fa fa-circle text-warning me-1"></i> Stock Bajo (Riesgo):</span>
-                                    <strong class="text-warning">2 productos</strong>
-                                </div>
-                                <div class="d-flex justify-content-between small">
-                                    <span><i class="fa fa-circle text-danger me-1"></i> Agotados:</span>
-                                    <strong class="text-danger">0 productos</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. MONITOREO INTELIGENTE DE PRODUCTOS -->
-            <div class="card-custom mb-4" id="tourInventoryTable">
-                <div class="card-custom-header d-flex align-items-center justify-content-between">
-                    <div>
-                        <h5 class="mb-0"><i class="fa fa-boxes-stacked text-primary me-2"></i>Monitoreo Inteligente de Almacén</h5>
-                        <small class="text-muted">Supervisión automática de stock y sugerencias de reabastecimiento</small>
-                    </div>
-                    <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="Swal.fire({icon:'info', title:'Catálogo Completo', text:'8 productos registrados en base de datos.'})">
-                        Ver Catálogo Completo &rarr;
-                    </button>
-                </div>
-                <div class="card-custom-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Cód.</th>
-                                    <th>Producto</th>
-                                    <th>Categoría</th>
-                                    <th>Stock Actual</th>
-                                    <th>Precio Compra</th>
-                                    <th>Precio Venta</th>
-                                    <th>Estado</th>
-                                    <th class="text-end">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="table-warning bg-opacity-10">
-                                    <td><span class="badge bg-light text-dark font-monospace">77501007</span></td>
-                                    <td>
-                                        <div class="fw-bold">Cable Mellizo 2x14 AWG Indeco (Rollo 100m)</div>
-                                        <small class="text-muted">Conductor de cobre electrolítico recocido</small>
-                                    </td>
-                                    <td><span class="badge bg-secondary-subtle text-secondary">Electricidad</span></td>
-                                    <td>
-                                        <span class="badge bg-danger fs-6 px-2 py-1">3 ROLLO</span>
-                                        <small class="d-block text-muted">Mín: 5</small>
-                                    </td>
-                                    <td>S/. 115.00</td>
-                                    <td class="fw-bold text-dark">S/. 160.00</td>
-                                    <td><span class="badge bg-danger">Stock Bajo</span></td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm btn-warning text-dark fw-bold" onclick="openComprasModal('Cable Mellizo 2x14')">
-                                            <i class="fa fa-cart-plus me-1"></i> Reponer
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="table-warning bg-opacity-10">
-                                    <td><span class="badge bg-light text-dark font-monospace">77501005</span></td>
-                                    <td>
-                                        <div class="fw-bold">Cinta Métrica 5m / 16ft Global Plus Stanley</div>
-                                        <small class="text-muted">Cinta recubierta de polímero</small>
-                                    </td>
-                                    <td><span class="badge bg-secondary-subtle text-secondary">Manuales</span></td>
-                                    <td>
-                                        <span class="badge bg-danger fs-6 px-2 py-1">4 UNID</span>
-                                        <small class="d-block text-muted">Mín: 10</small>
-                                    </td>
-                                    <td>S/. 14.50</td>
-                                    <td class="fw-bold text-dark">S/. 24.00</td>
-                                    <td><span class="badge bg-danger">Stock Bajo</span></td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm btn-warning text-dark fw-bold" onclick="openComprasModal('Cinta Métrica 5m')">
-                                            <i class="fa fa-cart-plus me-1"></i> Reponer
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-light text-dark font-monospace">77501001</span></td>
-                                    <td>
-                                        <div class="fw-bold">Taladro Percutor 1/2 pulg 650W Bosch</div>
-                                        <small class="text-muted">Taladro con velocidad variable y reversa</small>
-                                    </td>
-                                    <td><span class="badge bg-secondary-subtle text-secondary">Eléctricas</span></td>
-                                    <td>
-                                        <span class="badge bg-success fs-6 px-2 py-1">18 UNID</span>
-                                        <small class="d-block text-muted">Mín: 5</small>
-                                    </td>
-                                    <td>S/. 180.00</td>
-                                    <td class="fw-bold text-dark">S/. 245.00</td>
-                                    <td><span class="badge bg-success">Óptimo</span></td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm btn-outline-secondary" onclick="openKardexModal('Taladro Percutor')">
-                                            <i class="fa fa-clock-rotate-left"></i> Kardex
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-light text-dark font-monospace">77501002</span></td>
-                                    <td>
-                                        <div class="fw-bold">Amoladora Angular 4-1/2 pulg 850W Dewalt</div>
-                                        <small class="text-muted">Motor protegido contra la abrasión</small>
-                                    </td>
-                                    <td><span class="badge bg-secondary-subtle text-secondary">Eléctricas</span></td>
-                                    <td>
-                                        <span class="badge bg-success fs-6 px-2 py-1">12 UNID</span>
-                                        <small class="d-block text-muted">Mín: 4</small>
-                                    </td>
-                                    <td>S/. 210.00</td>
-                                    <td class="fw-bold text-dark">S/. 285.00</td>
-                                    <td><span class="badge bg-success">Óptimo</span></td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm btn-outline-secondary" onclick="openKardexModal('Amoladora Angular')">
-                                            <i class="fa fa-clock-rotate-left"></i> Kardex
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Marca de agua de GitHub & Footer -->
-            <footer class="text-center py-4 text-muted small border-top">
-                <div class="mb-2">
-                    <a href="https://github.com/GMPH2007/contahercar" target="_blank" class="text-decoration-none fw-bold text-dark me-3">
-                        <i class="fa-brands fa-github me-1"></i> github.com/GMPH2007/contahercar
-                    </a>
-                    <a href="https://github.com/codespaces/new?repo=GMPH2007/contahercar" target="_blank" class="text-decoration-none fw-bold text-primary">
-                        <i class="fa fa-play me-1"></i> Ejecutar Servidor Completo en Codespaces
-                    </a>
-                </div>
-                <div>
-                    <strong>ContaSmart v3.0</strong> • Diseñado y Desarrollado por <strong>Gerson Misael Pintado Huaman (@GMPH2007)</strong> • <em>Misael Pintado Empresarial</em>
-                </div>
-            </footer>
-        </main>
+            <h3 class="fw-bold mb-1 text-white">
+                ¡Hola, ContaHercar S.A.C.! 👋
+            </h3>
+            <p class="text-light text-opacity-75 small mb-0">
+                Sistema inteligente de gestión contable, analítica financiera y registros electrónicos para MYPES.
+            </p>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-lg-auto mt-2 mt-lg-0">
+            <button type="button" class="btn btn-sm px-3 py-2 btn-open-ai fw-bold shadow text-white d-flex align-items-center justify-content-center gap-2 flex-fill flex-sm-grow-0" style="background: linear-gradient(135deg, #2563eb, #8b5cf6);" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <i class="fa fa-microphone text-warning"></i>
+                <span>Hablar con Siri</span>
+            </button>
+            <a href="venta_nueva.html" class="btn btn-success btn-sm px-3 py-2 fw-bold shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" title="Ir al Punto de Venta POS">
+                <i class="fa fa-cash-register"></i>
+                <span>Emitir Venta POS</span>
+            </a>
+            <a href="consulta_sunat.html" class="btn btn-info btn-sm px-3 py-2 fw-bold text-dark shadow d-flex align-items-center justify-content-center gap-1 flex-fill flex-sm-grow-0" title="Consultar RUC o DNI en Vivo SUNAT/RENIEC">
+                <i class="fa fa-building-flag"></i>
+                <span>Buscar RUC / DNI</span>
+            </a>
+        </div>
     </div>
 </div>
+
+<!-- ============================================================
+     2. TARJETAS KPI INTELIGENTES (Cuadrícula 2x2 en Celular)
+     ============================================================ -->
+<div class="row g-3 g-md-3 mb-4" id="tourKpiCards">
+    <!-- Ventas del Mes -->
+    <div class="col-6 col-xl-3">
+        <a href="ventas.html" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Ventas del Mes</span>
+                    <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
+                        <i class="fa fa-wallet"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-primary">S/. 306.00</div>
+                <div class="kpi-footer">
+                    <span class="badge-trend-up">
+                        <i class="fa fa-arrow-trend-up me-1"></i>+0%
+                    </span>
+                    <span class="d-none d-sm-inline">2 comprobantes</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Compras & Egresos -->
+    <div class="col-6 col-xl-3">
+        <a href="compras.html" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Compras & Gastos</span>
+                    <div class="kpi-icon-wrap bg-warning bg-opacity-10 text-warning">
+                        <i class="fa fa-cart-shopping"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-dark">S/. 413.00</div>
+                <div class="kpi-footer">
+                    <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
+                        Insumos
+                    </span>
+                    <span class="d-none d-sm-inline">1 compras</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Margen Comercial / Utilidad -->
+    <div class="col-6 col-xl-3">
+        <a href="reportes.html" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Utilidad Bruta</span>
+                    <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
+                        <i class="fa fa-sack-dollar"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-success">S/. 83.60</div>
+                <div class="kpi-footer">
+                    <span class="badge-trend-up">
+                        <i class="fa fa-shield-check me-1"></i>Rentable
+                    </span>
+                    <span class="d-none d-sm-inline">Margen neto</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Alertas de Stock Bajo -->
+    <div class="col-6 col-xl-3">
+        <a href="inventario.html" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Alerta de Stock</span>
+                    <div class="kpi-icon-wrap bg-danger bg-opacity-10 text-danger">
+                        <i class="fa fa-triangle-exclamation"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-danger">2 <small class="fs-6 fw-normal text-muted">items</small></div>
+                <div class="kpi-footer">
+                                            <span class="badge-trend-down">
+                            <i class="fa fa-arrow-down me-1"></i>Reponer
+                        </span>
+                        <span class="text-danger fw-semibold small">Ver &rarr;</span>
+                                    </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- ============================================================
+     3. CUADRÍCULA DE ACCIONES RÁPIDAS (ESTILO STOCK MATE)
+     ============================================================ -->
+<div class="mb-4" id="tourQuickActions">
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <h6 class="fw-bold text-dark text-uppercase small mb-0">
+            <i class="fa fa-bolt text-warning me-1"></i> Acciones Rápidas del Sistema
+        </h6>
+        <small class="text-muted">Operaciones con 1 clic</small>
+    </div>
+    <div class="row g-3">
+        <div class="col-4 col-md-2">
+            <a href="javascript:void(0)" onclick="openPosModal()" class="quick-action-card text-decoration-none">
+                <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
+                    <i class="fa fa-cash-register"></i>
+                </div>
+                <span class="action-label">Venta POS</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="compra_nueva.html" class="quick-action-card text-decoration-none">
+                <div class="action-icon-circle bg-warning bg-opacity-10 text-warning">
+                    <i class="fa fa-cart-arrow-down"></i>
+                </div>
+                <span class="action-label">+ Compra</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="clientes.html" class="quick-action-card">
+                <div class="action-icon-circle bg-success bg-opacity-10 text-success">
+                    <i class="fa fa-user-plus"></i>
+                </div>
+                <span class="action-label">+ Cliente</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="consulta_sunat.html" class="quick-action-card">
+                <div class="action-icon-circle bg-info bg-opacity-10 text-info">
+                    <i class="fa fa-building-flag"></i>
+                </div>
+                <span class="action-label">RUC / SUNAT</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <a href="sire.html" class="quick-action-card">
+                <div class="action-icon-circle bg-primary bg-opacity-10 text-primary">
+                    <i class="fa fa-file-zipper"></i>
+                </div>
+                <span class="action-label">SIRE Libros</span>
+            </a>
+        </div>
+        <div class="col-4 col-md-2">
+            <div class="quick-action-card btn-open-ai" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" style="border: 1px dashed #3b82f6; cursor: pointer;" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                <div class="action-icon-circle bg-danger bg-opacity-10 text-danger">
+                    <i class="fa fa-microphone"></i>
+                </div>
+                <span class="action-label text-primary">ContaVoz IA</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     4. GRÁFICOS: FLUJO DE CAJA & SALUD DE INVENTARIO (INVENTO STYLE)
+     ============================================================ -->
+<div class="row g-3 mb-4" id="tourChartsSection">
+    <!-- Flujo de Caja (Cash Flow mensual) -->
+    <div class="col-12 col-lg-8">
+        <div class="card-custom h-100">
+            <div class="card-custom-header d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-0"><i class="fa fa-chart-column text-primary me-2"></i>Flujo de Caja (Cash Flow)</h5>
+                    <small class="text-muted">Comparativa de Ventas vs Compras de los últimos 6 meses</small>
+                </div>
+                <span class="badge bg-light text-secondary border">En S/.</span>
+            </div>
+            <div class="card-custom-body">
+                <canvas id="chartVentasCompras" height="270"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donut de Salud de Inventario (Inventory Alerts) -->
+    <div class="col-12 col-lg-4">
+        <div class="card-custom h-100">
+            <div class="card-custom-header">
+                <h5 class="mb-0"><i class="fa fa-chart-pie text-success me-2"></i>Salud del Inventario</h5>
+                <small class="text-muted">Estado actual de existencias</small>
+            </div>
+            <div class="card-custom-body d-flex flex-column align-items-center justify-content-center">
+                <div style="width: 170px; height: 170px; position: relative;">
+                    <canvas id="chartDonutInventario"></canvas>
+                </div>
+                <div class="w-100 mt-3 pt-2 border-top">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span><i class="fa fa-circle text-success me-1"></i> En Stock Óptimo:</span>
+                        <strong class="text-success">6 productos</strong>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span><i class="fa fa-circle text-warning me-1"></i> Stock Bajo (Riesgo):</span>
+                        <strong class="text-warning">2 productos</strong>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span><i class="fa fa-circle text-danger me-1"></i> Agotados:</span>
+                        <strong class="text-danger">0 productos</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     5. MONITOREO INTELIGENTE DE PRODUCTOS (INVENTO / INVENTORY REPORT)
+     ============================================================ -->
+<div class="card-custom mb-4" id="tourInventoryTable">
+    <div class="card-custom-header d-flex align-items-center justify-content-between">
+        <div>
+            <h5 class="mb-0"><i class="fa fa-boxes-stacked text-primary me-2"></i>Monitoreo Inteligente de Almacén</h5>
+            <small class="text-muted">Supervisión automática de stock y sugerencias de reabastecimiento</small>
+        </div>
+        <a href="inventario.html" class="btn btn-sm btn-outline-primary fw-semibold">
+            Ver Catálogo Completo &rarr;
+        </a>
+    </div>
+    <div class="card-custom-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Producto</th>
+                        <th>Código</th>
+                        <th>Categoría</th>
+                        <th>Precio Venta</th>
+                        <th>Stock Actual</th>
+                        <th>Estado Inteligente</th>
+                        <th class="text-end pe-3">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                                                    <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-2 text-primary" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-box"></i>
+                                    </div>
+                                    <span>Cable Mellizo 2x14 AWG Indeco (Rollo 100m)</span>
+                                </div>
+                            </td>
+                            <td class="font-monospace small text-muted">77501007</td>
+                            <td><span class="badge bg-light text-dark border">Electricidad e Iluminación</span></td>
+                            <td class="fw-bold">S/. 160.00</td>
+                            <td>
+                                <span class="fw-bold font-monospace text-danger">
+                                    3 ROLLO                                </span>
+                                <small class="text-muted">(Mín: 5)</small>
+                            </td>
+                            <td>
+                                                                    <span class="badge bg-warning text-dark">
+                                        <i class="fa fa-triangle-exclamation me-1"></i> Stock Bajo
+                                    </span>
+                                                            </td>
+                            <td class="text-end pe-3">
+                                                                    <a href="compra_nueva.html" class="btn btn-xs btn-outline-warning fw-bold py-1 px-2" title="Reponer este producto">
+                                        <i class="fa fa-cart-plus me-1"></i> Reponer
+                                    </a>
+                                                            </td>
+                        </tr>
+                                                                    <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-2 text-primary" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-box"></i>
+                                    </div>
+                                    <span>Cinta Métrica 5m / 16ft Global Plus Stanley</span>
+                                </div>
+                            </td>
+                            <td class="font-monospace small text-muted">77501005</td>
+                            <td><span class="badge bg-light text-dark border">Herramientas Manuales</span></td>
+                            <td class="fw-bold">S/. 24.00</td>
+                            <td>
+                                <span class="fw-bold font-monospace text-danger">
+                                    4 UNID                                </span>
+                                <small class="text-muted">(Mín: 10)</small>
+                            </td>
+                            <td>
+                                                                    <span class="badge bg-warning text-dark">
+                                        <i class="fa fa-triangle-exclamation me-1"></i> Stock Bajo
+                                    </span>
+                                                            </td>
+                            <td class="text-end pe-3">
+                                                                    <a href="compra_nueva.html" class="btn btn-xs btn-outline-warning fw-bold py-1 px-2" title="Reponer este producto">
+                                        <i class="fa fa-cart-plus me-1"></i> Reponer
+                                    </a>
+                                                            </td>
+                        </tr>
+                                                                    <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-2 text-primary" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-box"></i>
+                                    </div>
+                                    <span>Amoladora Angular 4-1/2 pulg 850W Dewalt</span>
+                                </div>
+                            </td>
+                            <td class="font-monospace small text-muted">77501002</td>
+                            <td><span class="badge bg-light text-dark border">Herramientas Eléctricas</span></td>
+                            <td class="fw-bold">S/. 285.00</td>
+                            <td>
+                                <span class="fw-bold font-monospace text-dark">
+                                    11 UNID                                </span>
+                                <small class="text-muted">(Mín: 4)</small>
+                            </td>
+                            <td>
+                                                                    <span class="badge bg-success">En Stock</span>
+                                                            </td>
+                            <td class="text-end pe-3">
+                                                                    <a href="venta_nueva.html" class="btn btn-xs btn-outline-primary py-1 px-2" title="Vender en POS">
+                                        <i class="fa fa-cash-register me-1"></i> Vender
+                                    </a>
+                                                            </td>
+                        </tr>
+                                                                    <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-2 text-primary" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-box"></i>
+                                    </div>
+                                    <span>Taladro Percutor 1/2 pulg 650W Bosch</span>
+                                </div>
+                            </td>
+                            <td class="font-monospace small text-muted">77501001</td>
+                            <td><span class="badge bg-light text-dark border">Herramientas Eléctricas</span></td>
+                            <td class="fw-bold">S/. 245.00</td>
+                            <td>
+                                <span class="fw-bold font-monospace text-dark">
+                                    18 UNID                                </span>
+                                <small class="text-muted">(Mín: 5)</small>
+                            </td>
+                            <td>
+                                                                    <span class="badge bg-success">En Stock</span>
+                                                            </td>
+                            <td class="text-end pe-3">
+                                                                    <a href="venta_nueva.html" class="btn btn-xs btn-outline-primary py-1 px-2" title="Vender en POS">
+                                        <i class="fa fa-cash-register me-1"></i> Vender
+                                    </a>
+                                                            </td>
+                        </tr>
+                                                                    <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-2 text-primary" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-box"></i>
+                                    </div>
+                                    <span>Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)</span>
+                                </div>
+                            </td>
+                            <td class="font-monospace small text-muted">77501003</td>
+                            <td><span class="badge bg-light text-dark border">Herramientas Manuales</span></td>
+                            <td class="fw-bold">S/. 115.00</td>
+                            <td>
+                                <span class="fw-bold font-monospace text-dark">
+                                    25 JGO                                </span>
+                                <small class="text-muted">(Mín: 6)</small>
+                            </td>
+                            <td>
+                                                                    <span class="badge bg-success">En Stock</span>
+                                                            </td>
+                            <td class="text-end pe-3">
+                                                                    <a href="venta_nueva.html" class="btn btn-xs btn-outline-primary py-1 px-2" title="Vender en POS">
+                                        <i class="fa fa-cash-register me-1"></i> Vender
+                                    </a>
+                                                            </td>
+                        </tr>
+                                                                    <tr>
+                            <td class="ps-3 fw-bold text-dark">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light rounded p-2 text-primary" style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-box"></i>
+                                    </div>
+                                    <span>Martillo Carpintero 16oz Mango Fibra Truper</span>
+                                </div>
+                            </td>
+                            <td class="font-monospace small text-muted">77501004</td>
+                            <td><span class="badge bg-light text-dark border">Herramientas Manuales</span></td>
+                            <td class="fw-bold">S/. 36.00</td>
+                            <td>
+                                <span class="fw-bold font-monospace text-dark">
+                                    30 UNID                                </span>
+                                <small class="text-muted">(Mín: 8)</small>
+                            </td>
+                            <td>
+                                                                    <span class="badge bg-success">En Stock</span>
+                                                            </td>
+                            <td class="text-end pe-3">
+                                                                    <a href="venta_nueva.html" class="btn btn-xs btn-outline-primary py-1 px-2" title="Vender en POS">
+                                        <i class="fa fa-cash-register me-1"></i> Vender
+                                    </a>
+                                                            </td>
+                        </tr>
+                                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     6. ACTIVIDAD RECIENTE: VENTAS Y COMPRAS
+     ============================================================ -->
+<div class="row g-3">
+    <!-- Últimas Ventas -->
+    <div class="col-12 col-lg-6">
+        <div class="card-custom h-100">
+            <div class="card-custom-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="fa fa-receipt text-success me-2"></i>Últimas Ventas Emitidas</h5>
+                <a href="ventas.html" class="btn btn-sm btn-outline-primary">Ver todas</a>
+            </div>
+            <div class="card-custom-body p-0">
+                <div class="table-responsive">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Doc / Serie</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                                                                <tr>
+                                        <td>
+                                            <span class="fw-bold">Boleta</span><br>
+                                            <small class="text-muted">B001-000002</small>
+                                        </td>
+                                        <td>CLIENTE VARIOS / GENERAL</td>
+                                        <td><small>07/09/2026</small></td>
+                                        <td class="fw-bold text-success">S/. 285.00</td>
+                                        <td>
+                                            <a href="ticket.php?id=4" target="_blank" class="btn btn-sm btn-outline-secondary" title="Imprimir Ticket">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>
+                                            <span class="fw-bold">Boleta</span><br>
+                                            <small class="text-muted">B001-000001</small>
+                                        </td>
+                                        <td>CLIENTE VARIOS / GENERAL</td>
+                                        <td><small>07/09/2026</small></td>
+                                        <td class="fw-bold text-success">S/. 21.00</td>
+                                        <td>
+                                            <a href="ticket.php?id=2" target="_blank" class="btn btn-sm btn-outline-secondary" title="Imprimir Ticket">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                                                                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Últimas Compras -->
+    <div class="col-12 col-lg-6">
+        <div class="card-custom h-100">
+            <div class="card-custom-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="fa fa-cart-shopping text-warning me-2"></i>Últimas Compras</h5>
+                <a href="compras.html" class="btn btn-sm btn-outline-primary">Ver todas</a>
+            </div>
+            <div class="card-custom-body p-0">
+                <div class="table-responsive">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Comprobante</th>
+                                <th>Proveedor</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                                                                <tr>
+                                        <td>
+                                            <span class="fw-bold">Factura</span><br>
+                                            <small class="text-muted">F001-000124</small>
+                                        </td>
+                                        <td>CORPORACION DISTRIBUIDORA FERRETERA S.A.C.</td>
+                                        <td><small>08/09/2026</small></td>
+                                        <td class="fw-bold text-warning">S/. 413.00</td>
+                                        <td>
+                                            <span class="badge badge-soft-success">
+                                                COMPLETADA                                            </span>
+                                        </td>
+                                    </tr>
+                                                                                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts de Gráficos Chart.js -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Gráfico de Barras Flujo de Caja
+    const ctxBar = document.getElementById('chartVentasCompras');
+    if (ctxBar) {
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ["Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026"],
+                datasets: [
+                    {
+                        label: 'Ventas (S/.)',
+                        data: [0,0,0,0,0,306],
+                        backgroundColor: 'rgba(37, 99, 235, 0.85)',
+                        borderRadius: 6,
+                        borderWidth: 0
+                    },
+                    {
+                        label: 'Compras (S/.)',
+                        data: [0,0,0,0,0,413],
+                        backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) {
+                                    label += 'S/. ' + context.parsed.y.toLocaleString('es-PE', { minimumFractionDigits: 2 });
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'S/. ' + value.toLocaleString();
+                            }
+                        },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Gráfico Donut de Salud de Inventario (Invento Style)
+    const ctxDonut = document.getElementById('chartDonutInventario');
+    if (ctxDonut) {
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Óptimo', 'Stock Bajo', 'Agotado'],
+                datasets: [{
+                    data: [
+                        6,
+                        2,
+                        0                    ],
+                    backgroundColor: [
+                        '#10b981', // Verde
+                        '#f59e0b', // Amarillo
+                        '#ef4444'  // Rojo
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.parsed + ' productos';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+
+        </main> <!-- Fin .app-content -->
+    </div> <!-- Fin .app-main -->
+</div> <!-- Fin .app-wrapper -->
 
 <!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
 <nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
@@ -574,32 +884,50 @@
         <i class="fa fa-chart-pie"></i>
         <span>Inicio</span>
     </a>
-    <button type="button" class="dock-item" onclick="openConsultaRucModal()">
+    <a href="consulta_sunat.html" class="dock-item " title="Consultar RUC y DNI SUNAT/RENIEC">
         <i class="fa fa-building-flag"></i>
         <span>RUC/DNI</span>
-    </button>
-    <button type="button" class="dock-item dock-item-pos" onclick="openPosModal()" title="Venta Rápida POS">
+    </a>
+    <a href="venta_nueva.html" class="dock-item dock-item-pos " title="Punto de Venta POS Móvil">
         <div class="dock-pos-icon">
             <i class="fa fa-cash-register"></i>
         </div>
         <span>POS</span>
-    </button>
-    <button type="button" class="dock-item" onclick="if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri">
+    </a>
+    <button type="button" class="dock-item" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart">
         <i class="fa fa-microphone-lines text-info"></i>
         <span>Siri AI</span>
     </button>
-    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : document.getElementById('sidebarToggleBtn')?.click()" title="Menú Principal">
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : (document.getElementById('sidebarToggleBtn') ? document.getElementById('sidebarToggleBtn').click() : null)" title="Menú Principal (3 Rayitas)">
         <i class="fa fa-bars"></i>
         <span>Menú</span>
     </button>
 </nav>
 
-<!-- Modal Global Interactivo para POS -->
+<!-- Modal Global para Kardex de Productos -->
+<div class="modal fade" id="modalKardexGlobal" tabindex="-1" aria-labelledby="kardexModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6" id="kardexModalTitle">Historial de Kardex</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="kardexModalContent">
+                <!-- Se llena vía AJAX -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Global Interactivo para POS Rápido / Flotante -->
 <div class="modal fade" id="modalPosGlobal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow-lg border-0">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title fs-6"><i class="fa fa-cash-register me-2"></i>Punto de Venta (POS) Rápido</h5>
+                <h5 class="modal-title fs-6"><i class="fa fa-cash-register me-2"></i>Punto de Venta (POS) Rápido Flotante</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
@@ -620,9 +948,14 @@
                     <span class="fw-bold">Total a Cobrar:</span>
                     <strong class="text-success fs-5" id="posTotalLabel">S/. 245.00</strong>
                 </div>
-                <button type="button" class="btn btn-success w-100 py-2 fw-bold" onclick="simulateSale()">
-                    <i class="fa fa-print me-1"></i> Emitir Boleta Electrónica
-                </button>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success py-2 fw-bold" onclick="simulateSale()">
+                        <i class="fa fa-print me-1"></i> Emitir Boleta Rápida
+                    </button>
+                    <a href="venta_nueva.html" class="btn btn-outline-primary py-2 fw-semibold">
+                        <i class="fa fa-arrow-up-right-from-square me-1"></i> Ir a Pantalla Completa de POS
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -694,532 +1027,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Modal 1: Historial de Ventas Interactivo Global -->
-<div class="modal fade" id="modalHistorialVentasGlobal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-4 shadow-lg border-0">
-            <div class="modal-header bg-primary text-white p-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 bg-white bg-opacity-20 rounded-3">
-                        <i class="fa fa-receipt fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fs-6 fw-bold mb-0">Historial de Ventas y Facturación Electrónica</h5>
-                        <small class="text-white-50">38 Comprobantes emitidos • Período Setiembre 2026</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-3 p-md-4">
-                <div class="row g-2 mb-3">
-                    <div class="col-6 col-md-3">
-                        <div class="p-2 bg-primary bg-opacity-10 border border-primary-subtle rounded-3 text-center">
-                            <span class="text-muted d-block small">Total Facturado</span>
-                            <strong class="text-primary fs-5">S/ 38,420.00</strong>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="p-2 bg-success bg-opacity-10 border border-success-subtle rounded-3 text-center">
-                            <span class="text-muted d-block small">Base Imponible</span>
-                            <strong class="text-success fs-5">S/ 32,559.32</strong>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="p-2 bg-warning bg-opacity-10 border border-warning-subtle rounded-3 text-center">
-                            <span class="text-muted d-block small">I-G-V Débito (18%)</span>
-                            <strong class="text-warning fs-5">S/ 5,860.68</strong>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="p-2 bg-info bg-opacity-10 border border-info-subtle rounded-3 text-center">
-                            <span class="text-muted d-block small">SIRE RVIE</span>
-                            <strong class="text-info fs-6">Sincronizado SUNAT</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text bg-light border-end-0"><i class="fa fa-search text-muted"></i></span>
-                    <input type="text" class="form-control border-start-0" id="searchVentasInput" placeholder="Buscar por número (B001, F001), cliente o producto..." onkeyup="filtrarTablaVentas()">
-                </div>
-
-                <div class="table-responsive border rounded-3">
-                    <table class="table table-hover align-middle mb-0" id="tablaVentasModal">
-                        <thead class="table-light">
-                            <tr class="small text-muted text-uppercase">
-                                <th>Comprobante</th>
-                                <th>Fecha & Hora</th>
-                                <th>Cliente</th>
-                                <th>Producto / Detalle</th>
-                                <th class="text-end">Total</th>
-                                <th class="text-center">SUNAT</th>
-                                <th class="text-center">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody class="small">
-                            <tr>
-                                <td><strong class="text-primary">B001-000428</strong></td>
-                                <td>09/09/2026 18:40</td>
-                                <td>00000000 - CLIENTE VARIOS</td>
-                                <td>Taladro Percutor Bosch 650W</td>
-                                <td class="text-end fw-bold text-success">S/ 245.00</td>
-                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('B001-000428', 'CLIENTE VARIOS', 'Taladro Percutor Bosch 650W', '245.00', '09/09/2026 18:40')">
-                                        <i class="fa fa-print me-1"></i>Ticket
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong class="text-primary">F001-000112</strong></td>
-                                <td>09/09/2026 16:15</td>
-                                <td>20548912345 - CORP. MINERA DEL NORTE</td>
-                                <td>4x Cable Mellizo 2x14 Indeco + Amoladora</td>
-                                <td class="text-end fw-bold text-success">S/ 1,280.00</td>
-                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('F001-000112', 'CORP. MINERA DEL NORTE SAC', '4x Cable Mellizo + Amoladora Dewalt', '1280.00', '09/09/2026 16:15')">
-                                        <i class="fa fa-print me-1"></i>Ticket
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong class="text-primary">B001-000427</strong></td>
-                                <td>09/09/2026 14:02</td>
-                                <td>45871234 - JUAN CARLOS PÉREZ RÍOS</td>
-                                <td>2x Cinta Métrica 5m Stanley</td>
-                                <td class="text-end fw-bold text-success">S/ 48.00</td>
-                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('B001-000427', 'JUAN CARLOS PÉREZ RÍOS', '2x Cinta Métrica 5m Stanley', '48.00', '09/09/2026 14:02')">
-                                        <i class="fa fa-print me-1"></i>Ticket
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong class="text-primary">B001-000426</strong></td>
-                                <td>08/09/2026 17:30</td>
-                                <td>10460278975 - HUAMANI MENDOZA ERACLEO</td>
-                                <td>Amoladora Angular Dewalt 4 1/2</td>
-                                <td class="text-end fw-bold text-success">S/ 285.00</td>
-                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('B001-000426', 'HUAMANI MENDOZA ERACLEO', 'Amoladora Angular Dewalt 4 1/2', '285.00', '08/09/2026 17:30')">
-                                        <i class="fa fa-print me-1"></i>Ticket
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong class="text-primary">F001-000111</strong></td>
-                                <td>08/09/2026 11:20</td>
-                                <td>20100070970 - SUPERMERCADOS PERUANOS</td>
-                                <td>Lote Cintas + Materiales Varios Ferretería</td>
-                                <td class="text-end fw-bold text-success">S/ 3,450.00</td>
-                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('F001-000111', 'SUPERMERCADOS PERUANOS S.A.', 'Lote Cintas + Materiales Varios', '3450.00', '08/09/2026 11:20')">
-                                        <i class="fa fa-print me-1"></i>Ticket
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="descargarSireTxt('RVIE')">
-                        <i class="fa fa-download me-1"></i> Exportar TXT SIRE
-                    </button>
-                    <button type="button" class="btn btn-success btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalHistorialVentasGlobal')).hide(); openPosModal();">
-                        <i class="fa fa-cash-register me-1"></i> + Nueva Venta POS
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal 2: Compras & Gastos Interactivo Global -->
-<div class="modal fade" id="modalComprasGlobal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-4 shadow-lg border-0">
-            <div class="modal-header bg-warning text-dark p-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 bg-dark bg-opacity-10 rounded-3">
-                        <i class="fa fa-cart-shopping fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fs-6 fw-bold mb-0">Compras, Insumos & Reposición de Stock</h5>
-                        <small class="text-muted">12 Facturas de compras registradas • Crédito Fiscal S/ 2,173.73</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-3 p-md-4">
-                <div class="row g-2 mb-3">
-                    <div class="col-6 col-md-4">
-                        <div class="p-2 bg-warning bg-opacity-10 border border-warning-subtle rounded-3 text-center">
-                            <span class="text-muted d-block small">Total Compras</span>
-                            <strong class="text-dark fs-5">S/ 14,250.00</strong>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4">
-                        <div class="p-2 bg-success bg-opacity-10 border border-success-subtle rounded-3 text-center">
-                            <span class="text-muted d-block small">Crédito Fiscal IGV</span>
-                            <strong class="text-success fs-5">S/ 2,173.73</strong>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="p-2 bg-primary bg-opacity-10 border border-primary-subtle rounded-3 text-center">
-                            <span class="text-muted d-block small">SIRE RCE</span>
-                            <strong class="text-primary fs-6">Propuesta Aceptada</strong>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-responsive border rounded-3 mb-3">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light small text-muted text-uppercase">
-                            <tr>
-                                <th>Factura Proveedor</th>
-                                <th>Proveedor</th>
-                                <th>Fecha</th>
-                                <th class="text-end">Base</th>
-                                <th class="text-end">IGV</th>
-                                <th class="text-end">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody class="small">
-                            <tr>
-                                <td><strong class="text-dark">F002-004812</strong></td>
-                                <td>CORPORACION FERRETERA SAC (20100070970)</td>
-                                <td>08/09/2026</td>
-                                <td class="text-end">S/ 3,559.32</td>
-                                <td class="text-end text-success">S/ 640.68</td>
-                                <td class="text-end fw-bold">S/ 4,200.00</td>
-                            </tr>
-                            <tr>
-                                <td><strong class="text-dark">F010-001923</strong></td>
-                                <td>INDECO CABLES S.A. (20489120491)</td>
-                                <td>06/09/2026</td>
-                                <td class="text-end">S/ 2,669.49</td>
-                                <td class="text-end text-success">S/ 480.51</td>
-                                <td class="text-end fw-bold">S/ 3,150.00</td>
-                            </tr>
-                            <tr>
-                                <td><strong class="text-dark">F001-000982</strong></td>
-                                <td>STANLEY BLACK & DECKER PERU</td>
-                                <td>04/09/2026</td>
-                                <td class="text-end">S/ 1,525.42</td>
-                                <td class="text-end text-success">S/ 274.58</td>
-                                <td class="text-end fw-bold">S/ 1,800.00</td>
-                            </tr>
-                            <tr>
-                                <td><strong class="text-dark">F003-000145</strong></td>
-                                <td>ROBERT BOSCH S.A.</td>
-                                <td>02/09/2026</td>
-                                <td class="text-end">S/ 4,322.03</td>
-                                <td class="text-end text-success">S/ 777.97</td>
-                                <td class="text-end fw-bold">S/ 5,100.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-warning btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalComprasGlobal')).hide(); openConsultaRucModal();">
-                    <i class="fa fa-truck-moving me-1"></i> + Buscar Proveedor para Nueva Compra
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal 3: Padrón de Clientes Interactivo Global -->
-<div class="modal fade" id="modalClientesGlobal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-4 shadow-lg border-0">
-            <div class="modal-header bg-success text-white p-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 bg-white bg-opacity-20 rounded-3">
-                        <i class="fa fa-users fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fs-6 fw-bold mb-0">Padrón Oficial de Clientes</h5>
-                        <small class="text-white-50">Clientes validados con SUNAT (RUC) y RENIEC (DNI)</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-3 p-md-4">
-                <div class="table-responsive border rounded-3">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light small text-muted text-uppercase">
-                            <tr>
-                                <th>Doc. Identidad</th>
-                                <th>Razón Social / Nombre</th>
-                                <th>Dirección / Ubigeo</th>
-                                <th>Teléfono</th>
-                                <th class="text-center">Estado</th>
-                                <th class="text-center">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody class="small">
-                            <tr>
-                                <td><span class="badge bg-primary">RUC</span> <strong>20548912345</strong></td>
-                                <td class="fw-bold">CORPORACION MINERA DEL NORTE S.A.C.</td>
-                                <td>Av. La Encalada 450, Santiago de Surco</td>
-                                <td>987-654-321</td>
-                                <td class="text-center"><span class="badge bg-success">ACTIVO / HABIDO</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('20548912345 - CORPORACION MINERA DEL NORTE')">
-                                        <i class="fa fa-cash-register me-1"></i> Facturar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-info text-dark">DNI</span> <strong>45871234</strong></td>
-                                <td class="fw-bold">JUAN CARLOS PÉREZ RÍOS</td>
-                                <td>Jr. Huancavelica 340, Cercado de Lima</td>
-                                <td>912-345-678</td>
-                                <td class="text-center"><span class="badge bg-success">RENIEC VÁLIDO</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('45871234 - JUAN CARLOS PÉREZ RÍOS')">
-                                        <i class="fa fa-cash-register me-1"></i> Facturar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-primary">RUC</span> <strong>20100070970</strong></td>
-                                <td class="fw-bold">SUPERMERCADOS PERUANOS S.A.</td>
-                                <td>Cal. Morelli Nro. 181, San Borja, Lima</td>
-                                <td>998-877-665</td>
-                                <td class="text-center"><span class="badge bg-warning text-dark">AGENTE RETENCIÓN</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('20100070970 - SUPERMERCADOS PERUANOS S.A.')">
-                                        <i class="fa fa-cash-register me-1"></i> Facturar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-secondary">RUC</span> <strong>10460278975</strong></td>
-                                <td class="fw-bold">HUAMANI MENDOZA ERACLEO JUAN</td>
-                                <td>Av. Perú 1240, San Martín de Porres</td>
-                                <td>945-612-378</td>
-                                <td class="text-center"><span class="badge bg-success">ACTIVO / HABIDO</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('10460278975 - HUAMANI MENDOZA ERACLEO')">
-                                        <i class="fa fa-cash-register me-1"></i> Facturar
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalClientesGlobal')).hide(); openConsultaRucModal();">
-                    <i class="fa fa-user-plus me-1"></i> + Registrar Nuevo Cliente con SUNAT/RENIEC
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal 4: Directorio de Proveedores Interactivo Global -->
-<div class="modal fade" id="modalProveedoresGlobal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-4 shadow-lg border-0">
-            <div class="modal-header bg-dark text-white p-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 bg-white bg-opacity-20 rounded-3 text-warning">
-                        <i class="fa fa-truck-moving fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fs-6 fw-bold mb-0">Directorio de Proveedores Mayoristas</h5>
-                        <small class="text-white-50">Empresas homologadas con condición HABIDO ante SUNAT</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-3 p-md-4">
-                <div class="table-responsive border rounded-3">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light small text-muted text-uppercase">
-                            <tr>
-                                <th>RUC</th>
-                                <th>Razón Social</th>
-                                <th>Rubro Comercial</th>
-                                <th>Dirección</th>
-                                <th class="text-center">Condición</th>
-                            </tr>
-                        </thead>
-                        <tbody class="small">
-                            <tr>
-                                <td><strong>20100070970</strong></td>
-                                <td class="fw-bold">CORPORACION DISTRIBUIDORA FERRETERA S.A.C.</td>
-                                <td><span class="badge bg-primary-subtle text-primary">Ferretería & Construcción</span></td>
-                                <td>Av. Elmer Faucett 1980, Callao</td>
-                                <td class="text-center"><span class="badge bg-success">HABIDO</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>20489120491</strong></td>
-                                <td class="fw-bold">INDECO CONDUCTORES ELECTRICOS S.A.</td>
-                                <td><span class="badge bg-warning-subtle text-warning">Conductores & Cables</span></td>
-                                <td>Av. Materiales 3050, Callao</td>
-                                <td class="text-center"><span class="badge bg-success">HABIDO</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>20348911029</strong></td>
-                                <td class="fw-bold">ROBERT BOSCH S.A. DEL PERU</td>
-                                <td><span class="badge bg-danger-subtle text-danger">Maquinaria & Eléctricas</span></td>
-                                <td>Av. Primavera 120, Surco</td>
-                                <td class="text-center"><span class="badge bg-success">HABIDO</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-dark btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalProveedoresGlobal')).hide(); openConsultaRucModal();">
-                    <i class="fa fa-building-flag me-1"></i> + Buscar Proveedor en SUNAT
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal 5: SIRE SUNAT Oficial Interactivo Global -->
-<div class="modal fade" id="modalSireGlobal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-4 shadow-lg border-0">
-            <div class="modal-header bg-primary text-white p-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 bg-white bg-opacity-20 rounded-3">
-                        <i class="fa fa-book-bookmark fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fs-6 fw-bold mb-0">Sistema SIRE SUNAT (RVIE & RCE)</h5>
-                        <small class="text-white-50">Sincronización en línea con los servidores de SUNAT</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-3 p-md-4">
-                <ul class="nav nav-pills nav-fill mb-3" id="sireTabs" role="tablist">
-                    <li class="nav-item">
-                        <button class="nav-link active fw-bold" id="rvie-tab" data-bs-toggle="tab" data-bs-target="#rvie-content" type="button">
-                            <i class="fa fa-arrow-trend-up me-1"></i> RVIE (Ventas)
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link fw-bold" id="rce-tab" data-bs-toggle="tab" data-bs-target="#rce-content" type="button">
-                            <i class="fa fa-cart-shopping me-1"></i> RCE (Compras)
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link fw-bold" id="liq-tab" data-bs-toggle="tab" data-bs-target="#liq-content" type="button">
-                            <i class="fa fa-scale-balanced me-1"></i> Liquidación IGV
-                        </button>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="rvie-content">
-                        <div class="p-3 bg-light rounded-3 border mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Total Comprobantes RVIE:</span>
-                                <strong>38 emitidos</strong>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Base Imponible de Ventas:</span>
-                                <strong class="text-primary">S/ 32,559.32</strong>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>I-G-V Débito Fiscal:</span>
-                                <strong class="text-warning">S/ 5,860.68</strong>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-bold">Total Facturado Setiembre:</span>
-                                <strong class="text-success fs-5">S/ 38,420.00</strong>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-success btn-sm w-50 fw-bold" onclick="aceptarSirePropuesta('RVIE')">
-                                <i class="fa fa-check-double me-1"></i> Aceptar Propuesta SUNAT
-                            </button>
-                            <button type="button" class="btn btn-outline-primary btn-sm w-50 fw-bold" onclick="descargarSireTxt('RVIE')">
-                                <i class="fa fa-file-arrow-down me-1"></i> Descargar TXT RVIE
-                            </button>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="rce-content">
-                        <div class="p-3 bg-light rounded-3 border mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Total Facturas de Compra:</span>
-                                <strong>12 recibidas</strong>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Base Imponible de Costos:</span>
-                                <strong class="text-primary">S/ 12,076.27</strong>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>I-G-V Crédito Fiscal:</span>
-                                <strong class="text-success">S/ 2,173.73</strong>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-bold">Total Egresos Insumos:</span>
-                                <strong class="text-danger fs-5">S/ 14,250.00</strong>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-success btn-sm w-50 fw-bold" onclick="aceptarSirePropuesta('RCE')">
-                                <i class="fa fa-check-double me-1"></i> Aceptar Propuesta RCE
-                            </button>
-                            <button type="button" class="btn btn-outline-primary btn-sm w-50 fw-bold" onclick="descargarSireTxt('RCE')">
-                                <i class="fa fa-file-arrow-down me-1"></i> Descargar TXT RCE
-                            </button>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="liq-content">
-                        <div class="p-3 bg-light rounded-3 border mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>IGV Ventas (A favor del fisco):</span>
-                                <span class="text-danger fw-bold">+ S/ 5,860.68</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Crédito Fiscal Compras (A favor de la empresa):</span>
-                                <span class="text-success fw-bold">- S/ 2,173.73</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between p-2 bg-warning bg-opacity-25 rounded-2">
-                                <span class="fw-bold">Impuesto Estimado a Pagar SUNAT:</span>
-                                <strong class="text-dark fs-5">S/ 3,686.95</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer bg-light p-2">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <a href="https://sire.sunat.gob.pe/" target="_blank" class="btn btn-primary btn-sm fw-bold">
-                    <i class="fa fa-arrow-up-right-from-square me-1"></i> Ir a Portal SUNAT SIRE
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal 6: Ticket Térmico Impreso Interactivo Global -->
+<!-- Modal Global: Ticket Térmico Impreso Interactivo -->
 <div class="modal fade" id="modalTicketGlobal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
         <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
@@ -1276,428 +1084,19 @@
     </div>
 </div>
 
-<!-- Bootstrap JS -->
+<!-- Bootstrap 5.3 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- SweetAlert2 -->
+
+<!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Scripts ContaSmart -->
-<script src="assets/js/main.js"></script>
-<script src="assets/js/conta_ai.js"></script>
 
-<script>
-// Inicializar Gráficos con Chart.js
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Gráfico Flujo de Caja
-    const ctxVentas = document.getElementById('chartVentasCompras');
-    if (ctxVentas) {
-        new Chart(ctxVentas, {
-            type: 'bar',
-            data: {
-                labels: ['Abr 2024', 'May 2024', 'Jun 2024', 'Jul 2024', 'Ago 2024', 'Set 2024'],
-                datasets: [
-                    {
-                        label: 'Ventas (Ingresos)',
-                        data: [28400, 31200, 34500, 29800, 36200, 38420],
-                        backgroundColor: '#2563eb',
-                        borderRadius: 6
-                    },
-                    {
-                        label: 'Compras & Costos',
-                        data: [12100, 14300, 15800, 11900, 13400, 14250],
-                        backgroundColor: '#f59e0b',
-                        borderRadius: 6
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' }
-                }
-            }
-        });
-    }
+<!-- Custom Main JS -->
+<script src="assets/js/main.js?v=6.0"></script>
 
-    // 2. Gráfico Donut de Salud de Inventario
-    const ctxDonut = document.getElementById('chartDonutInventario');
-    if (ctxDonut) {
-        new Chart(ctxDonut, {
-            type: 'doughnut',
-            data: {
-                labels: ['En Stock Óptimo', 'Stock Bajo', 'Agotados'],
-                datasets: [{
-                    data: [6, 2, 0],
-                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                cutout: '70%'
-            }
-        });
-    }
+<!-- ContaSmart AI Assistant Siri (Cache-busting) -->
+<script src="assets/js/conta_ai.js?v=6.0"></script>
 
-    // Toggle de Menú (3 rayitas / puntitos) en Celulares y Desktop
-    const toggleBtn = document.getElementById('sidebarToggleBtn');
-    const closeBtn = document.getElementById('sidebarCloseBtn');
-    const sidebar = document.querySelector('.app-sidebar');
-    const backdrop = document.getElementById('sidebarBackdrop');
-
-    if (toggleBtn) {
-        toggleBtn.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.innerWidth <= 992) {
-                if (sidebar) sidebar.classList.toggle('show');
-                if (backdrop) backdrop.classList.toggle('show');
-                document.body.classList.toggle('sidebar-open');
-            } else {
-                document.body.classList.toggle('sidebar-collapsed');
-            }
-        };
-    }
-    if (closeBtn) {
-        closeBtn.onclick = () => {
-            if (sidebar) sidebar.classList.remove('show');
-            if (backdrop) backdrop.classList.remove('show');
-            document.body.classList.remove('sidebar-open');
-        };
-    }
-    if (backdrop) {
-        backdrop.onclick = () => {
-            if (sidebar) sidebar.classList.remove('show');
-            if (backdrop) backdrop.classList.remove('show');
-            document.body.classList.remove('sidebar-open');
-        };
-    }
-});
-
-// Helpers de Interacción
-function scrollSection(id) {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function openPosModal() {
-    const m = new bootstrap.Modal(document.getElementById('modalPosGlobal'));
-    m.show();
-}
-
-function simulateSale() {
-    const mEl = document.getElementById('modalPosGlobal');
-    if (mEl) {
-        const inst = bootstrap.Modal.getInstance(mEl);
-        if (inst) inst.hide();
-    }
-    const sel = document.getElementById('posSelectProd');
-    const prodName = sel ? sel.options[sel.selectedIndex].text.split('-')[0].trim() : 'Taladro Percutor Bosch';
-    const prodPrice = sel ? sel.value : '245.00';
-
-    Swal.fire({
-        icon: 'success',
-        title: '¡Venta Registrada Exitosamente!',
-        html: `<strong>Boleta B001-000429</strong> emitida con éxito por <strong>S/ ${parseFloat(prodPrice).toFixed(2)}</strong>.<br><small class="text-muted">Stock descontado en Kardex y anotado en SIRE RVIE SUNAT.</small>`,
-        showCancelButton: true,
-        confirmButtonColor: '#22c55e',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: '<i class="fa fa-receipt me-1"></i> Ver Ticket Impreso',
-        cancelButtonText: 'Cerrar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            verTicketDemo('B001-000429', '00000000 - CLIENTE VARIOS', prodName, prodPrice, 'Hoy (Ahora)');
-        }
-    });
-}
-
-function openHistoryModal() {
-    const el = document.getElementById('modalHistorialVentasGlobal');
-    if (el) {
-        const m = bootstrap.Modal.getOrCreateInstance(el);
-        m.show();
-    }
-}
-
-function openComprasModal(prod = '') {
-    const el = document.getElementById('modalComprasGlobal');
-    if (el) {
-        const m = bootstrap.Modal.getOrCreateInstance(el);
-        m.show();
-    }
-}
-
-function openClientesModal() {
-    const el = document.getElementById('modalClientesGlobal');
-    if (el) {
-        const m = bootstrap.Modal.getOrCreateInstance(el);
-        m.show();
-    }
-}
-
-function openProveedoresModal() {
-    const el = document.getElementById('modalProveedoresGlobal');
-    if (el) {
-        const m = bootstrap.Modal.getOrCreateInstance(el);
-        m.show();
-    }
-}
-
-function openSireModal() {
-    const el = document.getElementById('modalSireGlobal');
-    if (el) {
-        const m = bootstrap.Modal.getOrCreateInstance(el);
-        m.show();
-    }
-}
-
-function verTicketDemo(num, cliente, producto, total, fecha) {
-    const elNum = document.getElementById('ticketNumero');
-    const elTipo = document.getElementById('ticketTipoDoc');
-    const elCli = document.getElementById('ticketCliente');
-    const elFec = document.getElementById('ticketFecha');
-    const elItems = document.getElementById('ticketItems');
-    const elBase = document.getElementById('ticketBase');
-    const elIgv = document.getElementById('ticketIgv');
-    const elTot = document.getElementById('ticketTotal');
-
-    const totNum = parseFloat(total) || 0;
-    const subNum = (totNum / 1.18).toFixed(2);
-    const igvNum = (totNum - subNum).toFixed(2);
-
-    if (elNum) elNum.textContent = num;
-    if (elTipo) elTipo.textContent = num.startsWith('F') ? 'FACTURA ELECTRÓNICA' : 'BOLETA ELECTRÓNICA';
-    if (elCli) elCli.textContent = cliente || '00000000 - CLIENTE VARIOS';
-    if (elFec) elFec.textContent = fecha || '09/09/2026 18:40';
-    if (elItems) elItems.innerHTML = `<span>1x ${producto}</span><span>S/ ${totNum.toFixed(2)}</span>`;
-    if (elBase) elBase.textContent = `S/ ${subNum}`;
-    if (elIgv) elIgv.textContent = `S/ ${igvNum}`;
-    if (elTot) elTot.textContent = `S/ ${totNum.toFixed(2)}`;
-
-    const modalEl = document.getElementById('modalTicketGlobal');
-    if (modalEl) {
-        const m = bootstrap.Modal.getOrCreateInstance(modalEl);
-        m.show();
-    }
-}
-
-function facturarDirectoCliente(clienteNom) {
-    const clModal = document.getElementById('modalClientesGlobal');
-    if (clModal) {
-        const inst = bootstrap.Modal.getInstance(clModal);
-        if (inst) inst.hide();
-    }
-    openPosModal();
-    const clienteInput = document.querySelector('#modalPosGlobal input[type="text"]');
-    if (clienteInput) clienteInput.value = clienteNom;
-}
-
-function filtrarTablaVentas() {
-    const input = document.getElementById('searchVentasInput');
-    if (!input) return;
-    const query = input.value.toLowerCase();
-    const rows = document.querySelectorAll('#tablaVentasModal tbody tr');
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-    });
-}
-
-function aceptarSirePropuesta(tipo) {
-    Swal.fire({
-        icon: 'success',
-        title: `¡Propuesta ${tipo} Aceptada!`,
-        html: `El registro de <strong>${tipo} SIRE SUNAT</strong> ha sido aceptado y sincronizado con éxito.<br><small class="text-muted">Generado Ticket SUNAT #TK-202609090042</small>`,
-        confirmButtonColor: '#10b981'
-    });
-}
-
-function descargarSireTxt(tipo) {
-    Swal.fire({
-        icon: 'info',
-        title: `Generando Archivo TXT ${tipo}`,
-        html: `Estructura oficial SUNAT R.S. 112-2021 generada: <strong>LE2060123456720260900140400021111.TXT</strong>`,
-        confirmButtonColor: '#2563eb'
-    });
-}
-
-function exportarSireVentasDemo() {
-    descargarSireTxt('RVIE');
-}
-
-function openKardexModal(item) {
-    Swal.fire({
-        icon: 'info',
-        title: `Kardex: ${item}`,
-        html: `
-            <div class="text-start small">
-                <div class="border-bottom pb-2 mb-2">
-                    <strong>Método de Valuación:</strong> Promedio Ponderado (SUNAT Art. 62 LIR)
-                </div>
-                <div class="d-flex justify-content-between mb-1">
-                    <span>🟢 02/09 - Entrada por Compra (F002-004812):</span>
-                    <strong>+20 unids</strong>
-                </div>
-                <div class="d-flex justify-content-between mb-1">
-                    <span>🔴 09/09 - Salida por Venta POS (B001-000428):</span>
-                    <strong class="text-danger">-1 unid</strong>
-                </div>
-                <div class="d-flex justify-content-between border-top pt-1 mt-1 text-primary fw-bold">
-                    <span>Stock Actual Disponible:</span>
-                    <span>19 unids</span>
-                </div>
-            </div>
-        `,
-        confirmButtonColor: '#2563eb'
-    });
-}
-
-// Lógica de Consulta RUC / DNI
-function openConsultaRucModal(tipo = 'RUC', numero = '') {
-    if (numero) {
-        document.getElementById('modalDocNumber').value = numero;
-        if (numero.length === 8) {
-            document.getElementById('docTypeDni').checked = true;
-            switchDocType('DNI');
-        } else {
-            document.getElementById('docTypeRuc').checked = true;
-            switchDocType('RUC');
-        }
-    }
-    const m = new bootstrap.Modal(document.getElementById('modalConsultaRucGlobal'));
-    m.show();
-}
-
-function switchDocType(tipo) {
-    const inp = document.getElementById('modalDocNumber');
-    if (tipo === 'DNI') {
-        inp.placeholder = 'Ingresa DNI de 8 dígitos (Ej: 72488812)';
-        inp.maxLength = 8;
-        if (inp.value.length > 8) inp.value = '72488812';
-    } else {
-        inp.placeholder = 'Ingresa RUC de 11 dígitos (Ej: 20601234567)';
-        inp.maxLength = 11;
-        if (inp.value.length === 8) inp.value = '20601234567';
-    }
-}
-
-function ejecutarConsultaModal() {
-    const num = document.getElementById('modalDocNumber').value.trim().replace(/[^0-9]/g, '');
-    if (num.length !== 8 && num.length !== 11) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Número Inválido',
-            text: 'Debes ingresar un DNI de 8 dígitos o un RUC de 11 dígitos.',
-            confirmButtonColor: '#2563eb'
-        });
-        return;
-    }
-
-    const load = document.getElementById('modalConsultaLoading');
-    const res = document.getElementById('modalConsultaResult');
-    const btn = document.getElementById('btnDoConsultaDoc');
-    load.classList.remove('d-none');
-    btn.disabled = true;
-
-    fetch(`api/consulta_ruc.php?numero=${num}`)
-        .then(r => r.json())
-        .catch(() => null)
-        .then(data => {
-            load.classList.add('d-none');
-            btn.disabled = false;
-
-            let finalData = data;
-            if (!finalData || !finalData.success) {
-                const localDict = {
-                    '20100070970': { nombre: 'SUPERMERCADOS PERUANOS S.A.', direccion: 'CAL. MORELLI NRO. 181 URB. SAN BORJA - LIMA', regimen: 'RÉGIMEN GENERAL (GRAN CONTRIBUYENTE)' },
-                    '20601030013': { nombre: 'REXTIE S.A.C. / DECOLECTA TECNOLOGIAS', direccion: 'AV. JOSE PARDO NRO. 601 PISO 5, MIRAFLORES - LIMA', regimen: 'RÉGIMEN GENERAL (FINTECH)' },
-                    '10460278975': { nombre: 'HUAMANI MENDOZA ERACLEO JUAN', direccion: 'CAL. GARCILASO NRO. 210 - CUSCO', regimen: 'PERSONA NATURAL CON NEGOCIO (RER)' },
-                    '20100128218': { nombre: 'SAGA FALABELLA S.A.', direccion: 'AV. PASEO DE LA REPUBLICA NRO. 3220 - SAN ISIDRO', regimen: 'RÉGIMEN GENERAL' },
-                    '20100047218': { nombre: 'BANCO DE CREDITO DEL PERU', direccion: 'CALLE CENTENARIO NRO. 156, LA MOLINA - LIMA', regimen: 'RÉGIMEN GENERAL (BANCA)' },
-                    '20601234567': { nombre: 'CONTAHERCAR SOLUCIONES COMERCIALES S.A.C.', direccion: 'AV. LA MARINA NRO. 450, PUEBLO LIBRE - LIMA', regimen: 'RÉGIMEN MYPE TRIBUTARIO' },
-                    '20501234589': { nombre: 'IMPORTADORA INDUSTRIAL HERCAR E.I.R.L.', direccion: 'JR. PARURO NRO. 1024, CERCADO DE LIMA', regimen: 'RÉGIMEN MYPE TRIBUTARIO' },
-                    '10702488915': { nombre: 'PINTADO HUAMAN GERSON MISAEL', direccion: 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL', regimen: 'PERSONA NATURAL CON NEGOCIO (MYPE)' },
-                    '45871234': { nombre: 'JUAN CARLOS PÉREZ RÍOS', direccion: 'AV. AREQUIPA NRO. 1420, LINCE - LIMA', regimen: 'PERSONA NATURAL (DNI RENIEC)' },
-                    '45891234': { nombre: 'JUAN CARLOS PÉREZ RÍOS', direccion: 'AV. AREQUIPA NRO. 1420, LINCE - LIMA', regimen: 'PERSONA NATURAL (DNI RENIEC)' },
-                    '70248891': { nombre: 'GERSON MISAEL PINTADO HUAMAN', direccion: 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL', regimen: 'PERSONA NATURAL (DNI RENIEC)' },
-                    '12345678': { nombre: 'MARÍA ELENA GONZALES RAMOS', direccion: 'JR. HUANCAVELICA NRO. 450, LIMA', regimen: 'PERSONA NATURAL (DNI RENIEC)' }
-                };
-
-                if (localDict[num]) {
-                    finalData = {
-                        success: true,
-                        numero: num,
-                        nombre: localDict[num].nombre,
-                        estado: 'ACTIVO',
-                        condicion: 'HABIDO',
-                        direccion: localDict[num].direccion,
-                        regimen: localDict[num].regimen
-                    };
-                } else if (num.length === 11) {
-                    finalData = {
-                        success: true,
-                        numero: num,
-                        nombre: num.startsWith('20') ? `EMPRESA COMERCIAL RUC ${num} S.A.C.` : `CONTRIBUYENTE PERSONA NATURAL (RUC ${num})`,
-                        estado: 'ACTIVO',
-                        condicion: 'HABIDO',
-                        direccion: `AV. PRINCIPAL NRO. ${num.slice(-3)}, LIMA - PERÚ`,
-                        regimen: 'RÉGIMEN MYPE TRIBUTARIO'
-                    };
-                } else {
-                    finalData = {
-                        success: true,
-                        numero: num,
-                        nombre: `CIUDADANO REGISTRADO DNI ${num}`,
-                        estado: 'ACTIVO',
-                        condicion: 'HABIDO',
-                        direccion: `JR. LAS FLORES NRO. ${num.slice(-3)}, LIMA`,
-                        regimen: 'PERSONA NATURAL CON DNI'
-                    };
-                }
-            }
-
-            document.getElementById('resDocBadge').innerHTML = num.length === 11 ? '<i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado' : '<i class="fa fa-id-card me-1"></i>DNI RENIEC Verificado';
-            document.getElementById('resDocEstado').textContent = finalData.estado || 'ACTIVO';
-            document.getElementById('resDocNombre').textContent = finalData.nombre;
-            document.getElementById('resDocNum').textContent = num;
-            document.getElementById('resDocCondicion').textContent = finalData.condicion || 'HABIDO';
-            document.getElementById('resDocDireccion').textContent = finalData.direccion || 'Sin dirección declarada';
-            document.getElementById('resDocRegimen').textContent = finalData.regimen || 'Régimen MYPE Tributario';
-            res.classList.remove('d-none');
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Contribuyente Verificado con Éxito',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        });
-}
-
-function guardarDocModal(tipo) {
-    const nombre = document.getElementById('resDocNombre').textContent;
-    const num = document.getElementById('resDocNum').textContent;
-    Swal.fire({
-        icon: 'success',
-        title: tipo === 'cliente' ? '¡Cliente Registrado!' : '¡Proveedor Registrado!',
-        html: `<strong>${nombre}</strong> (${num}) ha sido guardado exitosamente en el sistema.`,
-        confirmButtonColor: '#2563eb'
-    });
-}
-
-function facturarDocModal() {
-    const nombre = document.getElementById('resDocNombre').textContent;
-    const num = document.getElementById('resDocNum').textContent;
-    bootstrap.Modal.getInstance(document.getElementById('modalConsultaRucGlobal')).hide();
-    openPosModal();
-    const clienteInput = document.querySelector('#modalPosGlobal input[type="text"]');
-    if (clienteInput) clienteInput.value = `${num} - ${nombre}`;
-}
-</script>
 
 </body>
 </html>
+

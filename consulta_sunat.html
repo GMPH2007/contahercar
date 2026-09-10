@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta RUC / SUNAT Oficial &amp; RENIEC - ContaHercar S.A.C.</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS (con cache-buster dinámico) -->
+    <link rel="stylesheet" href="assets/css/style.css?v=6.0">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- Barra Lateral (Sidebar) -->
+    <aside class="app-sidebar">
+    <div class="sidebar-brand d-flex align-items-center justify-content-between">
+        <a href="index.html" class="brand-logo">
+            <i class="fa fa-cubes"></i>
+            <span>ContaHercar</span>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" id="sidebarCloseBtn" aria-label="Cerrar"></button>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="sidebar-header">Principal</li>
+        <li class="sidebar-item">
+            <a href="index.html" class="sidebar-link ">
+                <i class="fa fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="venta_nueva.html" class="sidebar-link ">
+                <i class="fa fa-cash-register text-success"></i>
+                <span>Punto de Venta</span>
+                <span class="badge bg-success ms-auto">POS</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Gestión Comercial</li>
+        <li class="sidebar-item">
+            <a href="ventas.html" class="sidebar-link ">
+                <i class="fa fa-receipt"></i>
+                <span>Historial de Ventas</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="compras.html" class="sidebar-link ">
+                <i class="fa fa-cart-arrow-down"></i>
+                <span>Compras & Gastos</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="inventario.html" class="sidebar-link ">
+                <i class="fa fa-boxes-stacked"></i>
+                <span>Inventario</span>
+                <span class="badge bg-danger ms-auto">2</span>            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="clientes.html" class="sidebar-link ">
+                <i class="fa fa-users"></i>
+                <span>Clientes</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="proveedores.html" class="sidebar-link ">
+                <i class="fa fa-truck-moving"></i>
+                <span>Proveedores</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header d-flex align-items-center justify-content-between">
+            <span>SUNAT & RENIEC</span>
+            <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.6rem;">OFICIAL</span>
+        </li>
+        <li class="sidebar-item">
+            <a href="sire.html" class="sidebar-link ">
+                <i class="fa fa-book-bookmark text-primary"></i>
+                <span>SIRE (RVIE / RCE)</span>
+                <span class="badge bg-primary ms-auto">SIRE</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="consulta_sunat.html" class="sidebar-link active">
+                <i class="fa fa-building-flag text-warning"></i>
+                <span>Consulta RUC / DNI</span>
+                <span class="badge bg-warning text-dark ms-auto">VIVO</span>
+            </a>
+        </li>
+        <!-- Enlaces Web Oficiales en Nueva Pestaña (target="_blank") -->
+        <li class="sidebar-item">
+            <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial SIRE SUNAT en nueva pestaña">
+                <i class="fa fa-globe text-primary"></i>
+                <span>Portal SIRE SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir consulta oficial de RUC en SUNAT en nueva pestaña">
+                <i class="fa fa-magnifying-glass-chart text-warning"></i>
+                <span>Portal RUC SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
+                <i class="fa fa-id-card-clip text-info"></i>
+                <span>Portal RENIEC Oficial</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Sistema</li>
+        <li class="sidebar-item">
+            <a href="reportes.html" class="sidebar-link ">
+                <i class="fa fa-file-invoice-dollar"></i>
+                <span>Reportes & Cierres</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="configuracion.html" class="sidebar-link ">
+                <i class="fa fa-sliders"></i>
+                <span>Configuración & API</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <i class="fa fa-shield-halved text-success"></i>
+        <span>ContaHercar v2.5 • GMPH2007</span>
+    </div>
+</aside>
+
+
+    <!-- Telón de Fondo para Móviles (Backdrop) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Contenido Principal -->
+    <div class="app-main">
+        <!-- Barra Superior (Topbar) -->
+        <header class="app-topbar">
+            <div class="topbar-left">
+                <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" onclick="if(window.toggleSidebar) window.toggleSidebar(event)" aria-label="Abrir Menú (3 rayitas)">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h1 class="page-title">Consulta RUC / SUNAT Oficial &amp; RENIEC</h1>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Indicador de Tipo de Cambio SUNAT (Decolecta) -->
+                <div class="badge bg-light text-secondary border d-none d-lg-flex align-items-center gap-2 py-2 px-3" id="topbarTipoCambio" title="Tipo de Cambio Oficial SUNAT del día">
+                    <i class="fa fa-dollar-sign text-success"></i>
+                    <span class="small fw-semibold" id="tcTexto">USD SUNAT: C: S/. ... | V: S/. ...</span>
+                </div>
+
+                <!-- Indicador de Stock Bajo si hay alertas -->
+                                    <a href="inventario.html" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2" title="Productos con stock bajo">
+                        <i class="fa fa-exclamation-triangle text-warning"></i>
+                        <span class="d-none d-md-inline">Stock Crítico:</span>
+                        <span class="badge bg-warning text-dark">2</span>
+                    </a>
+                
+                <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <i class="fa fa-microphone text-warning"></i>
+                    <span class="fw-bold d-none d-sm-inline">Siri</span>
+                </button>
+
+                <!-- Acceso Rápido a Nueva Venta / POS (Desktop) -->
+                <a href="venta_nueva.html" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm">
+                    <i class="fa fa-cash-register"></i>
+                    <span>POS</span>
+                </a>
+
+                <!-- Acceso Rápido a Nueva Compra -->
+                <a href="compra_nueva.html" class="btn btn-sm btn-outline-secondary d-none d-lg-flex align-items-center gap-1">
+                    <i class="fa fa-cart-arrow-down"></i>
+                    <span>+ Compra</span>
+                </a>
+
+                <!-- Menú de 3 Puntos (Opciones Rápidas) -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 38px; height: 38px;">
+                        <i class="fa fa-ellipsis-vertical text-dark"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
+                        <li>
+                            <a class="dropdown-item py-2" href="consulta_sunat.html">
+                                <i class="fa fa-building-flag text-warning me-2"></i> Consultar RUC / DNI
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();">
+                                <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="venta_nueva.html">
+                                <i class="fa fa-cash-register text-success me-2"></i> Punto de Venta POS
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="inventario.html">
+                                <i class="fa fa-boxes-stacked text-danger me-2"></i> Ver Stock Crítico
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
+                                <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido de la Página -->
+        <main class="app-content">
+
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h4 class="mb-1 text-dark fw-bold">
+            <i class="fa fa-building-flag text-primary me-2"></i>Consulta RUC / SUNAT & DNI en Línea
+        </h4>
+        <p class="text-muted small mb-0">
+            Consulta oficial en tiempo real con datos de SUNAT y RENIEC. Verifique estado tributario, condición de domicilio, razón social y dirección fiscal.
+        </p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+            <i class="fa fa-shield-check me-1"></i> API Decolecta / SUNAT Conectada
+        </span>
+    </div>
+</div>
+
+<!-- Accesos Directos a Portales Oficiales SUNAT / RENIEC / SIRE en Nueva Pestaña -->
+<div class="row g-2 mb-4">
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-building-flag me-2 text-primary"></i>Portal RUC SUNAT</span>
+            <i class="fa fa-arrow-up-right-from-square small text-primary"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-info btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-id-card me-2 text-info"></i>Portal RENIEC Oficial</span>
+            <i class="fa fa-arrow-up-right-from-square small text-info"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="sire.html" target="_blank" class="btn btn-outline-success btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-book-bookmark me-2 text-success"></i>Módulo SIRE Libros</span>
+            <i class="fa fa-arrow-up-right-from-square small text-success"></i>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+        <a href="https://www.sunat.gob.pe/sol.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+            <span class="text-truncate fw-semibold"><i class="fa fa-key me-2 text-secondary"></i>SUNAT Clave SOL</span>
+            <i class="fa fa-arrow-up-right-from-square small text-secondary"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Barra de Búsqueda Principal -->
+<div class="card-custom mb-4 border-primary border-top border-3">
+    <div class="card-custom-body p-4">
+        <form id="formConsultaSunat" onsubmit="realizarConsultaSunat(event)">
+            <div class="row g-3 align-items-center">
+                <div class="col-12 col-md-8">
+                    <label class="form-label fw-bold text-dark mb-1">
+                        Ingrese Número de RUC (11 dígitos) o DNI (8 dígitos):
+                    </label>
+                    <div class="input-group input-group-lg shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 text-primary">
+                            <i class="fa fa-id-card fa-lg"></i>
+                        </span>
+                        <input type="text" 
+                               id="inputDocSunat" 
+                               class="form-control font-monospace fw-bold border-start-0 ps-0 fs-5" 
+                               placeholder="Ej: 20100070970 o 45871234" 
+                               maxlength="11" 
+                               inputmode="numeric"
+                               pattern="[0-9]*"
+                               autocomplete="off"
+                               autofocus
+                               required>
+                        <button type="button" class="btn btn-outline-secondary" onclick="limpiarConsulta()" title="Limpiar">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold" id="btnConsultarSunat">
+                            <i class="fa fa-magnifying-glass me-2"></i> Consultar SUNAT
+                        </button>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label small text-muted mb-1 d-block">Consultas Rápidas de Ejemplo:</label>
+                    <div class="d-flex flex-wrap gap-1">
+                        <button type="button" class="btn btn-sm btn-outline-primary py-1" onclick="consultarEjemplo('20100070970')">
+                            <i class="fa fa-store me-1"></i> Supermercados
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary py-1" onclick="consultarEjemplo('20601030013')">
+                            <i class="fa fa-building me-1"></i> Rextie SAC
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary py-1" onclick="consultarEjemplo('10460278975')">
+                            <i class="fa fa-user-tie me-1"></i> RUC Persona
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary py-1" onclick="consultarEjemplo('45871234')">
+                            <i class="fa fa-user me-1"></i> DNI Reniec
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Estado de Carga -->
+<div id="loadingSunat" class="text-center py-5" style="display: none;">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Consultando SUNAT...</span>
+    </div>
+    <h5 class="mt-3 text-dark fw-bold">Consultando servicio oficial de SUNAT / RENIEC...</h5>
+    <p class="text-muted small">Validando razón social, estado, condición de domicilio y locales anexos.</p>
+</div>
+
+<!-- Tarjeta de Ficha Tributaria Oficial (Resultado) -->
+<div id="fichaSunatContainer" style="display: none;" class="mb-4">
+    <div class="card-custom shadow-sm border-0">
+        <!-- Cabecera de la Ficha -->
+        <div class="card-custom-header bg-light d-flex flex-wrap align-items-center justify-content-between py-3 px-4 gap-2">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                    <i class="fa fa-landmark fs-4" id="fichaIcono"></i>
+                </div>
+                <div>
+                    <span class="badge bg-secondary text-uppercase mb-1" id="fichaBadgeTipo">RUC</span>
+                    <h5 class="mb-0 fw-bold text-dark text-break" id="fichaRazonSocial">-</h5>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge px-3 py-2 fs-6 rounded-pill" id="fichaBadgeEstado">ACTIVO</span>
+                <span class="badge px-3 py-2 fs-6 rounded-pill" id="fichaBadgeCondicion">HABIDO</span>
+            </div>
+        </div>
+
+        <div class="card-custom-body p-4">
+            <!-- Botones de Acción Inmediata -->
+            <div class="p-3 bg-light rounded mb-4 d-flex flex-wrap gap-2 align-items-center justify-content-between">
+                <div class="small fw-semibold text-muted">
+                    <i class="fa fa-bolt text-warning me-1"></i> Acciones Inmediatas para este Contribuyente:
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-sm btn-success fw-semibold" id="btnRegistrarCliente" onclick="guardarDocEnBD('cliente')">
+                        <i class="fa fa-user-plus me-1"></i> Registrar como Cliente
+                    </button>
+                    <button type="button" class="btn btn-sm btn-info text-white fw-semibold" id="btnRegistrarProveedor" onclick="guardarDocEnBD('proveedor')">
+                        <i class="fa fa-truck-moving me-1"></i> Registrar como Proveedor
+                    </button>
+                    <a href="#" class="btn btn-sm btn-primary fw-semibold" id="btnNuevaVentaPos">
+                        <i class="fa fa-cart-shopping me-1"></i> Facturar en POS
+                    </a>
+                    <a href="#" class="btn btn-sm btn-outline-dark fw-semibold" id="btnNuevaCompra">
+                        <i class="fa fa-cart-arrow-down me-1"></i> Registrar Compra
+                    </a>
+                    <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary fw-semibold" id="btnVerificarSunatOficial" title="Abrir en Portal SUNAT / RENIEC Oficial en nueva pestaña">
+                        <i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en SUNAT Oficial ↗
+                    </a>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()" title="Imprimir Ficha">
+                        <i class="fa fa-print"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Datos Tributarios Principales -->
+            <div class="row g-4">
+                <div class="col-12 col-md-6">
+                    <h6 class="text-primary fw-bold text-uppercase border-bottom pb-2 mb-3">
+                        <i class="fa fa-id-card me-1"></i> Identificación del Contribuyente
+                    </h6>
+                    <table class="table table-sm table-borderless mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted fw-semibold" style="width: 40%;">Número de Documento:</td>
+                                <td class="fw-bold font-monospace fs-6 text-dark" id="fichaNumDoc">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Tipo de Contribuyente:</td>
+                                <td class="fw-semibold text-dark" id="fichaTipoContribuyente">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Estado del Contribuyente:</td>
+                                <td id="fichaEstadoDetalle">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Condición del Domicilio:</td>
+                                <td id="fichaCondicionDetalle">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Buen Contribuyente:</td>
+                                <td id="fichaBuenContribuyente"><span class="badge bg-secondary">NO</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Agente de Retención:</td>
+                                <td id="fichaAgenteRetencion"><span class="badge bg-secondary">NO</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <h6 class="text-primary fw-bold text-uppercase border-bottom pb-2 mb-3">
+                        <i class="fa fa-location-dot me-1"></i> Domicilio Fiscal & Ubicación
+                    </h6>
+                    <table class="table table-sm table-borderless mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted fw-semibold" style="width: 35%;">Dirección Fiscal:</td>
+                                <td class="fw-bold text-dark" id="fichaDireccion">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Departamento:</td>
+                                <td class="fw-semibold text-dark" id="fichaDepartamento">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Provincia:</td>
+                                <td class="fw-semibold text-dark" id="fichaProvincia">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Distrito:</td>
+                                <td class="fw-semibold text-dark" id="fichaDistrito">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Código Ubigeo:</td>
+                                <td class="font-monospace text-dark" id="fichaUbigeo">-</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted fw-semibold">Origen de Datos:</td>
+                                <td>
+                                    <span class="badge bg-soft-primary text-primary" id="fichaProveedorApi">SUNAT Oficial</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Locales Anexos (Si existen) -->
+            <div id="seccionLocalesAnexos" style="display: none;" class="mt-4 pt-3 border-top">
+                <h6 class="text-primary fw-bold text-uppercase mb-3">
+                    <i class="fa fa-shop me-1"></i> Locales Anexos / Sucursales Registradas (<span id="totalLocalesAnexos">0</span>)
+                </h6>
+                <div class="table-responsive" style="max-height: 240px; overflow-y: auto;">
+                    <table class="table table-sm table-hover table-striped border">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th>Dirección del Local</th>
+                                <th>Distrito</th>
+                                <th>Provincia</th>
+                                <th>Departamento</th>
+                                <th>Ubigeo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyLocalesAnexos">
+                            <!-- Inyectado vía JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Historial Local de Consultas Recientes -->
+<div class="card-custom">
+    <div class="card-custom-header d-flex align-items-center justify-content-between">
+        <h5 class="fs-6 mb-0">
+            <i class="fa fa-clock-rotate-left text-muted me-2"></i>Historial de Consultas Recientes
+        </h5>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="limpiarHistorialConsultas()">
+            <i class="fa fa-trash me-1"></i> Limpiar Historial
+        </button>
+    </div>
+    <div class="card-custom-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Tipo</th>
+                        <th>Documento</th>
+                        <th>Razón Social / Nombre</th>
+                        <th>Estado</th>
+                        <th>Condición</th>
+                        <th>Fecha de Consulta</th>
+                        <th class="text-end pe-3">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyHistorialConsultas">
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="fa fa-search me-1"></i> Aún no has realizado consultas en esta sesión.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+let contribuyenteActual = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    cargarHistorialConsultas();
+
+    // Si viene parámetro ?ruc= o ?doc= en la URL, consultar automáticamente
+    const urlParams = new URLSearchParams(window.location.search);
+    const docParam = urlParams.get('ruc') || urlParams.get('doc') || urlParams.get('numero');
+    if (docParam) {
+        document.getElementById('inputDocSunat').value = docParam;
+        consultarDocSunat(docParam);
+    }
+});
+
+function consultarEjemplo(num) {
+    document.getElementById('inputDocSunat').value = num;
+    consultarDocSunat(num);
+}
+
+function limpiarConsulta() {
+    document.getElementById('inputDocSunat').value = '';
+    document.getElementById('fichaSunatContainer').style.display = 'none';
+    document.getElementById('inputDocSunat').focus();
+    contribuyenteActual = null;
+}
+
+function realizarConsultaSunat(e) {
+    if (e) e.preventDefault();
+    const doc = document.getElementById('inputDocSunat').value.trim();
+    consultarDocSunat(doc);
+}
+
+function consultarDocSunat(doc) {
+    const num = doc.replace(/\D/g, '');
+    if (num.length !== 8 && num.length !== 11) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Número Inválido',
+            text: 'Debe ingresar un DNI de 8 dígitos o un RUC de 11 dígitos.',
+            confirmButtonText: 'Entendido'
+        });
+        return;
+    }
+
+    const btn = document.getElementById('btnConsultarSunat');
+    const loading = document.getElementById('loadingSunat');
+    const ficha = document.getElementById('fichaSunatContainer');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Consultando...';
+    loading.style.display = 'block';
+    ficha.style.display = 'none';
+
+    fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-magnifying-glass me-2"></i> Consultar SUNAT';
+            loading.style.display = 'none';
+
+            if (!data.success) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No Encontrado',
+                    text: data.message || 'No se pudo obtener información para el documento ingresado.',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+
+            contribuyenteActual = data;
+            mostrarFichaTributaria(data);
+            guardarEnHistorialLocal(data);
+            cargarHistorialConsultas();
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-magnifying-glass me-2"></i> Consultar SUNAT';
+            loading.style.display = 'none';
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Red',
+                text: 'Ocurrió un error al contactar el servidor: ' + err.message,
+                confirmButtonText: 'Aceptar'
+            });
+        });
+}
+
+function mostrarFichaTributaria(d) {
+    document.getElementById('fichaBadgeTipo').textContent = d.tipo;
+    document.getElementById('fichaRazonSocial').textContent = d.nombre;
+    document.getElementById('fichaNumDoc').textContent = d.numero;
+    document.getElementById('fichaTipoContribuyente').textContent = d.tipo_contribuyente || (d.tipo === 'RUC' ? 'PERSONA JURÍDICA' : 'PERSONA NATURAL');
+    
+    // Badges de Estado y Condición
+    const bEstado = document.getElementById('fichaBadgeEstado');
+    const dEstado = document.getElementById('fichaEstadoDetalle');
+    const bCond = document.getElementById('fichaBadgeCondicion');
+    const dCond = document.getElementById('fichaCondicionDetalle');
+
+    const esActivo = (d.estado === 'ACTIVO');
+    bEstado.className = 'badge px-3 py-2 fs-6 rounded-pill ' + (esActivo ? 'bg-success' : 'bg-danger');
+    bEstado.innerHTML = esActivo ? '<i class="fa fa-circle-check me-1"></i> ACTIVO' : '<i class="fa fa-circle-xmark me-1"></i> ' + d.estado;
+    dEstado.innerHTML = `<span class="fw-bold ${esActivo ? 'text-success' : 'text-danger'}">${d.estado}</span>`;
+
+    const esHabido = (d.condicion === 'HABIDO');
+    bCond.className = 'badge px-3 py-2 fs-6 rounded-pill ' + (esHabido ? 'bg-success' : 'bg-warning text-dark');
+    bCond.innerHTML = esHabido ? '<i class="fa fa-house-circle-check me-1"></i> HABIDO' : '<i class="fa fa-triangle-exclamation me-1"></i> ' + d.condicion;
+    dCond.innerHTML = `<span class="fw-bold ${esHabido ? 'text-success' : 'text-warning'}">${d.condicion}</span>`;
+
+    // Buen Contribuyente y Agente de Retención
+    document.getElementById('fichaBuenContribuyente').innerHTML = d.es_buen_contribuyente ? 
+        '<span class="badge bg-success"><i class="fa fa-check me-1"></i> SÍ (Calificado por SUNAT)</span>' : 
+        '<span class="badge bg-secondary">NO</span>';
+
+    document.getElementById('fichaAgenteRetencion').innerHTML = d.es_agente_retencion ? 
+        '<span class="badge bg-primary"><i class="fa fa-check me-1"></i> SÍ (Designado por SUNAT)</span>' : 
+        '<span class="badge bg-secondary">NO</span>';
+
+    // Domicilio Fiscal
+    document.getElementById('fichaDireccion').textContent = d.direccion || 'NO REGISTRADA';
+    document.getElementById('fichaDepartamento').textContent = d.departamento || '-';
+    document.getElementById('fichaProvincia').textContent = d.provincia || '-';
+    document.getElementById('fichaDistrito').textContent = d.distrito || '-';
+    document.getElementById('fichaUbigeo').textContent = d.ubigeo || '-';
+    document.getElementById('fichaProveedorApi').textContent = d.proveedor || 'Decolecta / SUNAT Oficial';
+
+    // Enlaces de Acciones
+    document.getElementById('btnNuevaVentaPos').href = 'venta_nueva.php?ruc=' + encodeURIComponent(d.numero);
+    document.getElementById('btnNuevaCompra').href = 'compra_nueva.php?ruc=' + encodeURIComponent(d.numero);
+
+    const btnVerif = document.getElementById('btnVerificarSunatOficial');
+    if (d.tipo === 'RUC') {
+        btnVerif.href = 'https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp';
+        btnVerif.innerHTML = '<i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en SUNAT Oficial ↗';
+    } else {
+        btnVerif.href = 'https://portaladminusuarios.reniec.gob.pe/';
+        btnVerif.innerHTML = '<i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en RENIEC Oficial ↗';
+    }
+
+    // Locales Anexos
+    const secLocales = document.getElementById('seccionLocalesAnexos');
+    const tbodyLocales = document.getElementById('tbodyLocalesAnexos');
+    if (d.locales_anexos && d.locales_anexos.length > 0) {
+        document.getElementById('totalLocalesAnexos').textContent = d.locales_anexos.length;
+        tbodyLocales.innerHTML = d.locales_anexos.map((loc, idx) => `
+            <tr>
+                <td class="font-monospace text-muted">${idx + 1}</td>
+                <td class="fw-semibold">${loc.direccion || '-'}</td>
+                <td>${loc.distrito || '-'}</td>
+                <td>${loc.provincia || '-'}</td>
+                <td>${loc.departamento || '-'}</td>
+                <td class="font-monospace">${loc.ubigeo || '-'}</td>
+            </tr>
+        `).join('');
+        secLocales.style.display = 'block';
+    } else {
+        secLocales.style.display = 'none';
+    }
+
+    document.getElementById('fichaSunatContainer').style.display = 'block';
+    document.getElementById('fichaSunatContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function guardarDocEnBD(contexto) {
+    if (!contribuyenteActual) return;
+    const doc = contribuyenteActual.numero;
+    const nombre = contribuyenteActual.nombre;
+
+    Swal.fire({
+        title: `¿Registrar como ${contexto === 'cliente' ? 'Cliente' : 'Proveedor'}?`,
+        html: `Se registrará en la base de datos local a:<br><strong>${nombre}</strong> (Doc: <code>${doc}</code>)`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, Registrar',
+        cancelButtonText: 'Cancelar'
+    }).then(res => {
+        if (!res.isConfirmed) return;
+
+        fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(doc)}&contexto=${contexto}&auto_guardar=1`)
+            .then(r => r.json())
+            .then(resp => {
+                if (resp.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registrado con Éxito',
+                        text: resp.mensaje || `Se guardó correctamente en el catálogo de ${contexto}s.`,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire('Error', resp.message || 'No se pudo registrar.', 'error');
+                }
+            })
+            .catch(err => {
+                Swal.fire('Error de Conexión', err.message, 'error');
+            });
+    });
+}
+
+// Manejo del Historial en LocalStorage
+function guardarEnHistorialLocal(d) {
+    let hist = JSON.parse(localStorage.getItem('contahercar_historial_sunat') || '[]');
+    // Eliminar si ya existía para ponerlo primero
+    hist = hist.filter(item => item.numero !== d.numero);
+    hist.unshift({
+        tipo: d.tipo,
+        numero: d.numero,
+        nombre: d.nombre,
+        estado: d.estado,
+        condicion: d.condicion,
+        fecha: new Date().toLocaleString()
+    });
+    // Guardar hasta 15
+    if (hist.length > 15) hist.pop();
+    localStorage.setItem('contahercar_historial_sunat', JSON.stringify(hist));
+}
+
+function cargarHistorialConsultas() {
+    const tbody = document.getElementById('tbodyHistorialConsultas');
+    const hist = JSON.parse(localStorage.getItem('contahercar_historial_sunat') || '[]');
+
+    if (hist.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-4 text-muted">
+                    <i class="fa fa-search me-1"></i> Aún no has realizado consultas en este navegador.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = hist.map(item => `
+        <tr>
+            <td class="ps-3"><span class="badge bg-secondary">${item.tipo}</span></td>
+            <td class="font-monospace fw-bold">${item.numero}</td>
+            <td class="fw-semibold text-truncate" style="max-width: 250px;">${item.nombre}</td>
+            <td><span class="badge ${item.estado === 'ACTIVO' ? 'bg-success' : 'bg-danger'}">${item.estado}</span></td>
+            <td><span class="badge ${item.condicion === 'HABIDO' ? 'bg-success' : 'bg-warning text-dark'}">${item.condicion}</span></td>
+            <td class="small text-muted">${item.fecha}</td>
+            <td class="text-end pe-3">
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="consultarDocSunat('${item.numero}')" title="Volver a Consultar">
+                    <i class="fa fa-rotate-right me-1"></i> Consultar
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function limpiarHistorialConsultas() {
+    localStorage.removeItem('contahercar_historial_sunat');
+    cargarHistorialConsultas();
+    Swal.fire({
+        icon: 'info',
+        title: 'Historial Limpiado',
+        showConfirmButton: false,
+        timer: 1200
+    });
+}
+</script>
+
+        </main> <!-- Fin .app-content -->
+    </div> <!-- Fin .app-main -->
+</div> <!-- Fin .app-wrapper -->
+
+<!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
+<nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
+    <a href="index.html" class="dock-item ">
+        <i class="fa fa-chart-pie"></i>
+        <span>Inicio</span>
+    </a>
+    <a href="consulta_sunat.html" class="dock-item active" title="Consultar RUC y DNI SUNAT/RENIEC">
+        <i class="fa fa-building-flag"></i>
+        <span>RUC/DNI</span>
+    </a>
+    <a href="venta_nueva.html" class="dock-item dock-item-pos " title="Punto de Venta POS Móvil">
+        <div class="dock-pos-icon">
+            <i class="fa fa-cash-register"></i>
+        </div>
+        <span>POS</span>
+    </a>
+    <button type="button" class="dock-item" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart">
+        <i class="fa fa-microphone-lines text-info"></i>
+        <span>Siri AI</span>
+    </button>
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : (document.getElementById('sidebarToggleBtn') ? document.getElementById('sidebarToggleBtn').click() : null)" title="Menú Principal (3 Rayitas)">
+        <i class="fa fa-bars"></i>
+        <span>Menú</span>
+    </button>
+</nav>
+
+<!-- Modal Global para Kardex de Productos -->
+<div class="modal fade" id="modalKardexGlobal" tabindex="-1" aria-labelledby="kardexModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6" id="kardexModalTitle">Historial de Kardex</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="kardexModalContent">
+                <!-- Se llena vía AJAX -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Global Interactivo para POS Rápido / Flotante -->
+<div class="modal fade" id="modalPosGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fs-6"><i class="fa fa-cash-register me-2"></i>Punto de Venta (POS) Rápido Flotante</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Cliente:</label>
+                    <input type="text" class="form-control" value="00000000 - CLIENTE VARIOS / GENERAL">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Producto a Facturar:</label>
+                    <select class="form-select" id="posSelectProd">
+                        <option value="245">Taladro Percutor Bosch - S/. 245.00</option>
+                        <option value="285">Amoladora Angular Dewalt - S/. 285.00</option>
+                        <option value="24">Cinta Métrica 5m Stanley - S/. 24.00</option>
+                        <option value="160">Cable Mellizo 2x14 Indeco - S/. 160.00</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between p-3 bg-light rounded-3 mb-3 border">
+                    <span class="fw-bold">Total a Cobrar:</span>
+                    <strong class="text-success fs-5" id="posTotalLabel">S/. 245.00</strong>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success py-2 fw-bold" onclick="simulateSale()">
+                        <i class="fa fa-print me-1"></i> Emitir Boleta Rápida
+                    </button>
+                    <a href="venta_nueva.html" class="btn btn-outline-primary py-2 fw-semibold">
+                        <i class="fa fa-arrow-up-right-from-square me-1"></i> Ir a Pantalla Completa de POS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Interactivo Global: Consulta RUC / DNI SUNAT & RENIEC -->
+<div class="modal fade" id="modalConsultaRucGlobal" tabindex="-1" aria-labelledby="modalRucTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-dark text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-warning bg-opacity-25 rounded-3 text-warning">
+                        <i class="fa fa-building-flag fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0" id="modalRucTitle">Consulta Oficial RUC & DNI</h5>
+                        <small class="text-white-50" style="font-size: 0.72rem;">Sincronizado con SUNAT & RENIEC (En Vivo)</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeRuc" checked onchange="switchDocType('RUC')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeRuc">RUC (11 dígitos)</label>
+                    
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeDni" onchange="switchDocType('DNI')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeDni">DNI (8 dígitos)</label>
+                </div>
+
+                <div class="input-group mb-3 shadow-sm">
+                    <span class="input-group-text bg-light text-muted"><i class="fa fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control form-control-lg fs-6 font-monospace" id="modalDocNumber" placeholder="Ingresa RUC (Ej: 20601234567)" maxlength="11" inputmode="numeric" value="20601234567">
+                    <button class="btn btn-primary fw-bold px-3" type="button" id="btnDoConsultaDoc" onclick="ejecutarConsultaModal()">
+                        <i class="fa fa-search me-1"></i> Consultar
+                    </button>
+                </div>
+
+                <div id="modalConsultaLoading" class="text-center py-3 d-none">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                    <span class="small text-muted">Consultando padrón tributario oficial...</span>
+                </div>
+
+                <!-- Resultado de la Consulta -->
+                <div id="modalConsultaResult" class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-success" id="resDocBadge"><i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" id="resDocEstado">ACTIVO</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1" id="resDocNombre">CORPORACIÓN INDUSTRIAL HERCAR S.A.C.</h6>
+                    <div class="small text-muted mb-2" id="resDocDetalles">
+                        <div><strong>Número:</strong> <span id="resDocNum">20601234567</span> | <strong>Condición:</strong> <span class="text-success fw-bold" id="resDocCondicion">HABIDO</span></div>
+                        <div><strong>Dirección:</strong> <span id="resDocDireccion">Av. Nicolás Arriola 1450, Urb. Santa Catalina, La Victoria, Lima</span></div>
+                        <div><strong>Régimen:</strong> <span id="resDocRegimen">Régimen MYPE Tributario</span></div>
+                    </div>
+                    <div class="d-grid gap-2 pt-2 border-top">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary w-50 fw-bold" onclick="guardarDocModal('cliente')">
+                                <i class="fa fa-user-plus me-1"></i> Guardar Cliente
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-50 fw-bold" onclick="guardarDocModal('proveedor')">
+                                <i class="fa fa-truck-moving me-1"></i> Guardar Proveedor
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-success fw-bold" onclick="facturarDocModal()">
+                            <i class="fa fa-cash-register me-1"></i> Facturar en POS a este Contribuyente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Modal Global: Ticket Térmico Impreso Interactivo -->
+<div class="modal fade" id="modalTicketGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
+        <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
+            <div class="modal-header bg-dark text-white p-2">
+                <h6 class="modal-title small fw-bold mb-0"><i class="fa fa-receipt me-1"></i>Ticket Electrónico Impreso</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white" id="ticketPrintArea" style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: #111;">
+                <div class="text-center mb-3">
+                    <div class="fw-bold fs-6">HERCAR COMERCIAL S.A.C.</div>
+                    <div>RUC: 20601234567</div>
+                    <div class="small">Av. Principal 123 - Lima, Perú</div>
+                    <div class="border-bottom my-2"></div>
+                    <div class="fw-bold text-uppercase" id="ticketTipoDoc">BOLETA ELECTRÓNICA</div>
+                    <div class="fw-bold" id="ticketNumero">B001-000428</div>
+                    <div class="text-muted small" id="ticketFecha">09/09/2026 18:40</div>
+                </div>
+                <div class="mb-2">
+                    <strong>Cliente:</strong> <span id="ticketCliente">CLIENTE VARIOS</span>
+                </div>
+                <div class="border-bottom border-top py-2 my-2">
+                    <div class="d-flex justify-content-between fw-bold mb-1">
+                        <span>Cant. / Detalle</span>
+                        <span>Total</span>
+                    </div>
+                    <div class="d-flex justify-content-between" id="ticketItems">
+                        <span>1x Taladro Bosch 650W</span>
+                        <span>S/ 245.00</span>
+                    </div>
+                </div>
+                <div class="text-end mb-3">
+                    <div>Op. Gravada: <span id="ticketBase">S/ 207.63</span></div>
+                    <div>IGV (18%): <span id="ticketIgv">S/ 37.37</span></div>
+                    <div class="fs-6 fw-bold border-top pt-1 mt-1">TOTAL: <span id="ticketTotal">S/ 245.00</span></div>
+                </div>
+                <div class="text-center">
+                    <div class="p-2 border rounded d-inline-block bg-light mb-2">
+                        <i class="fa fa-qrcode fa-4x text-dark"></i>
+                    </div>
+                    <div class="small text-muted" style="font-size: 0.65rem;">
+                        Representación impresa de Comprobante Electrónico.<br>
+                        Autorizado por SUNAT mediante RS 097-2012.<br>
+                        <strong>Hash: a7F8e9K2mP9==</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="window.print()">
+                    <i class="fa fa-print me-1"></i> Imprimir Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Custom Main JS -->
+<script src="assets/js/main.js?v=6.0"></script>
+
+<!-- ContaSmart AI Assistant Siri (Cache-busting) -->
+<script src="assets/js/conta_ai.js?v=6.0"></script>
+
+
+</body>
+</html>
+
+

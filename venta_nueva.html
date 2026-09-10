@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta (POS) - Nueva Venta - ContaHercar S.A.C.</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS (con cache-buster dinámico) -->
+    <link rel="stylesheet" href="assets/css/style.css?v=6.0">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- Barra Lateral (Sidebar) -->
+    <aside class="app-sidebar">
+    <div class="sidebar-brand d-flex align-items-center justify-content-between">
+        <a href="index.html" class="brand-logo">
+            <i class="fa fa-cubes"></i>
+            <span>ContaHercar</span>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" id="sidebarCloseBtn" aria-label="Cerrar"></button>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="sidebar-header">Principal</li>
+        <li class="sidebar-item">
+            <a href="index.html" class="sidebar-link ">
+                <i class="fa fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="venta_nueva.html" class="sidebar-link active">
+                <i class="fa fa-cash-register text-success"></i>
+                <span>Punto de Venta</span>
+                <span class="badge bg-success ms-auto">POS</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Gestión Comercial</li>
+        <li class="sidebar-item">
+            <a href="ventas.html" class="sidebar-link ">
+                <i class="fa fa-receipt"></i>
+                <span>Historial de Ventas</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="compras.html" class="sidebar-link ">
+                <i class="fa fa-cart-arrow-down"></i>
+                <span>Compras & Gastos</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="inventario.html" class="sidebar-link ">
+                <i class="fa fa-boxes-stacked"></i>
+                <span>Inventario</span>
+                <span class="badge bg-danger ms-auto">2</span>            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="clientes.html" class="sidebar-link ">
+                <i class="fa fa-users"></i>
+                <span>Clientes</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="proveedores.html" class="sidebar-link ">
+                <i class="fa fa-truck-moving"></i>
+                <span>Proveedores</span>
+            </a>
+        </li>
+
+        <li class="sidebar-header d-flex align-items-center justify-content-between">
+            <span>SUNAT & RENIEC</span>
+            <span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.6rem;">OFICIAL</span>
+        </li>
+        <li class="sidebar-item">
+            <a href="sire.html" class="sidebar-link ">
+                <i class="fa fa-book-bookmark text-primary"></i>
+                <span>SIRE (RVIE / RCE)</span>
+                <span class="badge bg-primary ms-auto">SIRE</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="consulta_sunat.html" class="sidebar-link ">
+                <i class="fa fa-building-flag text-warning"></i>
+                <span>Consulta RUC / DNI</span>
+                <span class="badge bg-warning text-dark ms-auto">VIVO</span>
+            </a>
+        </li>
+        <!-- Enlaces Web Oficiales en Nueva Pestaña (target="_blank") -->
+        <li class="sidebar-item">
+            <a href="https://sire.sunat.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial SIRE SUNAT en nueva pestaña">
+                <i class="fa fa-globe text-primary"></i>
+                <span>Portal SIRE SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir consulta oficial de RUC en SUNAT en nueva pestaña">
+                <i class="fa fa-magnifying-glass-chart text-warning"></i>
+                <span>Portal RUC SUNAT</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
+                <i class="fa fa-id-card-clip text-info"></i>
+                <span>Portal RENIEC Oficial</span>
+                <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
+            </a>
+        </li>
+
+        <li class="sidebar-header">Sistema</li>
+        <li class="sidebar-item">
+            <a href="reportes.html" class="sidebar-link ">
+                <i class="fa fa-file-invoice-dollar"></i>
+                <span>Reportes & Cierres</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="configuracion.html" class="sidebar-link ">
+                <i class="fa fa-sliders"></i>
+                <span>Configuración & API</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <i class="fa fa-shield-halved text-success"></i>
+        <span>ContaHercar v2.5 • GMPH2007</span>
+    </div>
+</aside>
+
+
+    <!-- Telón de Fondo para Móviles (Backdrop) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Contenido Principal -->
+    <div class="app-main">
+        <!-- Barra Superior (Topbar) -->
+        <header class="app-topbar">
+            <div class="topbar-left">
+                <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" onclick="if(window.toggleSidebar) window.toggleSidebar(event)" aria-label="Abrir Menú (3 rayitas)">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h1 class="page-title">Punto de Venta (POS) - Nueva Venta</h1>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Indicador de Tipo de Cambio SUNAT (Decolecta) -->
+                <div class="badge bg-light text-secondary border d-none d-lg-flex align-items-center gap-2 py-2 px-3" id="topbarTipoCambio" title="Tipo de Cambio Oficial SUNAT del día">
+                    <i class="fa fa-dollar-sign text-success"></i>
+                    <span class="small fw-semibold" id="tcTexto">USD SUNAT: C: S/. ... | V: S/. ...</span>
+                </div>
+
+                <!-- Indicador de Stock Bajo si hay alertas -->
+                                    <a href="inventario.html" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2" title="Productos con stock bajo">
+                        <i class="fa fa-exclamation-triangle text-warning"></i>
+                        <span class="d-none d-md-inline">Stock Crítico:</span>
+                        <span class="badge bg-warning text-dark">2</span>
+                    </a>
+                
+                <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
+                    <i class="fa fa-microphone text-warning"></i>
+                    <span class="fw-bold d-none d-sm-inline">Siri</span>
+                </button>
+
+                <!-- Acceso Rápido a Nueva Venta / POS (Desktop) -->
+                <a href="venta_nueva.html" class="btn btn-sm btn-success d-none d-md-flex align-items-center gap-1 shadow-sm">
+                    <i class="fa fa-cash-register"></i>
+                    <span>POS</span>
+                </a>
+
+                <!-- Acceso Rápido a Nueva Compra -->
+                <a href="compra_nueva.html" class="btn btn-sm btn-outline-secondary d-none d-lg-flex align-items-center gap-1">
+                    <i class="fa fa-cart-arrow-down"></i>
+                    <span>+ Compra</span>
+                </a>
+
+                <!-- Menú de 3 Puntos (Opciones Rápidas) -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center p-2 rounded-3 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Más opciones del sistema (3 puntos)" style="width: 38px; height: 38px;">
+                        <i class="fa fa-ellipsis-vertical text-dark"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1">
+                        <li>
+                            <a class="dropdown-item py-2" href="consulta_sunat.html">
+                                <i class="fa fa-building-flag text-warning me-2"></i> Consultar RUC / DNI
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="javascript:void(0)" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();">
+                                <i class="fa fa-microphone text-primary me-2"></i> Hablar con Siri
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="venta_nueva.html">
+                                <i class="fa fa-cash-register text-success me-2"></i> Punto de Venta POS
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="inventario.html">
+                                <i class="fa fa-boxes-stacked text-danger me-2"></i> Ver Stock Crítico
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item py-2" href="https://sire.sunat.gob.pe/" target="_blank">
+                                <i class="fa fa-globe text-primary me-2"></i> Portal SIRE SUNAT
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido de la Página -->
+        <main class="app-content">
+
+
+<!-- Selector de Pestañas exclusivo para Celulares y Tablets -->
+<div class="d-flex d-lg-none mb-3 gap-2 sticky-top bg-white p-2 border rounded shadow-sm" style="top: 60px; z-index: 1015;">
+    <button type="button" class="btn btn-primary flex-fill fw-bold py-2" id="btnTabProductos" onclick="cambiarTabPos('productos')">
+        <i class="fa fa-boxes-stacked me-1"></i> Catálogo (<span id="countProdMobile">8</span>)
+    </button>
+    <button type="button" class="btn btn-outline-primary flex-fill fw-bold py-2 position-relative" id="btnTabCarrito" onclick="cambiarTabPos('carrito')">
+        <i class="fa fa-cart-shopping me-1"></i> Carrito
+        <span class="badge bg-danger rounded-pill ms-1" id="badgeCartMobile">0</span>
+    </button>
+</div>
+
+<div class="pos-wrapper">
+    <!-- Columna Izquierda: Búsqueda y Selección de Productos -->
+    <div class="pos-products">
+        <div class="card-custom mb-3">
+            <div class="card-custom-body py-3">
+                <div class="row g-2 align-items-center">
+                    <div class="col-12 col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fa fa-barcode text-primary"></i></span>
+                            <input type="text" id="posBusqueda" class="form-control" placeholder="Buscar por código de barras o nombre de producto..." autofocus>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 text-end">
+                        <span class="text-muted small"><i class="fa fa-boxes-stacked me-1"></i> <span id="posTotalDisponibles">8</span> productos disponibles</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catálogo de Productos en Grid -->
+        <div class="row g-2" id="gridProductos" style="max-height: calc(100vh - 220px); overflow-y: auto;">
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="2" 
+                     data-nombre="Amoladora Angular 4-1/2 pulg 850W Dewalt" 
+                     data-codigo="77501002" 
+                     data-precio="285.00" 
+                     data-stock="11" 
+                     data-unidad="UNID"
+                     onclick="agregarAlCarrito({&quot;id&quot;:2,&quot;codigo_barra&quot;:&quot;77501002&quot;,&quot;nombre&quot;:&quot;Amoladora Angular 4-1\/2 pulg 850W Dewalt&quot;,&quot;categoria_id&quot;:2,&quot;descripcion&quot;:&quot;Motor protegido contra la abrasi\u00f3n&quot;,&quot;precio_compra&quot;:&quot;210.00&quot;,&quot;precio_venta&quot;:&quot;285.00&quot;,&quot;stock&quot;:11,&quot;stock_minimo&quot;:4,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 13:14:00&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas El\u00e9ctricas&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501002</span>
+                            <span class="badge bg-success small">
+                                Stock: 11                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Amoladora Angular 4-1/2 pulg 850W Dewalt">
+                            Amoladora Angular 4-1/2 pulg 850W Dewalt                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 285.00</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="7" 
+                     data-nombre="Cable Mellizo 2x14 AWG Indeco (Rollo 100m)" 
+                     data-codigo="77501007" 
+                     data-precio="160.00" 
+                     data-stock="3" 
+                     data-unidad="ROLLO"
+                     onclick="agregarAlCarrito({&quot;id&quot;:7,&quot;codigo_barra&quot;:&quot;77501007&quot;,&quot;nombre&quot;:&quot;Cable Mellizo 2x14 AWG Indeco (Rollo 100m)&quot;,&quot;categoria_id&quot;:4,&quot;descripcion&quot;:&quot;Conductor de cobre electrol\u00edtico recocido&quot;,&quot;precio_compra&quot;:&quot;115.00&quot;,&quot;precio_venta&quot;:&quot;160.00&quot;,&quot;stock&quot;:3,&quot;stock_minimo&quot;:5,&quot;unidad_medida&quot;:&quot;ROLLO&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Electricidad e Iluminaci\u00f3n&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501007</span>
+                            <span class="badge bg-warning text-dark small">
+                                Stock: 3                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Cable Mellizo 2x14 AWG Indeco (Rollo 100m)">
+                            Cable Mellizo 2x14 AWG Indeco (Rollo 100m)                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 160.00</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="5" 
+                     data-nombre="Cinta Métrica 5m / 16ft Global Plus Stanley" 
+                     data-codigo="77501005" 
+                     data-precio="24.00" 
+                     data-stock="4" 
+                     data-unidad="UNID"
+                     onclick="agregarAlCarrito({&quot;id&quot;:5,&quot;codigo_barra&quot;:&quot;77501005&quot;,&quot;nombre&quot;:&quot;Cinta M\u00e9trica 5m \/ 16ft Global Plus Stanley&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Cinta recubierta de pol\u00edmero&quot;,&quot;precio_compra&quot;:&quot;14.50&quot;,&quot;precio_venta&quot;:&quot;24.00&quot;,&quot;stock&quot;:4,&quot;stock_minimo&quot;:10,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 22:19:18&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501005</span>
+                            <span class="badge bg-warning text-dark small">
+                                Stock: 4                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Cinta Métrica 5m / 16ft Global Plus Stanley">
+                            Cinta Métrica 5m / 16ft Global Plus Stanley                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 24.00</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="6" 
+                     data-nombre="Foco LED 12W Luz Blanca E27 Philips" 
+                     data-codigo="77501006" 
+                     data-precio="10.50" 
+                     data-stock="58" 
+                     data-unidad="UNID"
+                     onclick="agregarAlCarrito({&quot;id&quot;:6,&quot;codigo_barra&quot;:&quot;77501006&quot;,&quot;nombre&quot;:&quot;Foco LED 12W Luz Blanca E27 Philips&quot;,&quot;categoria_id&quot;:4,&quot;descripcion&quot;:&quot;Ahorro de energ\u00eda hasta 85%&quot;,&quot;precio_compra&quot;:&quot;6.20&quot;,&quot;precio_venta&quot;:&quot;10.50&quot;,&quot;stock&quot;:58,&quot;stock_minimo&quot;:15,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:53:09&quot;,&quot;categoria_nombre&quot;:&quot;Electricidad e Iluminaci\u00f3n&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501006</span>
+                            <span class="badge bg-success small">
+                                Stock: 58                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Foco LED 12W Luz Blanca E27 Philips">
+                            Foco LED 12W Luz Blanca E27 Philips                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 10.50</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="3" 
+                     data-nombre="Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)" 
+                     data-codigo="77501003" 
+                     data-precio="115.00" 
+                     data-stock="25" 
+                     data-unidad="JGO"
+                     onclick="agregarAlCarrito({&quot;id&quot;:3,&quot;codigo_barra&quot;:&quot;77501003&quot;,&quot;nombre&quot;:&quot;Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Acero cromo vanadio forjado&quot;,&quot;precio_compra&quot;:&quot;75.00&quot;,&quot;precio_venta&quot;:&quot;115.00&quot;,&quot;stock&quot;:25,&quot;stock_minimo&quot;:6,&quot;unidad_medida&quot;:&quot;JGO&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501003</span>
+                            <span class="badge bg-success small">
+                                Stock: 25                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)">
+                            Juego de Llaves Combinadas 8-24mm Stanley (14 pzs)                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 115.00</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="4" 
+                     data-nombre="Martillo Carpintero 16oz Mango Fibra Truper" 
+                     data-codigo="77501004" 
+                     data-precio="36.00" 
+                     data-stock="30" 
+                     data-unidad="UNID"
+                     onclick="agregarAlCarrito({&quot;id&quot;:4,&quot;codigo_barra&quot;:&quot;77501004&quot;,&quot;nombre&quot;:&quot;Martillo Carpintero 16oz Mango Fibra Truper&quot;,&quot;categoria_id&quot;:1,&quot;descripcion&quot;:&quot;Cabeza de acero forjado pulido&quot;,&quot;precio_compra&quot;:&quot;22.00&quot;,&quot;precio_venta&quot;:&quot;36.00&quot;,&quot;stock&quot;:30,&quot;stock_minimo&quot;:8,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas Manuales&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501004</span>
+                            <span class="badge bg-success small">
+                                Stock: 30                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Martillo Carpintero 16oz Mango Fibra Truper">
+                            Martillo Carpintero 16oz Mango Fibra Truper                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 36.00</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="8" 
+                     data-nombre="Silicona Multiuso Transparente 280ml Tekbond" 
+                     data-codigo="77501008" 
+                     data-precio="18.00" 
+                     data-stock="45" 
+                     data-unidad="UNID"
+                     onclick="agregarAlCarrito({&quot;id&quot;:8,&quot;codigo_barra&quot;:&quot;77501008&quot;,&quot;nombre&quot;:&quot;Silicona Multiuso Transparente 280ml Tekbond&quot;,&quot;categoria_id&quot;:3,&quot;descripcion&quot;:&quot;Excelente adherencia para sellados generales&quot;,&quot;precio_compra&quot;:&quot;11.00&quot;,&quot;precio_venta&quot;:&quot;18.00&quot;,&quot;stock&quot;:45,&quot;stock_minimo&quot;:10,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;categoria_nombre&quot;:&quot;Materiales de Construcci\u00f3n&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501008</span>
+                            <span class="badge bg-success small">
+                                Stock: 45                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Silicona Multiuso Transparente 280ml Tekbond">
+                            Silicona Multiuso Transparente 280ml Tekbond                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 18.00</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                            <div class="col-6 col-sm-4 col-md-3 item-card-prod" 
+                     data-id="1" 
+                     data-nombre="Taladro Percutor 1/2 pulg 650W Bosch" 
+                     data-codigo="77501001" 
+                     data-precio="245.00" 
+                     data-stock="18" 
+                     data-unidad="UNID"
+                     onclick="agregarAlCarrito({&quot;id&quot;:1,&quot;codigo_barra&quot;:&quot;77501001&quot;,&quot;nombre&quot;:&quot;Taladro Percutor 1\/2 pulg 650W Bosch&quot;,&quot;categoria_id&quot;:2,&quot;descripcion&quot;:&quot;Taladro con velocidad variable y reversa&quot;,&quot;precio_compra&quot;:&quot;180.00&quot;,&quot;precio_venta&quot;:&quot;245.00&quot;,&quot;stock&quot;:18,&quot;stock_minimo&quot;:5,&quot;unidad_medida&quot;:&quot;UNID&quot;,&quot;estado&quot;:1,&quot;created_at&quot;:&quot;2026-09-07 12:35:43&quot;,&quot;updated_at&quot;:&quot;2026-09-07 12:55:45&quot;,&quot;categoria_nombre&quot;:&quot;Herramientas El\u00e9ctricas&quot;})">
+                    <div class="card h-100 p-2 border shadow-sm cursor-pointer" style="cursor: pointer; transition: transform 0.15s, border-color 0.15s;">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <span class="badge bg-light text-secondary border small font-monospace">77501001</span>
+                            <span class="badge bg-success small">
+                                Stock: 18                            </span>
+                        </div>
+                        <div class="fw-semibold text-dark text-truncate-2 small mb-2" style="height: 38px; overflow: hidden;" title="Taladro Percutor 1/2 pulg 650W Bosch">
+                            Taladro Percutor 1/2 pulg 650W Bosch                        </div>
+                        <div class="d-flex justify-content-between align-items-baseline mt-auto">
+                            <span class="text-primary fw-bold fs-6">S/. 245.00</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+    </div>
+
+    <!-- Columna Derecha: Carrito de Compras y Facturación -->
+    <div class="pos-cart">
+        <form method="POST" action="venta_nueva.php" id="formVentaPos" class="d-flex flex-column h-100">
+            <div class="pos-cart-header">
+                <!-- Botón Volver al Catálogo visible solo en celular -->
+                <button type="button" class="btn btn-sm btn-outline-primary d-lg-none w-100 mb-2 fw-semibold" onclick="cambiarTabPos('productos')">
+                    <i class="fa fa-arrow-left me-1"></i> Seguir Agregando Productos
+                </button>
+
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="mb-0 fw-bold text-dark"><i class="fa fa-cart-shopping text-primary me-1"></i> Carrito de Venta</h6>
+                    <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0" onclick="vaciarCarrito()">
+                        <i class="fa fa-trash-can"></i> Limpiar
+                    </button>
+                </div>
+
+                <!-- Selección y Búsqueda por RUC / DNI de Cliente -->
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label small fw-semibold text-muted mb-0">Cliente:</label>
+                        <button type="button" class="btn btn-sm btn-link text-primary p-0 text-decoration-none small" data-bs-toggle="modal" data-bs-target="#modalClienteRapido">
+                            <i class="fa fa-user-plus"></i> + Alta Manual
+                        </button>
+                    </div>
+
+                    <!-- Buscador Rápido por Número de RUC / DNI con Enter -->
+                    <div class="input-group input-group-sm mb-1">
+                        <span class="input-group-text bg-white"><i class="fa fa-id-card text-primary"></i></span>
+                        <input type="text" id="pos_ruc_rapido" class="form-control font-monospace" placeholder="Ingresar RUC o DNI + Enter..." maxlength="11" inputmode="numeric" pattern="[0-9]*" onkeydown="if(event.key==='Enter'){event.preventDefault(); buscarClientePorRucPos();}">
+                        <button type="button" class="btn btn-primary" id="btnPosBuscarRuc" onclick="buscarClientePorRucPos()" title="Buscar o registrar automáticamente desde SUNAT">
+                            <i class="fa fa-search me-1"></i> Buscar
+                        </button>
+                    </div>
+
+                    <select name="cliente_id" id="pos_cliente_id" class="form-select form-select-sm" required>
+                                                    <option value="1">
+                                CLIENTE VARIOS / GENERAL (00000000)
+                            </option>
+                                                    <option value="3">
+                                CONSTRUCTORA E INMOBILIARIA DEL VALLE S.A.C. (20601987654)
+                            </option>
+                                                    <option value="8">
+                                EMPRESA / RUC 10610197413 S.A.C. (10610197413)
+                            </option>
+                                                    <option value="2">
+                                JUAN CARLOS PÉREZ RÍOS (45891234)
+                            </option>
+                                                    <option value="6">
+                                REXTIE S.A.C. (20601030013)
+                            </option>
+                                            </select>
+                </div>
+
+                <!-- Tipo de Comprobante y Método de Pago -->
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold text-muted mb-0">Comprobante:</label>
+                        <select name="tipo_comprobante" id="pos_tipo_comprobante" class="form-select form-select-sm">
+                            <option value="Boleta">Boleta</option>
+                            <option value="Factura">Factura</option>
+                            <option value="Nota de Venta">Nota Venta</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold text-muted mb-0">Pago:</label>
+                        <select name="metodo_pago" id="pos_metodo_pago" class="form-select form-select-sm">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Yape / Plin">Yape / Plin</option>
+                            <option value="Transferencia">Transferencia</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Artículos en el Carrito -->
+            <div class="pos-cart-items" id="listaCarrito">
+                <div class="text-center py-5 text-muted" id="carritoVacioMsg">
+                    <i class="fa fa-basket-shopping fs-1 mb-2 text-secondary opacity-50"></i>
+                    <p class="small mb-0">Seleccione productos de la izquierda para agregar a la venta.</p>
+                </div>
+            </div>
+
+            <!-- Footer con Totales y Botón Cobrar -->
+            <div class="pos-cart-footer">
+                <div class="d-flex justify-content-between text-muted small py-1">
+                    <span>Subtotal:</span>
+                    <span id="lblPosSubtotal">S/. 0.00</span>
+                </div>
+                <div class="d-flex justify-content-between text-muted small py-1">
+                    <span>IGV (18% incl.):</span>
+                    <span id="lblPosImpuesto">S/. 0.00</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center py-2 border-top mt-1 mb-2">
+                    <span class="fs-5 fw-bold text-dark">TOTAL A PAGAR:</span>
+                    <span class="fs-4 fw-bold text-primary" id="lblPosTotal">S/. 0.00</span>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold d-flex align-items-center justify-content-center gap-2 shadow" id="btnCobrar" disabled>
+                    <i class="fa fa-check-circle fs-5"></i> COBRAR E IMPRIMIR
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Barra Flotante Inferior de Carrito para Celular -->
+<div class="pos-mobile-bar d-lg-none" id="posMobileBar" onclick="cambiarTabPos('carrito')" style="display:none;">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-danger rounded-pill px-2 py-1 fs-6" id="posMobileCount">0</span>
+            <div>
+                <div class="small text-white-50" style="line-height: 1;">Total Carrito</div>
+                <div class="fw-bold fs-6 text-white" id="posMobileTotal">S/. 0.00</div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-light btn-sm fw-bold text-primary px-3 py-2 rounded-pill shadow-sm">
+            Ver Carrito & Cobrar <i class="fa fa-arrow-right ms-1"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Modal Cliente Rápido desde POS con Consulta RUC/DNI -->
+<div class="modal fade" id="modalClienteRapido" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6 fw-bold"><i class="fa fa-user-plus text-primary me-1"></i> Alta Rápida de Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Tipo Doc:</label>
+                    <select id="fast_tipo_doc" class="form-select form-select-sm">
+                        <option value="DNI">DNI (8 dígitos)</option>
+                        <option value="RUC">RUC (11 dígitos)</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Número Documento:</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="fast_num_doc" class="form-control" placeholder="Ingrese número...">
+                        <button type="button" class="btn btn-primary" id="btnFastRuc" onclick="consultarDocumento('fast_num_doc', 'fast_nombre', 'fast_direccion', null, 'btnFastRuc')">
+                            <i class="fa fa-magnifying-glass"></i> Consultar
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Nombre o Razón Social:</label>
+                    <input type="text" id="fast_nombre" class="form-control form-control-sm" placeholder="Razón social o nombres">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Dirección:</label>
+                    <input type="text" id="fast_direccion" class="form-control form-control-sm" placeholder="Dirección">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="guardarClienteRapido()">Guardar y Seleccionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const simboloMoneda = 'S/.';
+const tasaImpuesto = 18;
+let carrito = {};
+
+// Búsqueda en vivo de productos
+document.getElementById('posBusqueda').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    const items = document.querySelectorAll('.item-card-prod');
+    let visibles = 0;
+
+    items.forEach(it => {
+        const nombre = it.dataset.nombre.toLowerCase();
+        const codigo = it.dataset.codigo.toLowerCase();
+        if (nombre.includes(q) || codigo.includes(q)) {
+            it.style.display = '';
+            visibles++;
+        } else {
+            it.style.display = 'none';
+        }
+    });
+
+    document.getElementById('posTotalDisponibles').textContent = visibles;
+});
+
+// Barcode Enter key
+document.getElementById('posBusqueda').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const q = this.value.trim();
+        const item = document.querySelector(`.item-card-prod[data-codigo="${q}"]`);
+        if (item) {
+            item.click();
+            this.value = '';
+            this.dispatchEvent(new Event('input'));
+        } else if (q.length > 0) {
+            // Buscar en catálogo completo del backend si no está visible en el DOM
+            fetch('api/productos_search.php?barcode=' + encodeURIComponent(q))
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.producto) {
+                        agregarAlCarrito(data.producto);
+                        document.getElementById('posBusqueda').value = '';
+                        document.getElementById('posBusqueda').dispatchEvent(new Event('input'));
+                        showToast('success', `Agregado: ${data.producto.nombre}`);
+                    } else {
+                        showToast('warning', `Código de barras "${q}" no encontrado en almacén.`);
+                    }
+                })
+                .catch(() => {
+                    showToast('error', 'Error de lectura de código.');
+                });
+        }
+    }
+});
+
+function agregarAlCarrito(prod) {
+    const id = prod.id;
+    if (carrito[id]) {
+        if (carrito[id].cantidad < prod.stock) {
+            carrito[id].cantidad++;
+        } else {
+            showToast('warning', `Stock máximo alcanzado (${prod.stock} unidades)`);
+            return;
+        }
+    } else {
+        carrito[id] = {
+            id: prod.id,
+            nombre: prod.nombre,
+            codigo: prod.codigo_barra,
+            precio: parseFloat(prod.precio_venta),
+            stock: parseInt(prod.stock),
+            unidad: prod.unidad_medida || 'UNID',
+            cantidad: 1
+        };
+    }
+    renderizarCarrito();
+}
+
+function cambiarCantidad(id, delta) {
+    if (!carrito[id]) return;
+    const nuevaCant = carrito[id].cantidad + delta;
+    if (nuevaCant <= 0) {
+        delete carrito[id];
+    } else if (nuevaCant > carrito[id].stock) {
+        showToast('warning', `Solo hay ${carrito[id].stock} unidades disponibles.`);
+        return;
+    } else {
+        carrito[id].cantidad = nuevaCant;
+    }
+    renderizarCarrito();
+}
+
+function eliminarDelCarrito(id) {
+    if (carrito[id]) {
+        delete carrito[id];
+        renderizarCarrito();
+    }
+}
+
+function vaciarCarrito() {
+    carrito = {};
+    renderizarCarrito();
+}
+
+function renderizarCarrito() {
+    const container = document.getElementById('listaCarrito');
+    const emptyMsg = document.getElementById('carritoVacioMsg');
+    const btnCobrar = document.getElementById('btnCobrar');
+
+    const keys = Object.keys(carrito);
+    const badgeMob = document.getElementById('badgeCartMobile');
+    const posMobCount = document.getElementById('posMobileCount');
+    const posMobTot = document.getElementById('posMobileTotal');
+    const mobBar = document.getElementById('posMobileBar');
+
+    if (keys.length === 0) {
+        container.innerHTML = '';
+        if (emptyMsg) container.appendChild(emptyMsg);
+        document.getElementById('lblPosSubtotal').textContent = simboloMoneda + ' 0.00';
+        document.getElementById('lblPosImpuesto').textContent = simboloMoneda + ' 0.00';
+        document.getElementById('lblPosTotal').textContent = simboloMoneda + ' 0.00';
+        btnCobrar.disabled = true;
+
+        if (badgeMob) badgeMob.textContent = '0';
+        if (posMobCount) posMobCount.textContent = '0';
+        if (posMobTot) posMobTot.textContent = simboloMoneda + ' 0.00';
+        if (mobBar) mobBar.style.display = 'none';
+        return;
+    }
+
+    let html = '';
+    let totalGeneral = 0;
+
+    keys.forEach(k => {
+        const item = carrito[k];
+        const subtotal = item.cantidad * item.precio;
+        totalGeneral += subtotal;
+
+        html += `
+            <div class="cart-item-row">
+                <div style="max-width: 55%;">
+                    <div class="fw-semibold text-dark text-truncate small">${item.nombre}</div>
+                    <small class="text-muted">${item.cantidad} x ${simboloMoneda} ${item.precio.toFixed(2)}</small>
+                    <input type="hidden" name="prod_id[]" value="${item.id}">
+                    <input type="hidden" name="cantidad[]" value="${item.cantidad}">
+                    <input type="hidden" name="precio_unitario[]" value="${item.precio}">
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="cambiarCantidad(${item.id}, -1)">-</button>
+                    <span class="fw-bold small px-1">${item.cantidad}</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="cambiarCantidad(${item.id}, 1)">+</button>
+                </div>
+                <div class="text-end" style="min-width: 75px;">
+                    <div class="fw-bold small text-primary">${simboloMoneda} ${subtotal.toFixed(2)}</div>
+                    <button type="button" class="btn btn-sm text-danger p-0 border-0" onclick="eliminarDelCarrito(${item.id})" title="Quitar">
+                        <i class="fa fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+
+    const subtotalSinImpuesto = totalGeneral / (1 + (tasaImpuesto / 100));
+    const impuesto = totalGeneral - subtotalSinImpuesto;
+
+    document.getElementById('lblPosSubtotal').textContent = simboloMoneda + ' ' + subtotalSinImpuesto.toFixed(2);
+    document.getElementById('lblPosImpuesto').textContent = simboloMoneda + ' ' + impuesto.toFixed(2);
+    document.getElementById('lblPosTotal').textContent = simboloMoneda + ' ' + totalGeneral.toFixed(2);
+    btnCobrar.disabled = false;
+
+    // Actualizar contadores en versión móvil
+    const totalItems = Object.keys(carrito).reduce((acc, k) => acc + carrito[k].cantidad, 0);
+    if (badgeMob) badgeMob.textContent = totalItems;
+    if (posMobCount) posMobCount.textContent = totalItems;
+    if (posMobTot) posMobTot.textContent = simboloMoneda + ' ' + totalGeneral.toFixed(2);
+
+    if (mobBar && window.innerWidth <= 992) {
+        const colProd = document.querySelector('.pos-products');
+        if (colProd && colProd.style.display !== 'none') {
+            mobBar.style.display = (totalItems > 0) ? 'block' : 'none';
+        }
+    }
+}
+
+// Navegación por pestañas en celulares (Catálogo <-> Carrito)
+function cambiarTabPos(tab) {
+    const colProd = document.querySelector('.pos-products');
+    const colCart = document.querySelector('.pos-cart');
+    const btnProd = document.getElementById('btnTabProductos');
+    const btnCart = document.getElementById('btnTabCarrito');
+    const mobBar = document.getElementById('posMobileBar');
+
+    if (window.innerWidth > 992) {
+        if (colProd) colProd.style.display = '';
+        if (colCart) colCart.style.display = '';
+        if (mobBar) mobBar.style.display = 'none';
+        return;
+    }
+
+    if (tab === 'productos') {
+        if (colProd) colProd.style.display = 'block';
+        if (colCart) colCart.style.display = 'none';
+        if (btnProd) {
+            btnProd.classList.add('btn-primary');
+            btnProd.classList.remove('btn-outline-primary');
+        }
+        if (btnCart) {
+            btnCart.classList.add('btn-outline-primary');
+            btnCart.classList.remove('btn-primary');
+        }
+        if (mobBar) {
+            const count = Object.keys(carrito).reduce((acc, k) => acc + carrito[k].cantidad, 0);
+            mobBar.style.display = (count > 0) ? 'block' : 'none';
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        if (colProd) colProd.style.display = 'none';
+        if (colCart) colCart.style.display = 'block';
+        if (btnCart) {
+            btnCart.classList.add('btn-primary');
+            btnCart.classList.remove('btn-outline-primary');
+        }
+        if (btnProd) {
+            btnProd.classList.add('btn-outline-primary');
+            btnProd.classList.remove('btn-primary');
+        }
+        if (mobBar) mobBar.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 992) {
+        const colProd = document.querySelector('.pos-products');
+        const colCart = document.querySelector('.pos-cart');
+        const mobBar = document.getElementById('posMobileBar');
+        if (colProd) colProd.style.display = '';
+        if (colCart) colCart.style.display = '';
+        if (mobBar) mobBar.style.display = 'none';
+    }
+});
+
+// Búsqueda instantánea y registro por RUC / DNI en POS
+function buscarClientePorRucPos() {
+    const input = document.getElementById('pos_ruc_rapido');
+    const btn = document.getElementById('btnPosBuscarRuc');
+    const select = document.getElementById('pos_cliente_id');
+    const num = input.value.trim().replace(/[^0-9]/g, '');
+
+    if (num.length !== 8 && num.length !== 11) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Documento Inválido',
+            text: 'Ingrese un DNI (8 dígitos) o RUC (11 dígitos).',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
+    }
+
+    const originalBtn = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+    fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=cliente&auto_guardar=1`)
+        .then(res => res.json())
+        .then(res => {
+            btn.disabled = false;
+            btn.innerHTML = originalBtn;
+
+            if (res.success && res.data) {
+                const c = res.data;
+                let existeOpcion = false;
+
+                // Buscar si ya existe la opción en el select
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value == c.id || select.options[i].text.includes(c.num_doc)) {
+                        select.selectedIndex = i;
+                        existeOpcion = true;
+                        break;
+                    }
+                }
+
+                if (!existeOpcion && c.id > 0) {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = `${c.nombre} (${c.num_doc})`;
+                    opt.selected = true;
+                    select.appendChild(opt);
+                }
+
+                // Ajustar comprobante automáticamente: Factura si es RUC, Boleta si es DNI
+                const tipoComp = document.getElementById('pos_tipo_comprobante');
+                if (c.tipo_doc === 'RUC') {
+                    tipoComp.value = 'Factura';
+                } else {
+                    tipoComp.value = 'Boleta';
+                }
+
+                showToast('success', res.mensaje);
+                input.value = '';
+            } else {
+                Swal.fire('No Encontrado', res.message || 'No se pudo obtener información del documento.', 'error');
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = originalBtn;
+            Swal.fire('Error', 'Error al procesar la búsqueda por RUC/DNI.', 'error');
+        });
+}
+
+// Guardado rápido de cliente desde modal (con ID real obtenido de BD)
+function guardarClienteRapido() {
+    const tipo = document.getElementById('fast_tipo_doc').value;
+    const num = document.getElementById('fast_num_doc').value.trim();
+    const nombre = document.getElementById('fast_nombre').value.trim();
+    const dir = document.getElementById('fast_direccion').value.trim();
+
+    if (!num || !nombre) {
+        Swal.fire('Atención', 'El número de documento y nombre son requeridos', 'warning');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('numero', num);
+    formData.append('contexto', 'cliente');
+    formData.append('auto_guardar', '1');
+
+    fetch('api/buscar_por_doc.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success && res.data && res.data.id > 0) {
+            const select = document.getElementById('pos_cliente_id');
+            const opt = document.createElement('option');
+            opt.value = res.data.id;
+            opt.textContent = `${res.data.nombre} (${res.data.num_doc})`;
+            opt.selected = true;
+            select.appendChild(opt);
+
+            // Ajustar tipo de comprobante
+            const tipoComp = document.getElementById('pos_tipo_comprobante');
+            tipoComp.value = (res.data.tipo_doc === 'RUC') ? 'Factura' : 'Boleta';
+
+            const modalEl = document.getElementById('modalClienteRapido');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+
+            showToast('success', 'Cliente guardado y seleccionado correctamente.');
+        } else {
+            Swal.fire('Error', 'No se pudo registrar el cliente en base de datos.', 'error');
+        }
+    })
+    .catch(err => {
+        Swal.fire('Error', 'Error al comunicar con el servidor.', 'error');
+    });
+}
+
+// Auto-selección si viene RUC desde consulta_sunat.php
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const rucParam = urlParams.get('ruc') || urlParams.get('doc');
+    if (rucParam) {
+        const inp = document.getElementById('pos_ruc_rapido');
+        if (inp) {
+            inp.value = rucParam;
+            buscarClientePorRucPos();
+        }
+    }
+    if (window.innerWidth <= 992) {
+        cambiarTabPos('productos');
+    }
+});
+</script>
+
+        </main> <!-- Fin .app-content -->
+    </div> <!-- Fin .app-main -->
+</div> <!-- Fin .app-wrapper -->
+
+<!-- Barra Flotante Inferior Moderna para Celular (Dock Móvil de Alta Ergonomía) -->
+<nav class="mobile-bottom-dock d-lg-none" aria-label="Navegación Móvil Rápida">
+    <a href="index.html" class="dock-item ">
+        <i class="fa fa-chart-pie"></i>
+        <span>Inicio</span>
+    </a>
+    <a href="consulta_sunat.html" class="dock-item " title="Consultar RUC y DNI SUNAT/RENIEC">
+        <i class="fa fa-building-flag"></i>
+        <span>RUC/DNI</span>
+    </a>
+    <a href="venta_nueva.html" class="dock-item dock-item-pos active" title="Punto de Venta POS Móvil">
+        <div class="dock-pos-icon">
+            <i class="fa fa-cash-register"></i>
+        </div>
+        <span>POS</span>
+    </a>
+    <button type="button" class="dock-item" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart">
+        <i class="fa fa-microphone-lines text-info"></i>
+        <span>Siri AI</span>
+    </button>
+    <button type="button" class="dock-item" onclick="window.openSidebar ? window.openSidebar() : (document.getElementById('sidebarToggleBtn') ? document.getElementById('sidebarToggleBtn').click() : null)" title="Menú Principal (3 Rayitas)">
+        <i class="fa fa-bars"></i>
+        <span>Menú</span>
+    </button>
+</nav>
+
+<!-- Modal Global para Kardex de Productos -->
+<div class="modal fade" id="modalKardexGlobal" tabindex="-1" aria-labelledby="kardexModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6" id="kardexModalTitle">Historial de Kardex</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="kardexModalContent">
+                <!-- Se llena vía AJAX -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Global Interactivo para POS Rápido / Flotante -->
+<div class="modal fade" id="modalPosGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fs-6"><i class="fa fa-cash-register me-2"></i>Punto de Venta (POS) Rápido Flotante</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Cliente:</label>
+                    <input type="text" class="form-control" value="00000000 - CLIENTE VARIOS / GENERAL">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Producto a Facturar:</label>
+                    <select class="form-select" id="posSelectProd">
+                        <option value="245">Taladro Percutor Bosch - S/. 245.00</option>
+                        <option value="285">Amoladora Angular Dewalt - S/. 285.00</option>
+                        <option value="24">Cinta Métrica 5m Stanley - S/. 24.00</option>
+                        <option value="160">Cable Mellizo 2x14 Indeco - S/. 160.00</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between p-3 bg-light rounded-3 mb-3 border">
+                    <span class="fw-bold">Total a Cobrar:</span>
+                    <strong class="text-success fs-5" id="posTotalLabel">S/. 245.00</strong>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success py-2 fw-bold" onclick="simulateSale()">
+                        <i class="fa fa-print me-1"></i> Emitir Boleta Rápida
+                    </button>
+                    <a href="venta_nueva.html" class="btn btn-outline-primary py-2 fw-semibold">
+                        <i class="fa fa-arrow-up-right-from-square me-1"></i> Ir a Pantalla Completa de POS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Interactivo Global: Consulta RUC / DNI SUNAT & RENIEC -->
+<div class="modal fade" id="modalConsultaRucGlobal" tabindex="-1" aria-labelledby="modalRucTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-dark text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-warning bg-opacity-25 rounded-3 text-warning">
+                        <i class="fa fa-building-flag fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0" id="modalRucTitle">Consulta Oficial RUC & DNI</h5>
+                        <small class="text-white-50" style="font-size: 0.72rem;">Sincronizado con SUNAT & RENIEC (En Vivo)</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeRuc" checked onchange="switchDocType('RUC')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeRuc">RUC (11 dígitos)</label>
+                    
+                    <input type="radio" class="btn-check" name="docTypeRadio" id="docTypeDni" onchange="switchDocType('DNI')">
+                    <label class="btn btn-outline-primary fw-semibold" for="docTypeDni">DNI (8 dígitos)</label>
+                </div>
+
+                <div class="input-group mb-3 shadow-sm">
+                    <span class="input-group-text bg-light text-muted"><i class="fa fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control form-control-lg fs-6 font-monospace" id="modalDocNumber" placeholder="Ingresa RUC (Ej: 20601234567)" maxlength="11" inputmode="numeric" value="20601234567">
+                    <button class="btn btn-primary fw-bold px-3" type="button" id="btnDoConsultaDoc" onclick="ejecutarConsultaModal()">
+                        <i class="fa fa-search me-1"></i> Consultar
+                    </button>
+                </div>
+
+                <div id="modalConsultaLoading" class="text-center py-3 d-none">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                    <span class="small text-muted">Consultando padrón tributario oficial...</span>
+                </div>
+
+                <!-- Resultado de la Consulta -->
+                <div id="modalConsultaResult" class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-success" id="resDocBadge"><i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" id="resDocEstado">ACTIVO</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1" id="resDocNombre">CORPORACIÓN INDUSTRIAL HERCAR S.A.C.</h6>
+                    <div class="small text-muted mb-2" id="resDocDetalles">
+                        <div><strong>Número:</strong> <span id="resDocNum">20601234567</span> | <strong>Condición:</strong> <span class="text-success fw-bold" id="resDocCondicion">HABIDO</span></div>
+                        <div><strong>Dirección:</strong> <span id="resDocDireccion">Av. Nicolás Arriola 1450, Urb. Santa Catalina, La Victoria, Lima</span></div>
+                        <div><strong>Régimen:</strong> <span id="resDocRegimen">Régimen MYPE Tributario</span></div>
+                    </div>
+                    <div class="d-grid gap-2 pt-2 border-top">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-primary w-50 fw-bold" onclick="guardarDocModal('cliente')">
+                                <i class="fa fa-user-plus me-1"></i> Guardar Cliente
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-50 fw-bold" onclick="guardarDocModal('proveedor')">
+                                <i class="fa fa-truck-moving me-1"></i> Guardar Proveedor
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-success fw-bold" onclick="facturarDocModal()">
+                            <i class="fa fa-cash-register me-1"></i> Facturar en POS a este Contribuyente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Modal Global: Ticket Térmico Impreso Interactivo -->
+<div class="modal fade" id="modalTicketGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
+        <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
+            <div class="modal-header bg-dark text-white p-2">
+                <h6 class="modal-title small fw-bold mb-0"><i class="fa fa-receipt me-1"></i>Ticket Electrónico Impreso</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white" id="ticketPrintArea" style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: #111;">
+                <div class="text-center mb-3">
+                    <div class="fw-bold fs-6">HERCAR COMERCIAL S.A.C.</div>
+                    <div>RUC: 20601234567</div>
+                    <div class="small">Av. Principal 123 - Lima, Perú</div>
+                    <div class="border-bottom my-2"></div>
+                    <div class="fw-bold text-uppercase" id="ticketTipoDoc">BOLETA ELECTRÓNICA</div>
+                    <div class="fw-bold" id="ticketNumero">B001-000428</div>
+                    <div class="text-muted small" id="ticketFecha">09/09/2026 18:40</div>
+                </div>
+                <div class="mb-2">
+                    <strong>Cliente:</strong> <span id="ticketCliente">CLIENTE VARIOS</span>
+                </div>
+                <div class="border-bottom border-top py-2 my-2">
+                    <div class="d-flex justify-content-between fw-bold mb-1">
+                        <span>Cant. / Detalle</span>
+                        <span>Total</span>
+                    </div>
+                    <div class="d-flex justify-content-between" id="ticketItems">
+                        <span>1x Taladro Bosch 650W</span>
+                        <span>S/ 245.00</span>
+                    </div>
+                </div>
+                <div class="text-end mb-3">
+                    <div>Op. Gravada: <span id="ticketBase">S/ 207.63</span></div>
+                    <div>IGV (18%): <span id="ticketIgv">S/ 37.37</span></div>
+                    <div class="fs-6 fw-bold border-top pt-1 mt-1">TOTAL: <span id="ticketTotal">S/ 245.00</span></div>
+                </div>
+                <div class="text-center">
+                    <div class="p-2 border rounded d-inline-block bg-light mb-2">
+                        <i class="fa fa-qrcode fa-4x text-dark"></i>
+                    </div>
+                    <div class="small text-muted" style="font-size: 0.65rem;">
+                        Representación impresa de Comprobante Electrónico.<br>
+                        Autorizado por SUNAT mediante RS 097-2012.<br>
+                        <strong>Hash: a7F8e9K2mP9==</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="window.print()">
+                    <i class="fa fa-print me-1"></i> Imprimir Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Custom Main JS -->
+<script src="assets/js/main.js?v=6.0"></script>
+
+<!-- ContaSmart AI Assistant Siri (Cache-busting) -->
+<script src="assets/js/conta_ai.js?v=6.0"></script>
+
+
+</body>
+</html>
+
+
