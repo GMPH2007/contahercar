@@ -1565,6 +1565,253 @@ body:has(.pos-wrapper) .mobile-bottom-dock {
         border-radius: 20px !important;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35) !important;
     }
+
+    /* Encabezado y Topbar Compacto y Elegante en Celulares */
+    .app-topbar {
+        padding: 0.45rem 0.65rem !important;
+        height: auto !important;
+        min-height: 50px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .topbar-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.45rem !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+        overflow: hidden !important;
+    }
+
+    .page-title {
+        font-size: 0.92rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .topbar-right {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.35rem !important;
+        flex-shrink: 0 !important;
+    }
+
+    .topbar-right .btn {
+        padding: 0.35rem 0.55rem !important;
+        font-size: 0.78rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* Banner de Bienvenida y Acciones en Celular */
+    #tourHeaderGreeting {
+        padding: 1rem 0.85rem !important;
+        border-radius: 14px !important;
+    }
+
+    #tourHeaderGreeting h3 {
+        font-size: 1.15rem !important;
+    }
+
+    #tourHeaderGreeting .btn {
+        font-size: 0.78rem !important;
+        padding: 0.42rem 0.65rem !important;
+    }
+
+    /* Formulario de Consulta SUNAT en Celular */
+    #formConsultaSunat .input-group {
+        flex-wrap: wrap !important;
+    }
+
+    #formConsultaSunat .input-group > .form-control {
+        flex: 1 1 180px !important;
+        font-size: 0.95rem !important;
+    }
+
+    #btnConsultarSunat {
+        width: 100% !important;
+        margin-top: 0.45rem !important;
+        border-radius: 10px !important;
+        padding: 0.55rem !important;
+    }
+
+    /* Dock móvil compacto en pantallas angostas (320px - 400px) */
+    .mobile-bottom-dock {
+        bottom: 8px !important;
+        left: 8px !important;
+        right: 8px !important;
+        height: 60px !important;
+        padding: 0 3px !important;
+    }
+
+    .dock-item {
+        min-width: 0 !important;
+        padding: 3px 4px !important;
+        font-size: 0.64rem !important;
+    }
+
+    .dock-item i {
+        font-size: 1.1rem !important;
+        margin-bottom: 1px !important;
+    }
+
+    .dock-pos-icon {
+        width: 44px !important;
+        height: 44px !important;
+        margin-top: -20px !important;
+    }
+
+    .dock-pos-icon i {
+        font-size: 1.15rem !important;
+    }
+
+    /* Tablas ultra-responsivas con scroll suave y padding ergonómico */
+    .table-responsive {
+        border-radius: 12px !important;
+        -webkit-overflow-scrolling: touch !important;
+        box-shadow: none !important;
+    }
+
+    .table-custom th,
+    .table-custom td,
+    .table th,
+    .table td {
+        padding: 0.55rem 0.5rem !important;
+        font-size: 0.82rem !important;
+        white-space: nowrap !important;
+    }
+
+    /* Grupos de botones en filas de tablas */
+    .btn-group-sm > .btn,
+    .btn-sm {
+        padding: 0.35rem 0.55rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Formulario de filtros compactos para celular */
+    .card-custom {
+        border-radius: 14px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .card-custom-body {
+        padding: 0.85rem !important;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 0.85rem !important;
+        padding: 0.45rem 0.65rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* Padding de contenido para que nunca se tape con la barra inferior flotante */
+    .app-content {
+        padding: 0.85rem 0.75rem 95px 0.75rem !important;
+    }
+
+    /* Ajuste de orbe y cajón de Siri para pantallas pequeñas */
+    .siri-hero-panel {
+        padding: 0.75rem 0.5rem !important;
+    }
+
+    .siri-large-orb {
+        width: 68px !important;
+        height: 68px !important;
+    }
+
+    .siri-large-orb i {
+        font-size: 1.4rem !important;
+    }
+}
+
+/* ==========================================================================
+   OPTIMIZACIÓN DE IMPRESIÓN EXCLUSIVA (TICKET TÉRMICO 80MM / A4)
+   ========================================================================== */
+@media print {
+    html, body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Ocultar todos los elementos de la interfaz de usuario */
+    body * {
+        visibility: hidden !important;
+    }
+
+    /* Modal desbloqueado para imprimir directamente su contenido */
+    .modal {
+        position: static !important;
+        display: block !important;
+        visibility: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        background: transparent !important;
+    }
+
+    .modal-dialog,
+    .modal-content {
+        position: static !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        visibility: visible !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        background: transparent !important;
+    }
+
+    /* Mostrar de forma exclusiva el contenedor del ticket */
+    #printable-ticket,
+    #printable-ticket *,
+    #ticketPrintArea,
+    #ticketPrintArea * {
+        visibility: visible !important;
+    }
+
+    /* Posicionar el ticket térmico exactamente en la hoja de impresión */
+    #printable-ticket,
+    #ticketPrintArea {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 78mm !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 4mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .modal-backdrop,
+    .modal-header,
+    .modal-footer,
+    .mobile-bottom-dock,
+    .app-sidebar,
+    .app-topbar,
+    .sidebar-backdrop,
+    .ai-assistant-drawer,
+    .ai-assistant-backdrop,
+    .no-print {
+        display: none !important;
+    }
+
+    @page {
+        size: 80mm auto;
+        margin: 0mm;
+    }
 }
 
 

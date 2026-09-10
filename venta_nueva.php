@@ -728,6 +728,100 @@ function guardarClienteRapido() {
     });
 }
 
+// Interceptar envío en GitHub Pages / Entornos estáticos para emisión y ticket instantáneo
+const formPos = document.getElementById('formVentaPos');
+if (formPos) {
+    formPos.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const itemsArr = Object.values(carrito);
+            if (itemsArr.length === 0) {
+                Swal.fire('Carrito Vacío', 'Agregue productos antes de cobrar.', 'warning');
+                return;
+            }
+
+            const selCli = document.getElementById('pos_cliente_id');
+            const cliName = selCli && selCli.selectedIndex >= 0 ? selCli.options[selCli.selectedIndex].text : 'CLIENTE VARIOS / GENERAL';
+            const tipoComp = document.getElementById('pos_tipo_comprobante').value;
+            const correlativo = String(Math.floor(100 + Math.random() * 900)).padStart(6, '0');
+            const serieNum = (tipoComp === 'Factura' ? 'F001-' : 'B001-') + correlativo;
+            const totalStr = document.getElementById('lblPosTotal').textContent.replace(/[^0-9.]/g, '');
+            const totalNum = parseFloat(totalStr) || 0;
+            const subtotalNum = totalNum / 1.18;
+            const igvNum = totalNum - subtotalNum;
+
+            Swal.fire({
+                icon: 'success',
+                title: '¡Venta Registrada Exitosamente!',
+                html: `<strong>${tipoComp} Electrónica ${serieNum}</strong> emitida con éxito por <strong>S/ ${totalNum.toFixed(2)}</strong>.<br><small class="text-muted">Stock descontado en Kardex y sincronizado con SIRE SUNAT.</small>`,
+                showCancelButton: true,
+                confirmButtonColor: '#22c55e',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: '<i class="fa fa-print me-1"></i> Imprimir Ticket 80mm',
+                cancelButtonText: 'Nueva Venta'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const ticketData = {
+                        venta: {
+                            tipo_comprobante: (tipoComp === 'Factura' ? 'FACTURA ELECTRÓNICA' : 'BOLETA ELECTRÓNICA'),
+                            serie: (tipoComp === 'Factura' ? 'F001' : 'B001'),
+                            correlativo: correlativo,
+                            fecha_venta: new Date().toLocaleDateString('es-PE') + ' ' + new Date().toLocaleTimeString('es-PE', {hour:'2-digit', minute:'2-digit'}),
+                            cliente_nombre: cliName,
+                            cliente_doc: '00000000',
+                            subtotal_fmt: `S/. ${subtotalNum.toFixed(2)}`,
+                            impuesto_fmt: `S/. ${igvNum.toFixed(2)}`,
+                            total_fmt: `S/. ${totalNum.toFixed(2)}`
+                        },
+                        items: itemsArr.map(it => ({
+                            cantidad: it.cantidad,
+                            producto_nombre: it.nombre,
+                            subtotal_fmt: `S/. ${(it.precio * it.cantidad).toFixed(2)}`
+                        }))
+                    };
+                    if (window.imprimirTicketDirecto) {
+                        const modalEl = document.getElementById('modalTicketGlobal');
+                        if (modalEl) {
+                            const tipoEl = document.getElementById('ticketTipoDoc');
+                            const numEl = document.getElementById('ticketNumero');
+                            const fechaEl = document.getElementById('ticketFecha');
+                            const clienteEl = document.getElementById('ticketCliente');
+                            const itemsEl = document.getElementById('ticketItems');
+                            const baseEl = document.getElementById('ticketBase');
+                            const igvEl = document.getElementById('ticketIgv');
+                            const totalEl = document.getElementById('ticketTotal');
+
+                            if (tipoEl) tipoEl.textContent = ticketData.venta.tipo_comprobante;
+                            if (numEl) numEl.textContent = `${ticketData.venta.serie}-${ticketData.venta.correlativo}`;
+                            if (fechaEl) fechaEl.textContent = ticketData.venta.fecha_venta;
+                            if (clienteEl) clienteEl.textContent = ticketData.venta.cliente_nombre;
+                            if (itemsEl) {
+                                itemsEl.innerHTML = ticketData.items.map(it => `
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>${it.cantidad}x ${it.producto_nombre}</span>
+                                        <span class="fw-bold">${it.subtotal_fmt}</span>
+                                    </div>
+                                `).join('');
+                            }
+                            if (baseEl) baseEl.textContent = ticketData.venta.subtotal_fmt;
+                            if (igvEl) igvEl.textContent = ticketData.venta.impuesto_fmt;
+                            if (totalEl) totalEl.textContent = ticketData.venta.total_fmt;
+
+                            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                            bsModal.show();
+                        }
+                    }
+                }
+                vaciarCarrito();
+                if (window.innerWidth <= 992) cambiarTabPos('productos');
+            });
+        }
+    });
+}
+
 // Auto-selección si viene RUC desde consulta_sunat.php
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);

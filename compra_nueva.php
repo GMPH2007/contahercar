@@ -388,7 +388,7 @@ function buscarProveedorPorRucCompra() {
         });
 }
 
-// Agregar primera fila por defecto al cargar y auto-seleccionar RUC si viene en URL
+// Inicialización y auto-selección si viene RUC en URL
 document.addEventListener('DOMContentLoaded', () => {
     agregarFilaProducto();
 
@@ -402,6 +402,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// Interceptar envío en modo estático / GitHub Pages para confirmación amigable
+const formCompra = document.querySelector('form[action="compra_nueva.php"]');
+if (formCompra) {
+    formCompra.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'success',
+                title: '¡Compra Registrada Exitosamente!',
+                html: 'Factura de compra guardada en el sistema y stock incrementado en almacén Kardex.',
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'Ver Historial de Compras'
+            }).then(() => {
+                window.location.href = 'compras.html';
+            });
+        }
+    });
+}
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

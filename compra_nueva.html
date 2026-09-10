@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=6.0">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.0">
 </head>
 <body>
 
@@ -515,7 +515,7 @@ function buscarProveedorPorRucCompra() {
         });
 }
 
-// Agregar primera fila por defecto al cargar y auto-seleccionar RUC si viene en URL
+// Inicialización y auto-selección si viene RUC en URL
 document.addEventListener('DOMContentLoaded', () => {
     agregarFilaProducto();
 
@@ -529,6 +529,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// Interceptar envío en modo estático / GitHub Pages para confirmación amigable
+const formCompra = document.querySelector('form[action="compra_nueva.php"]');
+if (formCompra) {
+    formCompra.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'success',
+                title: '¡Compra Registrada Exitosamente!',
+                html: 'Factura de compra guardada en el sistema y stock incrementado en almacén Kardex.',
+                confirmButtonColor: '#2563eb',
+                confirmButtonText: 'Ver Historial de Compras'
+            }).then(() => {
+                window.location.href = 'compras.html';
+            });
+        }
+    });
+}
 </script>
 
         </main> <!-- Fin .app-content -->
@@ -748,13 +770,13 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=1789002311"></script>
+<script src="assets/js/db_static.js?v=7.0"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=6.0"></script>
+<script src="assets/js/main.js?v=7.0"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=6.0"></script>
+<script src="assets/js/conta_ai.js?v=7.0"></script>
 
 
 </body>

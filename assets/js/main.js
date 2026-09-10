@@ -234,66 +234,84 @@ function verKardexProducto(productoId) {
  * Imprimir Ticket Térmico 80mm Directo en Modal
  */
 window.imprimirTicketDirecto = function(id) {
-    let ventaData = (window.STATIC_DB_VENTAS && window.STATIC_DB_VENTAS[id]) ? window.STATIC_DB_VENTAS[id] : null;
-    
-    if (!ventaData) {
-        ventaData = {
-            venta: {
-                tipo_comprobante: 'BOLETA ELECTRÓNICA',
-                serie: 'B001',
-                correlativo: String(id).padStart(6, '0'),
-                fecha_venta: '07/09/2026 13:14',
-                cliente_nombre: 'CLIENTE VARIOS / GENERAL',
-                cliente_doc: '00000000',
-                subtotal_fmt: 'S/. 241.53',
-                impuesto_fmt: 'S/. 43.47',
-                total_fmt: 'S/. 285.00'
-            },
-            items: [
-                { cantidad: 1, producto_nombre: 'Amoladora Angular Dewalt 850W', subtotal_fmt: 'S/. 285.00' }
-            ]
-        };
-    }
+    function renderTicket(ventaData) {
+        const modalEl = document.getElementById('modalTicketGlobal');
+        if (modalEl) {
+            const v = ventaData.venta;
+            const tipoEl = document.getElementById('ticketTipoDoc');
+            const numEl = document.getElementById('ticketNumero');
+            const fechaEl = document.getElementById('ticketFecha');
+            const clienteEl = document.getElementById('ticketCliente');
+            const itemsEl = document.getElementById('ticketItems');
+            const baseEl = document.getElementById('ticketBase');
+            const igvEl = document.getElementById('ticketIgv');
+            const totalEl = document.getElementById('ticketTotal');
 
-    const modalEl = document.getElementById('modalTicketGlobal');
-    if (modalEl) {
-        const v = ventaData.venta;
-        const tipoEl = document.getElementById('ticketTipoDoc');
-        const numEl = document.getElementById('ticketNumero');
-        const fechaEl = document.getElementById('ticketFecha');
-        const clienteEl = document.getElementById('ticketCliente');
-        const itemsEl = document.getElementById('ticketItems');
-        const baseEl = document.getElementById('ticketBase');
-        const igvEl = document.getElementById('ticketIgv');
-        const totalEl = document.getElementById('ticketTotal');
+            if (tipoEl) tipoEl.textContent = (v.tipo_comprobante || 'BOLETA ELECTRÓNICA').toUpperCase();
+            if (numEl) numEl.textContent = `${v.serie || 'B001'}-${v.correlativo || String(id).padStart(6, '0')}`;
+            if (fechaEl) fechaEl.textContent = v.fecha_venta || '07/09/2026 13:14';
+            const cliDoc = v.cliente_doc ? ` (${v.cliente_doc})` : '';
+            if (clienteEl) clienteEl.textContent = `${v.cliente_nombre || 'CLIENTE GENERAL'}${cliDoc}`;
 
-        if (tipoEl) tipoEl.textContent = (v.tipo_comprobante || 'BOLETA ELECTRÓNICA').toUpperCase();
-        if (numEl) numEl.textContent = `${v.serie || 'B001'}-${v.correlativo || String(id).padStart(6, '0')}`;
-        if (fechaEl) fechaEl.textContent = v.fecha_venta || '07/09/2026 13:14';
-        if (clienteEl) clienteEl.textContent = `${v.cliente_nombre || 'CLIENTE GENERAL'} (${v.cliente_doc || '00000000'})`;
+            if (itemsEl && ventaData.items) {
+                let itemsHtml = '';
+                ventaData.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>${item.cantidad}x ${item.producto_nombre}</span>
+                            <span class="fw-bold">${item.subtotal_fmt}</span>
+                        </div>
+                    `;
+                });
+                itemsEl.innerHTML = itemsHtml;
+            }
 
-        if (itemsEl && ventaData.items) {
-            let itemsHtml = '';
-            ventaData.items.forEach(item => {
-                itemsHtml += `
-                    <div class="d-flex justify-content-between mb-1">
-                        <span>${item.cantidad}x ${item.producto_nombre}</span>
-                        <span>${item.subtotal_fmt}</span>
-                    </div>
-                `;
-            });
-            itemsEl.innerHTML = itemsHtml;
+            if (baseEl) baseEl.textContent = v.subtotal_fmt;
+            if (igvEl) igvEl.textContent = v.impuesto_fmt;
+            if (totalEl) totalEl.textContent = v.total_fmt;
+
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            bsModal.show();
+        } else {
+            window.print();
         }
-
-        if (baseEl) baseEl.textContent = v.subtotal_fmt;
-        if (igvEl) igvEl.textContent = v.impuesto_fmt;
-        if (totalEl) totalEl.textContent = v.total_fmt;
-
-        const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        bsModal.show();
-    } else {
-        window.print();
     }
+
+    // Probar primero fetch si estamos con backend dinámico PHP
+    fetch(`api/venta_detalle.php?id=${id}`)
+        .then(res => {
+            if (!res.ok) throw new Error('API offline');
+            return res.json();
+        })
+        .then(data => {
+            if (data && data.success && data.venta) {
+                renderTicket(data);
+            } else {
+                throw new Error('Static fallback');
+            }
+        })
+        .catch(() => {
+            let ventaData = (window.STATIC_DB_VENTAS && window.STATIC_DB_VENTAS[id]) ? window.STATIC_DB_VENTAS[id] : null;
+            if (!ventaData) {
+                ventaData = {
+                    venta: {
+                        tipo_comprobante: 'BOLETA ELECTRÓNICA',
+                        serie: 'B001',
+                        correlativo: String(id).padStart(6, '0'),
+                        fecha_venta: '07/09/2026 13:14',
+                        cliente_nombre: 'CLIENTE VARIOS / GENERAL',
+                        cliente_doc: '00000000',
+                        subtotal_fmt: 'S/. 241.53',
+                        impuesto_fmt: 'S/. 43.47',
+                        total_fmt: 'S/. 285.00'
+                    },
+                    items: [
+                        { cantidad: 1, producto_nombre: 'Amoladora Angular Dewalt 850W', subtotal_fmt: 'S/. 285.00' }
+                    ]
+                };
+            }
+            renderTicket(ventaData);
+        });
 };
 
 // Consulta asíncrona de Tipo de Cambio SUNAT

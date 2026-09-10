@@ -197,7 +197,10 @@ $clientes = $pdo->query("SELECT id, nombre_razon_social FROM clientes ORDER BY n
                 </select>
             </div>
             <div class="col-12 col-md-1">
-                <button type="submit" class="btn btn-primary w-100" title="Filtrar"><i class="fa fa-filter"></i></button>
+                <button type="submit" class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center gap-1" title="Filtrar Comprobantes">
+                    <i class="fa fa-filter"></i>
+                    <span>Filtrar</span>
+                </button>
             </div>
         </form>
     </div>

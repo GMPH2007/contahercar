@@ -86,32 +86,37 @@ const ContaSmartAI = (() => {
         return s;
     }
 
-    // Habla fluida de Siri con cadencia natural y voz clara
     // Habla fluida de Siri con cadencia natural y voz clara (Optimizado para Celulares y PC)
     function speakHuman(text) {
         if (isVoiceMuted || !('speechSynthesis' in window)) return;
         try {
-            window.speechSynthesis.cancel();
-            if (window.speechSynthesis.paused) {
-                window.speechSynthesis.resume();
-            }
             const speechText = cleanSpeechForHuman(text);
             if (!speechText) return;
 
+            // En dispositivos móviles (Android/iOS), cancelar únicamente si está hablando para evitar el bug de cancelación
+            if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+                window.speechSynthesis.cancel();
+            }
+
+            // Despertar el motor de síntesis de voz en navegadores móviles
+            if (window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+            }
+
             const voice = pickVoice();
             const utterance = new SpeechSynthesisUtterance(speechText);
-            // Anclar referencia global para evitar que el Garbage Collector de Chrome/Safari en Android/iOS corte la voz
+            // Anclar referencia global para evitar que el Garbage Collector de Chrome/Safari corte la voz en celulares
             window._siriActiveUtterance = utterance;
 
             if (voice) {
                 utterance.voice = voice;
                 utterance.lang = voice.lang;
             } else {
-                // Dialecto en español universal para navegadores móviles
-                utterance.lang = 'es-PE';
+                // Dialecto en español universal compatible con todos los smartphones
+                utterance.lang = 'es-ES';
             }
-            utterance.rate = 0.96; // Cadencia humana calmada, sumamente clara y nítida
-            utterance.pitch = 1.0;  // Tono cálido y natural
+            utterance.rate = 0.98; // Cadencia natural y comprensible
+            utterance.pitch = 1.02; // Tono cálido, claro y empático
             utterance.volume = 1.0; // Volumen al 100% nítido
 
             utterance.onstart = () => {
@@ -136,60 +141,19 @@ const ContaSmartAI = (() => {
         }
     }
 
-    // Chimes armónicos nativos de Siri con Web Audio API (liberación inmediata de recursos)
-    function playSiriChime(type = 'start') {
-        try {
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            if (!AudioCtx) return;
-            const ctx = new AudioCtx();
-            if (ctx.state === 'suspended') {
-                ctx.resume();
-            }
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            const now = ctx.currentTime;
-            if (type === 'start') {
-                // Tono dual armónico ascendente de activación (estilo Siri)
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(440, now);
-                osc.frequency.exponentialRampToValueAtTime(784, now + 0.12);
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
-                osc.start(now);
-                osc.stop(now + 0.25);
-            } else if (type === 'success') {
-                // Tono suave de resolución
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.exponentialRampToValueAtTime(880, now + 0.14);
-                gain.gain.setValueAtTime(0.14, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-                osc.start(now);
-                osc.stop(now + 0.29);
-            }
-            // Cerrar AudioContext para liberar el canal de hardware de audio en móviles
-            setTimeout(() => {
-                try { if (ctx.state !== 'closed') ctx.close(); } catch(err){}
-            }, 350);
-        } catch (e) {
-            // Ignorar políticas de autoplay si aplica
-        }
-    }
-
     function init() {
         initVoiceSynthesis();
         createSiriInterface();
         setupSpeechRecognition();
 
-        // Conectar botones globales para abrir a Siri
+        // Conectar botones globales para abrir a Siri (evitando duplicar si ya tienen onclick en HTML)
         document.querySelectorAll('.btn-open-ai').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                open();
-            });
+            if (!btn.getAttribute('onclick')) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    open();
+                });
+            }
         });
     }
 
@@ -323,16 +287,20 @@ const ContaSmartAI = (() => {
         document.body.appendChild(drawer);
     }
 
+    let lastOpenTime = 0;
     function open() {
         try {
+            const now = Date.now();
+            if (now - lastOpenTime < 600) return; // Evitar doble ejecución en celular
+            lastOpenTime = now;
+
             createSiriInterface();
             if (backdrop) backdrop.classList.add('active');
             if (drawer) drawer.classList.add('active');
             document.body.classList.add('siri-active');
 
-            // Reproducir chime suave y activar sintetizador de inmediato con el gesto táctil del usuario
-            playSiriChime('start');
-            speakHuman("Hola, soy Siri ContaSmart. ¿Qué deseas consultar hoy?");
+            // Habla directa e inmediata de Siri al hacer clic / toque con voz nítida
+            speakHuman("Hola, soy Siri, tu asistente de ContaSmart. ¿En qué te puedo ayudar hoy?");
 
             setTimeout(() => {
                 const input = document.getElementById('aiInputText');
@@ -377,7 +345,6 @@ const ContaSmartAI = (() => {
 
         recognition.onstart = () => {
             isRecording = true;
-            playSiriChime('start');
             updateMicState(true);
         };
 
@@ -405,10 +372,11 @@ const ContaSmartAI = (() => {
 
     function toggleVoice() {
         if (!recognition) {
+            speakHuman("Puedes tocar cualquiera de las consultas de abajo o escribir en el campo de texto.");
             Swal.fire({
                 icon: 'info',
-                title: 'Reconocimiento de Voz de Siri',
-                text: 'Te sugerimos usar Google Chrome o Microsoft Edge para una experiencia de voz fluida y directa.',
+                title: 'Voz y Asistente Siri ContaSmart',
+                text: 'Para dictado por voz puedes usar Google Chrome o Microsoft Edge. ¡O toca directamente cualquiera de los botones de preguntas rápidas!',
                 confirmButtonColor: '#2563eb'
             });
             return;
@@ -539,8 +507,6 @@ const ContaSmartAI = (() => {
                     ` : ''}
                 `;
                 stream.appendChild(answerExchange);
-
-                playSiriChime('success');
                 body.scrollTop = body.scrollHeight;
 
                 // Siri habla la respuesta con voz natural humana
