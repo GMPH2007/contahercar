@@ -215,6 +215,9 @@
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
+<script src="assets/js/db_static.js?v=<?= time() ?>"></script>
+
 <!-- Custom Main JS -->
 <script src="assets/js/main.js?v=<?= time() ?>"></script>
 

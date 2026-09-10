@@ -382,7 +382,7 @@
 <script>
 function verDetalleCompra(id) {
     const modalEl = document.getElementById('modalDetalleCompra');
-    const bsModal = new bootstrap.Modal(modalEl);
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
     const content = document.getElementById('detalleCompraContenido');
     const title = document.getElementById('detalleCompraTitulo');
 
@@ -390,88 +390,123 @@ function verDetalleCompra(id) {
     content.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
     bsModal.show();
 
-    fetch('api/compra_detalle.php?id=' + id)
-        .then(res => res.json())
-        .then(data => {
-            if (!data.success) {
-                content.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
-                return;
-            }
+    function renderDetalleCompra(data) {
+        if (!data || !data.success) {
+            content.innerHTML = `<div class="alert alert-danger">${data?.message || 'Error al cargar información de la compra.'}</div>`;
+            return;
+        }
 
-            const c = data.compra;
-            title.textContent = `Compra: ${c.tipo_comprobante} ${c.serie_numero} - ${c.proveedor_nombre}`;
+        const c = data.compra;
+        title.textContent = `Compra: ${c.tipo_comprobante} ${c.serie_numero} - ${c.proveedor_nombre}`;
 
-            let html = `
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <small class="text-muted d-block">Proveedor:</small>
-                        <strong>${c.proveedor_nombre}</strong> (RUC: ${c.proveedor_ruc})
-                    </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Fecha:</small>
-                        <strong>${c.fecha_compra}</strong>
-                    </div>
-                    <div class="col-md-3">
-                        <small class="text-muted d-block">Estado:</small>
-                        <span class="badge ${c.estado === 'COMPLETADA' ? 'bg-success' : 'bg-danger'}">${c.estado}</span>
-                    </div>
+        let html = `
+            <div class="row mb-3">
+                <div class="col-md-6 col-12 mb-2 mb-md-0">
+                    <small class="text-muted d-block">Proveedor:</small>
+                    <strong>${c.proveedor_nombre}</strong> (RUC: ${c.proveedor_ruc})
                 </div>
+                <div class="col-md-3 col-6">
+                    <small class="text-muted d-block">Fecha:</small>
+                    <strong>${c.fecha_compra}</strong>
+                </div>
+                <div class="col-md-3 col-6">
+                    <small class="text-muted d-block">Estado:</small>
+                    <span class="badge ${c.estado === 'COMPLETADA' ? 'bg-success' : 'bg-danger'}">${c.estado}</span>
+                </div>
+            </div>
 
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Producto</th>
-                                <th class="text-center">Cant.</th>
-                                <th class="text-end">Costo Unit.</th>
-                                <th class="text-end">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-center">Cant.</th>
+                            <th class="text-end">Costo Unit.</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
 
-            data.items.forEach(item => {
-                html += `
-                    <tr>
-                        <td>
-                            <span class="fw-bold">${item.producto_nombre}</span><br>
-                            <small class="text-muted">Cód: ${item.codigo_barra}</small>
-                        </td>
-                        <td class="text-center fw-bold">${item.cantidad}</td>
-                        <td class="text-end">${item.precio_unitario_fmt}</td>
-                        <td class="text-end fw-bold">${item.subtotal_fmt}</td>
-                    </tr>
-                `;
-            });
-
+        data.items.forEach(item => {
             html += `
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="3" class="text-end">Subtotal:</th>
-                                <th class="text-end">${c.subtotal_fmt}</th>
-                            </tr>
-                            <tr>
-                                <th colspan="3" class="text-end">Impuesto (${c.impuesto_nombre}):</th>
-                                <th class="text-end">${c.impuesto_fmt}</th>
-                            </tr>
-                            <tr class="table-light fs-6">
-                                <th colspan="3" class="text-end">Total Compra:</th>
-                                <th class="text-end text-primary fw-bold">${c.total_fmt}</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                <tr>
+                    <td>
+                        <span class="fw-bold">${item.producto_nombre}</span><br>
+                        <small class="text-muted">Cód: ${item.codigo_barra}</small>
+                    </td>
+                    <td class="text-center fw-bold">${item.cantidad}</td>
+                    <td class="text-end">${item.precio_unitario_fmt}</td>
+                    <td class="text-end fw-bold">${item.subtotal_fmt}</td>
+                </tr>
             `;
+        });
 
-            if (c.observaciones) {
-                html += `<div class="mt-2 small text-muted"><strong>Observaciones:</strong> ${c.observaciones}</div>`;
-            }
+        html += `
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Subtotal:</th>
+                            <th class="text-end">${c.subtotal_fmt}</th>
+                        </tr>
+                        <tr>
+                            <th colspan="3" class="text-end">Impuesto (${c.impuesto_nombre || 'IGV'}):</th>
+                            <th class="text-end">${c.impuesto_fmt}</th>
+                        </tr>
+                        <tr class="table-light fs-6">
+                            <th colspan="3" class="text-end">Total Compra:</th>
+                            <th class="text-end text-primary fw-bold">${c.total_fmt}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        `;
 
-            content.innerHTML = html;
+        if (c.observaciones) {
+            html += `<div class="mt-2 small text-muted"><strong>Observaciones:</strong> ${c.observaciones}</div>`;
+        }
+
+        content.innerHTML = html;
+    }
+
+    fetch('api/compra_detalle.php?id=' + id)
+        .then(res => {
+            if (!res.ok) throw new Error('API offline');
+            return res.json();
         })
+        .then(data => renderDetalleCompra(data))
         .catch(err => {
-            content.innerHTML = '<div class="alert alert-danger">Error al cargar información de la compra.</div>';
+            // Fallback para GitHub Pages y entornos estáticos
+            const staticData = (window.STATIC_DB_COMPRAS && window.STATIC_DB_COMPRAS[id]) ?
+                window.STATIC_DB_COMPRAS[id] : {
+                    success: true,
+                    compra: {
+                        id: id,
+                        tipo_comprobante: 'Factura',
+                        serie_numero: 'F001-000124',
+                        fecha_compra: '07/09/2026',
+                        proveedor_nombre: 'SUPERMERCADOS PERUANOS S.A.',
+                        proveedor_ruc: '20100070970',
+                        estado: 'COMPLETADA',
+                        subtotal_fmt: 'S/. 350.00',
+                        impuesto_nombre: 'IGV',
+                        impuesto_fmt: 'S/. 63.00',
+                        total_fmt: 'S/. 413.00',
+                        observaciones: 'Compra de mercadería para stock central'
+                    },
+                    items: [
+                        {
+                            producto_id: 1,
+                            producto_nombre: 'Taladro Percutor 1/2 pulg 650W Bosch',
+                            codigo_barra: '77501001',
+                            unidad_medida: 'UNID',
+                            cantidad: 2,
+                            precio_unitario_fmt: 'S/. 175.00',
+                            subtotal_fmt: 'S/. 350.00'
+                        }
+                    ]
+                };
+            renderDetalleCompra(staticData);
         });
 }
 
@@ -709,6 +744,9 @@ function confirmarAnularCompra(id, comprobante) {
 
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
+<script src="assets/js/db_static.js?v=1789002311"></script>
 
 <!-- Custom Main JS -->
 <script src="assets/js/main.js?v=6.0"></script>

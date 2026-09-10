@@ -134,13 +134,13 @@ function consultarDocumento(numDocInputId, nombreInputId, dirInputId, estadoInpu
 }
 
 /**
- * Ver Kardex de un Producto en Modal
+ * Ver Kardex de un Producto en Modal (con Fallback Offline para GitHub Pages)
  */
 function verKardexProducto(productoId) {
     const modalEl = document.getElementById('modalKardexGlobal');
     if (!modalEl) return;
 
-    const bsModal = new bootstrap.Modal(modalEl);
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
     const bodyEl = document.getElementById('kardexModalContent');
     const titleEl = document.getElementById('kardexModalTitle');
 
@@ -148,72 +148,153 @@ function verKardexProducto(productoId) {
     bodyEl.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
     bsModal.show();
 
-    fetch(`api/kardex_info.php?producto_id=${productoId}`)
-        .then(res => res.json())
-        .then(data => {
-            if (!data.success) {
-                bodyEl.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
-                return;
+    function renderKardex(data) {
+        if (!data || !data.success) {
+            bodyEl.innerHTML = `<div class="alert alert-danger">${data?.message || 'Error al cargar movimientos de Kardex.'}</div>`;
+            return;
+        }
+
+        const p = data.producto;
+        titleEl.textContent = `Kardex: ${p.nombre} (Stock Actual: ${p.stock} ${p.unidad_medida})`;
+
+        if (!data.movimientos || data.movimientos.length === 0) {
+            bodyEl.innerHTML = '<div class="alert alert-info">No hay movimientos registrados para este producto.</div>';
+            return;
+        }
+
+        let html = `
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo Movimiento</th>
+                            <th>Cant.</th>
+                            <th>Stock Ant.</th>
+                            <th>Stock Nuevo</th>
+                            <th>Motivo / Ref.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        data.movimientos.forEach(m => {
+            let badgeClass = 'bg-secondary';
+            let icon = '';
+            const tipo = m.tipo_movimiento || '';
+            if (tipo.includes('COMPRA') || tipo.includes('INGRESO') || tipo.includes('ENTRADA')) {
+                badgeClass = 'badge-soft-success';
+                icon = '<i class="fa fa-arrow-down text-success me-1"></i> ';
+            } else if (tipo.includes('VENTA') || tipo.includes('SALIDA')) {
+                badgeClass = 'badge-soft-danger';
+                icon = '<i class="fa fa-arrow-up text-danger me-1"></i> ';
             }
-
-            const p = data.producto;
-            titleEl.textContent = `Kardex: ${p.nombre} (Stock Actual: ${p.stock} ${p.unidad_medida})`;
-
-            if (!data.movimientos || data.movimientos.length === 0) {
-                bodyEl.innerHTML = '<div class="alert alert-info">No hay movimientos registrados para este producto.</div>';
-                return;
-            }
-
-            let html = `
-                <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Tipo Movimiento</th>
-                                <th>Cant.</th>
-                                <th>Stock Ant.</th>
-                                <th>Stock Nuevo</th>
-                                <th>Motivo / Ref.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            data.movimientos.forEach(m => {
-                let badgeClass = 'bg-secondary';
-                let icon = '';
-                if (m.tipo_movimiento.includes('COMPRA') || m.tipo_movimiento.includes('INGRESO')) {
-                    badgeClass = 'badge-soft-success';
-                    icon = '<i class="fa fa-arrow-down text-success me-1"></i>';
-                } else if (m.tipo_movimiento.includes('VENTA') || m.tipo_movimiento.includes('SALIDA')) {
-                    badgeClass = 'badge-soft-danger';
-                    icon = '<i class="fa fa-arrow-up text-danger me-1"></i>';
-                }
-
-                html += `
-                    <tr>
-                        <td><small>${m.fecha}</small></td>
-                        <td><span class="badge ${badgeClass}">${icon}${m.tipo_movimiento}</span></td>
-                        <td class="fw-bold">${m.cantidad}</td>
-                        <td>${m.stock_anterior}</td>
-                        <td class="fw-bold text-primary">${m.stock_nuevo}</td>
-                        <td><small class="text-muted">${m.motivo || '-'}</small></td>
-                    </tr>
-                `;
-            });
 
             html += `
-                        </tbody>
-                    </table>
-                </div>
+                <tr>
+                    <td><small>${m.fecha || m.fecha_movimiento || '-'}</small></td>
+                    <td><span class="badge ${badgeClass}">${icon}${tipo}</span></td>
+                    <td class="fw-bold">${m.cantidad}</td>
+                    <td>${m.stock_anterior ?? '-'}</td>
+                    <td class="fw-bold text-primary">${m.stock_nuevo ?? m.stock_posterior ?? '-'}</td>
+                    <td><small class="text-muted">${m.motivo || m.glosa || m.numero_comprobante || '-'}</small></td>
+                </tr>
             `;
-            bodyEl.innerHTML = html;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+        bodyEl.innerHTML = html;
+    }
+
+    fetch(`api/kardex_info.php?producto_id=${productoId}`)
+        .then(res => {
+            if (!res.ok) throw new Error('API offline');
+            return res.json();
         })
-        .catch(err => {
-            bodyEl.innerHTML = '<div class="alert alert-danger">Error al cargar movimientos de Kardex.</div>';
+        .then(data => renderKardex(data))
+        .catch(() => {
+            const fallback = (window.STATIC_DB_KARDEX && window.STATIC_DB_KARDEX[productoId]) ?
+                window.STATIC_DB_KARDEX[productoId] : {
+                    success: true,
+                    producto: { nombre: 'Producto #' + productoId, stock: 15, unidad_medida: 'UNID' },
+                    movimientos: [
+                        { fecha: '08/09/2026 10:30', tipo_movimiento: 'VENTA EN POS', cantidad: -2, stock_anterior: 17, stock_nuevo: 15, motivo: 'Venta B001-000002' },
+                        { fecha: '07/09/2026 09:15', tipo_movimiento: 'INGRESO POR COMPRA', cantidad: 10, stock_anterior: 7, stock_nuevo: 17, motivo: 'Compra F001-000124' }
+                    ]
+                };
+            renderKardex(fallback);
         });
 }
+
+/**
+ * Imprimir Ticket Térmico 80mm Directo en Modal
+ */
+window.imprimirTicketDirecto = function(id) {
+    let ventaData = (window.STATIC_DB_VENTAS && window.STATIC_DB_VENTAS[id]) ? window.STATIC_DB_VENTAS[id] : null;
+    
+    if (!ventaData) {
+        ventaData = {
+            venta: {
+                tipo_comprobante: 'BOLETA ELECTRÓNICA',
+                serie: 'B001',
+                correlativo: String(id).padStart(6, '0'),
+                fecha_venta: '07/09/2026 13:14',
+                cliente_nombre: 'CLIENTE VARIOS / GENERAL',
+                cliente_doc: '00000000',
+                subtotal_fmt: 'S/. 241.53',
+                impuesto_fmt: 'S/. 43.47',
+                total_fmt: 'S/. 285.00'
+            },
+            items: [
+                { cantidad: 1, producto_nombre: 'Amoladora Angular Dewalt 850W', subtotal_fmt: 'S/. 285.00' }
+            ]
+        };
+    }
+
+    const modalEl = document.getElementById('modalTicketGlobal');
+    if (modalEl) {
+        const v = ventaData.venta;
+        const tipoEl = document.getElementById('ticketTipoDoc');
+        const numEl = document.getElementById('ticketNumero');
+        const fechaEl = document.getElementById('ticketFecha');
+        const clienteEl = document.getElementById('ticketCliente');
+        const itemsEl = document.getElementById('ticketItems');
+        const baseEl = document.getElementById('ticketBase');
+        const igvEl = document.getElementById('ticketIgv');
+        const totalEl = document.getElementById('ticketTotal');
+
+        if (tipoEl) tipoEl.textContent = (v.tipo_comprobante || 'BOLETA ELECTRÓNICA').toUpperCase();
+        if (numEl) numEl.textContent = `${v.serie || 'B001'}-${v.correlativo || String(id).padStart(6, '0')}`;
+        if (fechaEl) fechaEl.textContent = v.fecha_venta || '07/09/2026 13:14';
+        if (clienteEl) clienteEl.textContent = `${v.cliente_nombre || 'CLIENTE GENERAL'} (${v.cliente_doc || '00000000'})`;
+
+        if (itemsEl && ventaData.items) {
+            let itemsHtml = '';
+            ventaData.items.forEach(item => {
+                itemsHtml += `
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>${item.cantidad}x ${item.producto_nombre}</span>
+                        <span>${item.subtotal_fmt}</span>
+                    </div>
+                `;
+            });
+            itemsEl.innerHTML = itemsHtml;
+        }
+
+        if (baseEl) baseEl.textContent = v.subtotal_fmt;
+        if (igvEl) igvEl.textContent = v.impuesto_fmt;
+        if (totalEl) totalEl.textContent = v.total_fmt;
+
+        const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        bsModal.show();
+    } else {
+        window.print();
+    }
+};
 
 // Consulta asíncrona de Tipo de Cambio SUNAT
 function cargarTipoCambio() {
