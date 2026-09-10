@@ -259,7 +259,7 @@
             <!-- 2. TARJETAS KPI INTELIGENTES (Cuadrícula 2x2 en Celular) -->
             <div class="row g-3 g-md-3 mb-4" id="tourKpiCards">
                 <div class="col-6 col-xl-3">
-                    <div class="kpi-smart-card">
+                    <div class="kpi-smart-card h-100" onclick="openHistoryModal()" role="button" style="cursor: pointer;" title="Ver Historial de Ventas Completo">
                         <div class="kpi-header">
                             <span class="kpi-title">Ventas del Mes</span>
                             <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
@@ -277,7 +277,7 @@
                 </div>
 
                 <div class="col-6 col-xl-3">
-                    <div class="kpi-smart-card">
+                    <div class="kpi-smart-card h-100" onclick="openComprasModal()" role="button" style="cursor: pointer;" title="Ver Compras y Egresos">
                         <div class="kpi-header">
                             <span class="kpi-title">Compras & Gastos</span>
                             <div class="kpi-icon-wrap bg-warning bg-opacity-10 text-warning">
@@ -295,7 +295,7 @@
                 </div>
 
                 <div class="col-6 col-xl-3">
-                    <div class="kpi-smart-card">
+                    <div class="kpi-smart-card h-100" onclick="openSireModal()" role="button" style="cursor: pointer;" title="Ver Liquidación y Utilidad SIRE">
                         <div class="kpi-header">
                             <span class="kpi-title">Utilidad Bruta</span>
                             <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
@@ -697,6 +697,585 @@
     </div>
 </div>
 
+<!-- Modal 1: Historial de Ventas Interactivo Global -->
+<div class="modal fade" id="modalHistorialVentasGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-primary text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-white bg-opacity-20 rounded-3">
+                        <i class="fa fa-receipt fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0">Historial de Ventas y Facturación Electrónica</h5>
+                        <small class="text-white-50">38 Comprobantes emitidos • Período Setiembre 2026</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3 p-md-4">
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 bg-primary bg-opacity-10 border border-primary-subtle rounded-3 text-center">
+                            <span class="text-muted d-block small">Total Facturado</span>
+                            <strong class="text-primary fs-5">S/ 38,420.00</strong>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 bg-success bg-opacity-10 border border-success-subtle rounded-3 text-center">
+                            <span class="text-muted d-block small">Base Imponible</span>
+                            <strong class="text-success fs-5">S/ 32,559.32</strong>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 bg-warning bg-opacity-10 border border-warning-subtle rounded-3 text-center">
+                            <span class="text-muted d-block small">I-G-V Débito (18%)</span>
+                            <strong class="text-warning fs-5">S/ 5,860.68</strong>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 bg-info bg-opacity-10 border border-info-subtle rounded-3 text-center">
+                            <span class="text-muted d-block small">SIRE RVIE</span>
+                            <strong class="text-info fs-6">Sincronizado SUNAT</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-light border-end-0"><i class="fa fa-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0" id="searchVentasInput" placeholder="Buscar por número (B001, F001), cliente o producto..." onkeyup="filtrarTablaVentas()">
+                </div>
+
+                <div class="table-responsive border rounded-3">
+                    <table class="table table-hover align-middle mb-0" id="tablaVentasModal">
+                        <thead class="table-light">
+                            <tr class="small text-muted text-uppercase">
+                                <th>Comprobante</th>
+                                <th>Fecha & Hora</th>
+                                <th>Cliente</th>
+                                <th>Producto / Detalle</th>
+                                <th class="text-end">Total</th>
+                                <th class="text-center">SUNAT</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <tr>
+                                <td><strong class="text-primary">B001-000428</strong></td>
+                                <td>09/09/2026 18:40</td>
+                                <td>00000000 - CLIENTE VARIOS</td>
+                                <td>Taladro Percutor Bosch 650W</td>
+                                <td class="text-end fw-bold text-success">S/ 245.00</td>
+                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('B001-000428', 'CLIENTE VARIOS', 'Taladro Percutor Bosch 650W', '245.00', '09/09/2026 18:40')">
+                                        <i class="fa fa-print me-1"></i>Ticket
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-primary">F001-000112</strong></td>
+                                <td>09/09/2026 16:15</td>
+                                <td>20548912345 - CORP. MINERA DEL NORTE</td>
+                                <td>4x Cable Mellizo 2x14 Indeco + Amoladora</td>
+                                <td class="text-end fw-bold text-success">S/ 1,280.00</td>
+                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('F001-000112', 'CORP. MINERA DEL NORTE SAC', '4x Cable Mellizo + Amoladora Dewalt', '1280.00', '09/09/2026 16:15')">
+                                        <i class="fa fa-print me-1"></i>Ticket
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-primary">B001-000427</strong></td>
+                                <td>09/09/2026 14:02</td>
+                                <td>45871234 - JUAN CARLOS PÉREZ RÍOS</td>
+                                <td>2x Cinta Métrica 5m Stanley</td>
+                                <td class="text-end fw-bold text-success">S/ 48.00</td>
+                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('B001-000427', 'JUAN CARLOS PÉREZ RÍOS', '2x Cinta Métrica 5m Stanley', '48.00', '09/09/2026 14:02')">
+                                        <i class="fa fa-print me-1"></i>Ticket
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-primary">B001-000426</strong></td>
+                                <td>08/09/2026 17:30</td>
+                                <td>10460278975 - HUAMANI MENDOZA ERACLEO</td>
+                                <td>Amoladora Angular Dewalt 4 1/2</td>
+                                <td class="text-end fw-bold text-success">S/ 285.00</td>
+                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('B001-000426', 'HUAMANI MENDOZA ERACLEO', 'Amoladora Angular Dewalt 4 1/2', '285.00', '08/09/2026 17:30')">
+                                        <i class="fa fa-print me-1"></i>Ticket
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-primary">F001-000111</strong></td>
+                                <td>08/09/2026 11:20</td>
+                                <td>20100070970 - SUPERMERCADOS PERUANOS</td>
+                                <td>Lote Cintas + Materiales Varios Ferretería</td>
+                                <td class="text-end fw-bold text-success">S/ 3,450.00</td>
+                                <td class="text-center"><span class="badge bg-success-subtle text-success border border-success-subtle">ACEPTADO CDR</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary py-1 px-2" onclick="verTicketDemo('F001-000111', 'SUPERMERCADOS PERUANOS S.A.', 'Lote Cintas + Materiales Varios', '3450.00', '08/09/2026 11:20')">
+                                        <i class="fa fa-print me-1"></i>Ticket
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="descargarSireTxt('RVIE')">
+                        <i class="fa fa-download me-1"></i> Exportar TXT SIRE
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalHistorialVentasGlobal')).hide(); openPosModal();">
+                        <i class="fa fa-cash-register me-1"></i> + Nueva Venta POS
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Compras & Gastos Interactivo Global -->
+<div class="modal fade" id="modalComprasGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-warning text-dark p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-dark bg-opacity-10 rounded-3">
+                        <i class="fa fa-cart-shopping fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0">Compras, Insumos & Reposición de Stock</h5>
+                        <small class="text-muted">12 Facturas de compras registradas • Crédito Fiscal S/ 2,173.73</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3 p-md-4">
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-warning bg-opacity-10 border border-warning-subtle rounded-3 text-center">
+                            <span class="text-muted d-block small">Total Compras</span>
+                            <strong class="text-dark fs-5">S/ 14,250.00</strong>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-success bg-opacity-10 border border-success-subtle rounded-3 text-center">
+                            <span class="text-muted d-block small">Crédito Fiscal IGV</span>
+                            <strong class="text-success fs-5">S/ 2,173.73</strong>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="p-2 bg-primary bg-opacity-10 border border-primary-subtle rounded-3 text-center">
+                            <span class="text-muted d-block small">SIRE RCE</span>
+                            <strong class="text-primary fs-6">Propuesta Aceptada</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive border rounded-3 mb-3">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-muted text-uppercase">
+                            <tr>
+                                <th>Factura Proveedor</th>
+                                <th>Proveedor</th>
+                                <th>Fecha</th>
+                                <th class="text-end">Base</th>
+                                <th class="text-end">IGV</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <tr>
+                                <td><strong class="text-dark">F002-004812</strong></td>
+                                <td>CORPORACION FERRETERA SAC (20100070970)</td>
+                                <td>08/09/2026</td>
+                                <td class="text-end">S/ 3,559.32</td>
+                                <td class="text-end text-success">S/ 640.68</td>
+                                <td class="text-end fw-bold">S/ 4,200.00</td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-dark">F010-001923</strong></td>
+                                <td>INDECO CABLES S.A. (20489120491)</td>
+                                <td>06/09/2026</td>
+                                <td class="text-end">S/ 2,669.49</td>
+                                <td class="text-end text-success">S/ 480.51</td>
+                                <td class="text-end fw-bold">S/ 3,150.00</td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-dark">F001-000982</strong></td>
+                                <td>STANLEY BLACK & DECKER PERU</td>
+                                <td>04/09/2026</td>
+                                <td class="text-end">S/ 1,525.42</td>
+                                <td class="text-end text-success">S/ 274.58</td>
+                                <td class="text-end fw-bold">S/ 1,800.00</td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-dark">F003-000145</strong></td>
+                                <td>ROBERT BOSCH S.A.</td>
+                                <td>02/09/2026</td>
+                                <td class="text-end">S/ 4,322.03</td>
+                                <td class="text-end text-success">S/ 777.97</td>
+                                <td class="text-end fw-bold">S/ 5,100.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-warning btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalComprasGlobal')).hide(); openConsultaRucModal();">
+                    <i class="fa fa-truck-moving me-1"></i> + Buscar Proveedor para Nueva Compra
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 3: Padrón de Clientes Interactivo Global -->
+<div class="modal fade" id="modalClientesGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-success text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-white bg-opacity-20 rounded-3">
+                        <i class="fa fa-users fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0">Padrón Oficial de Clientes</h5>
+                        <small class="text-white-50">Clientes validados con SUNAT (RUC) y RENIEC (DNI)</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3 p-md-4">
+                <div class="table-responsive border rounded-3">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-muted text-uppercase">
+                            <tr>
+                                <th>Doc. Identidad</th>
+                                <th>Razón Social / Nombre</th>
+                                <th>Dirección / Ubigeo</th>
+                                <th>Teléfono</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <tr>
+                                <td><span class="badge bg-primary">RUC</span> <strong>20548912345</strong></td>
+                                <td class="fw-bold">CORPORACION MINERA DEL NORTE S.A.C.</td>
+                                <td>Av. La Encalada 450, Santiago de Surco</td>
+                                <td>987-654-321</td>
+                                <td class="text-center"><span class="badge bg-success">ACTIVO / HABIDO</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('20548912345 - CORPORACION MINERA DEL NORTE')">
+                                        <i class="fa fa-cash-register me-1"></i> Facturar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-info text-dark">DNI</span> <strong>45871234</strong></td>
+                                <td class="fw-bold">JUAN CARLOS PÉREZ RÍOS</td>
+                                <td>Jr. Huancavelica 340, Cercado de Lima</td>
+                                <td>912-345-678</td>
+                                <td class="text-center"><span class="badge bg-success">RENIEC VÁLIDO</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('45871234 - JUAN CARLOS PÉREZ RÍOS')">
+                                        <i class="fa fa-cash-register me-1"></i> Facturar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-primary">RUC</span> <strong>20100070970</strong></td>
+                                <td class="fw-bold">SUPERMERCADOS PERUANOS S.A.</td>
+                                <td>Cal. Morelli Nro. 181, San Borja, Lima</td>
+                                <td>998-877-665</td>
+                                <td class="text-center"><span class="badge bg-warning text-dark">AGENTE RETENCIÓN</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('20100070970 - SUPERMERCADOS PERUANOS S.A.')">
+                                        <i class="fa fa-cash-register me-1"></i> Facturar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-secondary">RUC</span> <strong>10460278975</strong></td>
+                                <td class="fw-bold">HUAMANI MENDOZA ERACLEO JUAN</td>
+                                <td>Av. Perú 1240, San Martín de Porres</td>
+                                <td>945-612-378</td>
+                                <td class="text-center"><span class="badge bg-success">ACTIVO / HABIDO</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="facturarDirectoCliente('10460278975 - HUAMANI MENDOZA ERACLEO')">
+                                        <i class="fa fa-cash-register me-1"></i> Facturar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalClientesGlobal')).hide(); openConsultaRucModal();">
+                    <i class="fa fa-user-plus me-1"></i> + Registrar Nuevo Cliente con SUNAT/RENIEC
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 4: Directorio de Proveedores Interactivo Global -->
+<div class="modal fade" id="modalProveedoresGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-dark text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-white bg-opacity-20 rounded-3 text-warning">
+                        <i class="fa fa-truck-moving fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0">Directorio de Proveedores Mayoristas</h5>
+                        <small class="text-white-50">Empresas homologadas con condición HABIDO ante SUNAT</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3 p-md-4">
+                <div class="table-responsive border rounded-3">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-muted text-uppercase">
+                            <tr>
+                                <th>RUC</th>
+                                <th>Razón Social</th>
+                                <th>Rubro Comercial</th>
+                                <th>Dirección</th>
+                                <th class="text-center">Condición</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <tr>
+                                <td><strong>20100070970</strong></td>
+                                <td class="fw-bold">CORPORACION DISTRIBUIDORA FERRETERA S.A.C.</td>
+                                <td><span class="badge bg-primary-subtle text-primary">Ferretería & Construcción</span></td>
+                                <td>Av. Elmer Faucett 1980, Callao</td>
+                                <td class="text-center"><span class="badge bg-success">HABIDO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>20489120491</strong></td>
+                                <td class="fw-bold">INDECO CONDUCTORES ELECTRICOS S.A.</td>
+                                <td><span class="badge bg-warning-subtle text-warning">Conductores & Cables</span></td>
+                                <td>Av. Materiales 3050, Callao</td>
+                                <td class="text-center"><span class="badge bg-success">HABIDO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>20348911029</strong></td>
+                                <td class="fw-bold">ROBERT BOSCH S.A. DEL PERU</td>
+                                <td><span class="badge bg-danger-subtle text-danger">Maquinaria & Eléctricas</span></td>
+                                <td>Av. Primavera 120, Surco</td>
+                                <td class="text-center"><span class="badge bg-success">HABIDO</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-dark btn-sm fw-bold" onclick="bootstrap.Modal.getInstance(document.getElementById('modalProveedoresGlobal')).hide(); openConsultaRucModal();">
+                    <i class="fa fa-building-flag me-1"></i> + Buscar Proveedor en SUNAT
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 5: SIRE SUNAT Oficial Interactivo Global -->
+<div class="modal fade" id="modalSireGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-primary text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-white bg-opacity-20 rounded-3">
+                        <i class="fa fa-book-bookmark fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fs-6 fw-bold mb-0">Sistema SIRE SUNAT (RVIE & RCE)</h5>
+                        <small class="text-white-50">Sincronización en línea con los servidores de SUNAT</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3 p-md-4">
+                <ul class="nav nav-pills nav-fill mb-3" id="sireTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active fw-bold" id="rvie-tab" data-bs-toggle="tab" data-bs-target="#rvie-content" type="button">
+                            <i class="fa fa-arrow-trend-up me-1"></i> RVIE (Ventas)
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link fw-bold" id="rce-tab" data-bs-toggle="tab" data-bs-target="#rce-content" type="button">
+                            <i class="fa fa-cart-shopping me-1"></i> RCE (Compras)
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link fw-bold" id="liq-tab" data-bs-toggle="tab" data-bs-target="#liq-content" type="button">
+                            <i class="fa fa-scale-balanced me-1"></i> Liquidación IGV
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="rvie-content">
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Comprobantes RVIE:</span>
+                                <strong>38 emitidos</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Base Imponible de Ventas:</span>
+                                <strong class="text-primary">S/ 32,559.32</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>I-G-V Débito Fiscal:</span>
+                                <strong class="text-warning">S/ 5,860.68</strong>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Total Facturado Setiembre:</span>
+                                <strong class="text-success fs-5">S/ 38,420.00</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-success btn-sm w-50 fw-bold" onclick="aceptarSirePropuesta('RVIE')">
+                                <i class="fa fa-check-double me-1"></i> Aceptar Propuesta SUNAT
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm w-50 fw-bold" onclick="descargarSireTxt('RVIE')">
+                                <i class="fa fa-file-arrow-down me-1"></i> Descargar TXT RVIE
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="rce-content">
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Facturas de Compra:</span>
+                                <strong>12 recibidas</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Base Imponible de Costos:</span>
+                                <strong class="text-primary">S/ 12,076.27</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>I-G-V Crédito Fiscal:</span>
+                                <strong class="text-success">S/ 2,173.73</strong>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Total Egresos Insumos:</span>
+                                <strong class="text-danger fs-5">S/ 14,250.00</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-success btn-sm w-50 fw-bold" onclick="aceptarSirePropuesta('RCE')">
+                                <i class="fa fa-check-double me-1"></i> Aceptar Propuesta RCE
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm w-50 fw-bold" onclick="descargarSireTxt('RCE')">
+                                <i class="fa fa-file-arrow-down me-1"></i> Descargar TXT RCE
+                            </button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="liq-content">
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>IGV Ventas (A favor del fisco):</span>
+                                <span class="text-danger fw-bold">+ S/ 5,860.68</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Crédito Fiscal Compras (A favor de la empresa):</span>
+                                <span class="text-success fw-bold">- S/ 2,173.73</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between p-2 bg-warning bg-opacity-25 rounded-2">
+                                <span class="fw-bold">Impuesto Estimado a Pagar SUNAT:</span>
+                                <strong class="text-dark fs-5">S/ 3,686.95</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <a href="https://sire.sunat.gob.pe/" target="_blank" class="btn btn-primary btn-sm fw-bold">
+                    <i class="fa fa-arrow-up-right-from-square me-1"></i> Ir a Portal SUNAT SIRE
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 6: Ticket Térmico Impreso Interactivo Global -->
+<div class="modal fade" id="modalTicketGlobal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 360px;">
+        <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
+            <div class="modal-header bg-dark text-white p-2">
+                <h6 class="modal-title small fw-bold mb-0"><i class="fa fa-receipt me-1"></i>Ticket Electrónico Impreso</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white" id="ticketPrintArea" style="font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; color: #111;">
+                <div class="text-center mb-3">
+                    <div class="fw-bold fs-6">HERCAR COMERCIAL S.A.C.</div>
+                    <div>RUC: 20601234567</div>
+                    <div class="small">Av. Principal 123 - Lima, Perú</div>
+                    <div class="border-bottom my-2"></div>
+                    <div class="fw-bold text-uppercase" id="ticketTipoDoc">BOLETA ELECTRÓNICA</div>
+                    <div class="fw-bold" id="ticketNumero">B001-000428</div>
+                    <div class="text-muted small" id="ticketFecha">09/09/2026 18:40</div>
+                </div>
+                <div class="mb-2">
+                    <strong>Cliente:</strong> <span id="ticketCliente">CLIENTE VARIOS</span>
+                </div>
+                <div class="border-bottom border-top py-2 my-2">
+                    <div class="d-flex justify-content-between fw-bold mb-1">
+                        <span>Cant. / Detalle</span>
+                        <span>Total</span>
+                    </div>
+                    <div class="d-flex justify-content-between" id="ticketItems">
+                        <span>1x Taladro Bosch 650W</span>
+                        <span>S/ 245.00</span>
+                    </div>
+                </div>
+                <div class="text-end mb-3">
+                    <div>Op. Gravada: <span id="ticketBase">S/ 207.63</span></div>
+                    <div>IGV (18%): <span id="ticketIgv">S/ 37.37</span></div>
+                    <div class="fs-6 fw-bold border-top pt-1 mt-1">TOTAL: <span id="ticketTotal">S/ 245.00</span></div>
+                </div>
+                <div class="text-center">
+                    <div class="p-2 border rounded d-inline-block bg-light mb-2">
+                        <i class="fa fa-qrcode fa-4x text-dark"></i>
+                    </div>
+                    <div class="small text-muted" style="font-size: 0.65rem;">
+                        Representación impresa de Comprobante Electrónico.<br>
+                        Autorizado por SUNAT mediante RS 097-2012.<br>
+                        <strong>Hash: a7F8e9K2mP9==</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-2 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="window.print()">
+                    <i class="fa fa-print me-1"></i> Imprimir Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- SweetAlert2 -->
@@ -809,65 +1388,168 @@ function openPosModal() {
 }
 
 function simulateSale() {
-    bootstrap.Modal.getInstance(document.getElementById('modalPosGlobal')).hide();
+    const mEl = document.getElementById('modalPosGlobal');
+    if (mEl) {
+        const inst = bootstrap.Modal.getInstance(mEl);
+        if (inst) inst.hide();
+    }
+    const sel = document.getElementById('posSelectProd');
+    const prodName = sel ? sel.options[sel.selectedIndex].text.split('-')[0].trim() : 'Taladro Percutor Bosch';
+    const prodPrice = sel ? sel.value : '245.00';
+
     Swal.fire({
         icon: 'success',
-        title: '¡Boleta Electrónica Emitida!',
-        html: 'Comprobante <strong>B001-000045</strong> generado con éxito.<br>Código CAR SIRE sincronizado.',
-        confirmButtonColor: '#10b981'
+        title: '¡Venta Registrada Exitosamente!',
+        html: `<strong>Boleta B001-000429</strong> emitida con éxito por <strong>S/ ${parseFloat(prodPrice).toFixed(2)}</strong>.<br><small class="text-muted">Stock descontado en Kardex y anotado en SIRE RVIE SUNAT.</small>`,
+        showCancelButton: true,
+        confirmButtonColor: '#22c55e',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: '<i class="fa fa-receipt me-1"></i> Ver Ticket Impreso',
+        cancelButtonText: 'Cerrar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            verTicketDemo('B001-000429', '00000000 - CLIENTE VARIOS', prodName, prodPrice, 'Hoy (Ahora)');
+        }
     });
 }
 
 function openHistoryModal() {
-    Swal.fire({
-        icon: 'info',
-        title: 'Historial de Ventas',
-        text: 'Mostrando 38 comprobantes emitidos en el periodo actual.',
-        confirmButtonColor: '#2563eb'
-    });
+    const el = document.getElementById('modalHistorialVentasGlobal');
+    if (el) {
+        const m = bootstrap.Modal.getOrCreateInstance(el);
+        m.show();
+    }
 }
 
 function openComprasModal(prod = '') {
-    Swal.fire({
-        icon: 'question',
-        title: 'Nueva Compra / Reposición',
-        text: prod ? `Generando orden de compra para: ${prod}` : 'Módulo de compras con cálculo de crédito fiscal IGV.',
-        confirmButtonColor: '#f59e0b'
-    });
+    const el = document.getElementById('modalComprasGlobal');
+    if (el) {
+        const m = bootstrap.Modal.getOrCreateInstance(el);
+        m.show();
+    }
 }
 
 function openClientesModal() {
-    Swal.fire({
-        icon: 'info',
-        title: 'Gestión de Clientes',
-        text: 'Padrón con validación en tiempo real de DNI (RENIEC) y RUC (SUNAT).',
-        confirmButtonColor: '#2563eb'
-    });
+    const el = document.getElementById('modalClientesGlobal');
+    if (el) {
+        const m = bootstrap.Modal.getOrCreateInstance(el);
+        m.show();
+    }
 }
 
 function openProveedoresModal() {
+    const el = document.getElementById('modalProveedoresGlobal');
+    if (el) {
+        const m = bootstrap.Modal.getOrCreateInstance(el);
+        m.show();
+    }
+}
+
+function openSireModal() {
+    const el = document.getElementById('modalSireGlobal');
+    if (el) {
+        const m = bootstrap.Modal.getOrCreateInstance(el);
+        m.show();
+    }
+}
+
+function verTicketDemo(num, cliente, producto, total, fecha) {
+    const elNum = document.getElementById('ticketNumero');
+    const elTipo = document.getElementById('ticketTipoDoc');
+    const elCli = document.getElementById('ticketCliente');
+    const elFec = document.getElementById('ticketFecha');
+    const elItems = document.getElementById('ticketItems');
+    const elBase = document.getElementById('ticketBase');
+    const elIgv = document.getElementById('ticketIgv');
+    const elTot = document.getElementById('ticketTotal');
+
+    const totNum = parseFloat(total) || 0;
+    const subNum = (totNum / 1.18).toFixed(2);
+    const igvNum = (totNum - subNum).toFixed(2);
+
+    if (elNum) elNum.textContent = num;
+    if (elTipo) elTipo.textContent = num.startsWith('F') ? 'FACTURA ELECTRÓNICA' : 'BOLETA ELECTRÓNICA';
+    if (elCli) elCli.textContent = cliente || '00000000 - CLIENTE VARIOS';
+    if (elFec) elFec.textContent = fecha || '09/09/2026 18:40';
+    if (elItems) elItems.innerHTML = `<span>1x ${producto}</span><span>S/ ${totNum.toFixed(2)}</span>`;
+    if (elBase) elBase.textContent = `S/ ${subNum}`;
+    if (elIgv) elIgv.textContent = `S/ ${igvNum}`;
+    if (elTot) elTot.textContent = `S/ ${totNum.toFixed(2)}`;
+
+    const modalEl = document.getElementById('modalTicketGlobal');
+    if (modalEl) {
+        const m = bootstrap.Modal.getOrCreateInstance(modalEl);
+        m.show();
+    }
+}
+
+function facturarDirectoCliente(clienteNom) {
+    const clModal = document.getElementById('modalClientesGlobal');
+    if (clModal) {
+        const inst = bootstrap.Modal.getInstance(clModal);
+        if (inst) inst.hide();
+    }
+    openPosModal();
+    const clienteInput = document.querySelector('#modalPosGlobal input[type="text"]');
+    if (clienteInput) clienteInput.value = clienteNom;
+}
+
+function filtrarTablaVentas() {
+    const input = document.getElementById('searchVentasInput');
+    if (!input) return;
+    const query = input.value.toLowerCase();
+    const rows = document.querySelectorAll('#tablaVentasModal tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+function aceptarSirePropuesta(tipo) {
+    Swal.fire({
+        icon: 'success',
+        title: `¡Propuesta ${tipo} Aceptada!`,
+        html: `El registro de <strong>${tipo} SIRE SUNAT</strong> ha sido aceptado y sincronizado con éxito.<br><small class="text-muted">Generado Ticket SUNAT #TK-202609090042</small>`,
+        confirmButtonColor: '#10b981'
+    });
+}
+
+function descargarSireTxt(tipo) {
     Swal.fire({
         icon: 'info',
-        title: 'Proveedores Registrados',
-        text: 'Corporación Ferretera, Importadora Industrial Hercar y más.',
+        title: `Generando Archivo TXT ${tipo}`,
+        html: `Estructura oficial SUNAT R.S. 112-2021 generada: <strong>LE2060123456720260900140400021111.TXT</strong>`,
         confirmButtonColor: '#2563eb'
     });
 }
 
-function openSireModal() {
-    Swal.fire({
-        icon: 'success',
-        title: 'Libros SIRE SUNAT Activos',
-        html: 'Propuestas oficiales <strong>RVIE (140400)</strong> y <strong>RCE (080400)</strong> listas con código CAR de 27 dígitos.',
-        confirmButtonColor: '#2563eb'
-    });
+function exportarSireVentasDemo() {
+    descargarSireTxt('RVIE');
 }
 
 function openKardexModal(item) {
     Swal.fire({
         icon: 'info',
         title: `Kardex: ${item}`,
-        text: 'Movimientos de inventario: Entradas por compras y Salidas por ventas POS.',
+        html: `
+            <div class="text-start small">
+                <div class="border-bottom pb-2 mb-2">
+                    <strong>Método de Valuación:</strong> Promedio Ponderado (SUNAT Art. 62 LIR)
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span>🟢 02/09 - Entrada por Compra (F002-004812):</span>
+                    <strong>+20 unids</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span>🔴 09/09 - Salida por Venta POS (B001-000428):</span>
+                    <strong class="text-danger">-1 unid</strong>
+                </div>
+                <div class="d-flex justify-content-between border-top pt-1 mt-1 text-primary fw-bold">
+                    <span>Stock Actual Disponible:</span>
+                    <span>19 unids</span>
+                </div>
+            </div>
+        `,
         confirmButtonColor: '#2563eb'
     });
 }

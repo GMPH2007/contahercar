@@ -1436,10 +1436,12 @@ body.sidebar-collapsed .app-main {
     transform: scale(0.92);
 }
 
-/* Ocultar dock automáticamente si hay modal, menú lateral o asistente abierto */
+/* Ocultar dock automáticamente si hay modal, menú lateral, SweetAlert o asistente abierto */
 body.modal-open .mobile-bottom-dock,
 body.sidebar-open .mobile-bottom-dock,
 body.siri-active .mobile-bottom-dock,
+body.swal2-shown .mobile-bottom-dock,
+body:has(.swal2-container) .mobile-bottom-dock,
 body:has(.pos-wrapper) .mobile-bottom-dock {
     opacity: 0 !important;
     pointer-events: none !important;

@@ -157,85 +157,93 @@ for ($i = 5; $i >= 0; $i--) {
 <div class="row g-3 g-md-3 mb-4" id="tourKpiCards">
     <!-- Ventas del Mes -->
     <div class="col-6 col-xl-3">
-        <div class="kpi-smart-card">
-            <div class="kpi-header">
-                <span class="kpi-title">Ventas del Mes</span>
-                <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
-                    <i class="fa fa-wallet"></i>
+        <a href="ventas.php" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Ventas del Mes</span>
+                    <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
+                        <i class="fa fa-wallet"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-primary"><?= formatMoney($ventasMes['total']) ?></div>
+                <div class="kpi-footer">
+                    <span class="badge-trend-up">
+                        <i class="fa fa-arrow-trend-up me-1"></i><?= $varVentasPct >= 0 ? '+' : '' ?><?= $varVentasPct ?>%
+                    </span>
+                    <span class="d-none d-sm-inline"><?= $ventasMes['cant'] ?> comprobantes</span>
                 </div>
             </div>
-            <div class="kpi-value text-primary"><?= formatMoney($ventasMes['total']) ?></div>
-            <div class="kpi-footer">
-                <span class="badge-trend-up">
-                    <i class="fa fa-arrow-trend-up me-1"></i><?= $varVentasPct >= 0 ? '+' : '' ?><?= $varVentasPct ?>%
-                </span>
-                <span class="d-none d-sm-inline"><?= $ventasMes['cant'] ?> comprobantes</span>
-            </div>
-        </div>
+        </a>
     </div>
 
     <!-- Compras & Egresos -->
     <div class="col-6 col-xl-3">
-        <div class="kpi-smart-card">
-            <div class="kpi-header">
-                <span class="kpi-title">Compras & Gastos</span>
-                <div class="kpi-icon-wrap bg-warning bg-opacity-10 text-warning">
-                    <i class="fa fa-cart-shopping"></i>
+        <a href="compras.php" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Compras & Gastos</span>
+                    <div class="kpi-icon-wrap bg-warning bg-opacity-10 text-warning">
+                        <i class="fa fa-cart-shopping"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-dark"><?= formatMoney($comprasMes['total']) ?></div>
+                <div class="kpi-footer">
+                    <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
+                        Insumos
+                    </span>
+                    <span class="d-none d-sm-inline"><?= $comprasMes['cant'] ?> compras</span>
                 </div>
             </div>
-            <div class="kpi-value text-dark"><?= formatMoney($comprasMes['total']) ?></div>
-            <div class="kpi-footer">
-                <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.72rem;">
-                    Insumos
-                </span>
-                <span class="d-none d-sm-inline"><?= $comprasMes['cant'] ?> compras</span>
-            </div>
-        </div>
+        </a>
     </div>
 
     <!-- Margen Comercial / Utilidad -->
     <div class="col-6 col-xl-3">
-        <div class="kpi-smart-card">
-            <div class="kpi-header">
-                <span class="kpi-title">Utilidad Bruta</span>
-                <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
-                    <i class="fa fa-sack-dollar"></i>
+        <a href="reportes.php" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Utilidad Bruta</span>
+                    <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
+                        <i class="fa fa-sack-dollar"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-success"><?= formatMoney($utilidadMes) ?></div>
+                <div class="kpi-footer">
+                    <span class="badge-trend-up">
+                        <i class="fa fa-shield-check me-1"></i>Rentable
+                    </span>
+                    <span class="d-none d-sm-inline">Margen neto</span>
                 </div>
             </div>
-            <div class="kpi-value text-success"><?= formatMoney($utilidadMes) ?></div>
-            <div class="kpi-footer">
-                <span class="badge-trend-up">
-                    <i class="fa fa-shield-check me-1"></i>Rentable
-                </span>
-                <span class="d-none d-sm-inline">Margen neto</span>
-            </div>
-        </div>
+        </a>
     </div>
 
     <!-- Alertas de Stock Bajo -->
     <div class="col-6 col-xl-3">
-        <div class="kpi-smart-card">
-            <div class="kpi-header">
-                <span class="kpi-title">Alerta de Stock</span>
-                <div class="kpi-icon-wrap bg-danger bg-opacity-10 text-danger">
-                    <i class="fa fa-triangle-exclamation"></i>
+        <a href="inventario.php?filtro=stock_bajo" class="text-decoration-none d-block h-100">
+            <div class="kpi-smart-card h-100">
+                <div class="kpi-header">
+                    <span class="kpi-title">Alerta de Stock</span>
+                    <div class="kpi-icon-wrap bg-danger bg-opacity-10 text-danger">
+                        <i class="fa fa-triangle-exclamation"></i>
+                    </div>
+                </div>
+                <div class="kpi-value text-danger"><?= (int)$invStats['total_stock_bajo'] ?> <small class="fs-6 fw-normal text-muted">items</small></div>
+                <div class="kpi-footer">
+                    <?php if ((int)$invStats['total_stock_bajo'] > 0): ?>
+                        <span class="badge-trend-down">
+                            <i class="fa fa-arrow-down me-1"></i>Reponer
+                        </span>
+                        <span class="text-danger fw-semibold small">Ver &rarr;</span>
+                    <?php else: ?>
+                        <span class="badge-trend-up">
+                            <i class="fa fa-check me-1"></i>Óptimo
+                        </span>
+                        <span class="d-none d-sm-inline">Inventario en regla</span>
+                    <?php endif; ?>
                 </div>
             </div>
-            <div class="kpi-value text-danger"><?= (int)$invStats['total_stock_bajo'] ?> <small class="fs-6 fw-normal text-muted">items</small></div>
-            <div class="kpi-footer">
-                <?php if ((int)$invStats['total_stock_bajo'] > 0): ?>
-                    <span class="badge-trend-down">
-                        <i class="fa fa-arrow-down me-1"></i>Reponer
-                    </span>
-                    <a href="inventario.php?filtro=stock_bajo" class="text-danger fw-semibold text-decoration-none small">Ver &rarr;</a>
-                <?php else: ?>
-                    <span class="badge-trend-up">
-                        <i class="fa fa-check me-1"></i>Óptimo
-                    </span>
-                    <span class="d-none d-sm-inline">Inventario en regla</span>
-                <?php endif; ?>
-            </div>
-        </div>
+        </a>
     </div>
 </div>
 

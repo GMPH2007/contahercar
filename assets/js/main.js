@@ -303,13 +303,56 @@ function simulateSale() {
         const inst = bootstrap.Modal.getInstance(mEl);
         if (inst) inst.hide();
     }
+    const sel = document.getElementById('posSelectProd');
+    const prodName = sel ? sel.options[sel.selectedIndex].text.split('-')[0].trim() : 'Taladro Percutor Bosch';
+    const prodPrice = sel ? sel.value : '245.00';
+
     Swal.fire({
         icon: 'success',
         title: '¡Venta Registrada Exitosamente!',
-        html: `<strong>Boleta Electrónica B001-000428</strong> emitida con éxito.<br><small class="text-muted">Descontado del stock en Kardex y enviado al RVIE SIRE SUNAT.</small>`,
+        html: `<strong>Boleta Electrónica B001-000428</strong> emitida con éxito por <strong>S/ ${parseFloat(prodPrice).toFixed(2)}</strong>.<br><small class="text-muted">Descontado del stock en Kardex y enviado al RVIE SIRE SUNAT.</small>`,
+        showCancelButton: true,
         confirmButtonColor: '#22c55e',
-        confirmButtonText: '<i class="fa fa-print me-1"></i> Imprimir Ticket'
+        cancelButtonColor: '#64748b',
+        confirmButtonText: '<i class="fa fa-receipt me-1"></i> Ver Ticket Impreso',
+        cancelButtonText: 'Cerrar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            verTicketDemo('B001-000428', '00000000 - CLIENTE VARIOS', prodName, prodPrice);
+        }
     });
+}
+
+function verTicketDemo(num, cliente, producto, total, fecha) {
+    const elNum = document.getElementById('ticketNumero');
+    const elTipo = document.getElementById('ticketTipoDoc');
+    const elCli = document.getElementById('ticketCliente');
+    const elFec = document.getElementById('ticketFecha');
+    const elItems = document.getElementById('ticketItems');
+    const elBase = document.getElementById('ticketBase');
+    const elIgv = document.getElementById('ticketIgv');
+    const elTot = document.getElementById('ticketTotal');
+
+    const totNum = parseFloat(total) || 245;
+    const subNum = (totNum / 1.18).toFixed(2);
+    const igvNum = (totNum - subNum).toFixed(2);
+
+    if (elNum) elNum.textContent = num || 'B001-000428';
+    if (elTipo) elTipo.textContent = (num && num.startsWith('F')) ? 'FACTURA ELECTRÓNICA' : 'BOLETA ELECTRÓNICA';
+    if (elCli) elCli.textContent = cliente || '00000000 - CLIENTE VARIOS';
+    if (elFec) elFec.textContent = fecha || 'Hoy';
+    if (elItems) elItems.innerHTML = `<span>1x ${producto || 'Producto Ferretero'}</span><span>S/ ${totNum.toFixed(2)}</span>`;
+    if (elBase) elBase.textContent = `S/ ${subNum}`;
+    if (elIgv) elIgv.textContent = `S/ ${igvNum}`;
+    if (elTot) elTot.textContent = `S/ ${totNum.toFixed(2)}`;
+
+    const modalEl = document.getElementById('modalTicketGlobal');
+    if (modalEl) {
+        const m = bootstrap.Modal.getOrCreateInstance(modalEl);
+        m.show();
+    } else {
+        window.open('ticket.php', '_blank');
+    }
 }
 
 function openConsultaRucModal() {
