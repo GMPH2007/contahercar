@@ -286,9 +286,10 @@ const ContaSmartAI = (() => {
 
         document.body.appendChild(drawer);
     }
+}
 
-    let lastOpenTime = 0;
-    function open() {
+let lastOpenTime = 0;
+function open() {
         try {
             const now = Date.now();
             if (now - lastOpenTime < 600) return; // Evitar doble ejecución en celular
