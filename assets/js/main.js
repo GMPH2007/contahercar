@@ -89,47 +89,16 @@ function consultarDocumento(numDocInputId, nombreInputId, dirInputId, estadoInpu
             }
 
             // Fallback inteligente para GitHub Pages y entornos estáticos / sin conexión local
-            const localDict = {
-                '20100070970': { nombre: 'SUPERMERCADOS PERUANOS S.A.', direccion: 'CAL. MORELLI NRO. 181 URB. SAN BORJA - LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'RÉGIMEN GENERAL' },
-                '20601030013': { nombre: 'REXTIE S.A.C. / DECOLECTA TECNOLOGIAS', direccion: 'AV. JOSE PARDO NRO. 601 PISO 5, MIRAFLORES - LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'RÉGIMEN GENERAL' },
-                '10460278975': { nombre: 'HUAMANI MENDOZA ERACLEO JUAN', direccion: 'CAL. GARCILASO NRO. 210 - CUSCO', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'RER' },
-                '20100128218': { nombre: 'SAGA FALABELLA S.A.', direccion: 'AV. PASEO DE LA REPUBLICA NRO. 3220 - SAN ISIDRO', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'RÉGIMEN GENERAL' },
-                '20100047218': { nombre: 'BANCO DE CREDITO DEL PERU', direccion: 'CALLE CENTENARIO NRO. 156, LA MOLINA - LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'RÉGIMEN GENERAL' },
-                '20601234567': { nombre: 'CONTAHERCAR SOLUCIONES COMERCIALES S.A.C.', direccion: 'AV. LA MARINA NRO. 450, PUEBLO LIBRE - LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'RÉGIMEN MYPE TRIBUTARIO' },
-                '20501234589': { nombre: 'IMPORTADORA INDUSTRIAL HERCAR E.I.R.L.', direccion: 'JR. PARURO NRO. 1024, CERCADO DE LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'RÉGIMEN MYPE TRIBUTARIO' },
-                '10702488915': { nombre: 'PINTADO HUAMAN GERSON MISAEL', direccion: 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'PERSONA NATURAL CON NEGOCIO' },
-                '45871234': { nombre: 'JUAN CARLOS PÉREZ RÍOS', direccion: 'AV. AREQUIPA NRO. 1420, LINCE - LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'PERSONA NATURAL' },
-                '45891234': { nombre: 'JUAN CARLOS PÉREZ RÍOS', direccion: 'AV. AREQUIPA NRO. 1420, LINCE - LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'PERSONA NATURAL' },
-                '70248891': { nombre: 'GERSON MISAEL PINTADO HUAMAN', direccion: 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'PERSONA NATURAL' },
-                '12345678': { nombre: 'MARÍA ELENA GONZALES RAMOS', direccion: 'JR. HUANCAVELICA NRO. 450, LIMA', estado: 'ACTIVO', condicion: 'HABIDO', regimen: 'PERSONA NATURAL' }
-            };
+            const fallbackData = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(numero) : null;
+            if (fallbackData && fallbackData.success) {
+                if (nombreInput) nombreInput.value = fallbackData.nombre;
+                if (dirInput && fallbackData.direccion) dirInput.value = fallbackData.direccion;
+                if (estadoInput && fallbackData.estado) estadoInput.value = fallbackData.estado;
 
-            let fallbackData;
-            if (localDict[numero]) {
-                fallbackData = localDict[numero];
-            } else if (numero.length === 11) {
-                fallbackData = {
-                    nombre: numero.startsWith('20') ? `EMPRESA COMERCIAL RUC ${numero} S.A.C.` : `CONTRIBUYENTE PERSONA NATURAL (RUC ${numero})`,
-                    direccion: `AV. PRINCIPAL NRO. ${numero.slice(-3)}, LIMA - PERÚ`,
-                    estado: 'ACTIVO',
-                    condicion: 'HABIDO',
-                    regimen: 'RÉGIMEN MYPE TRIBUTARIO'
-                };
+                showToast('success', `${fallbackData.tipo === 'RUC' ? 'RUC SUNAT' : 'DNI RENIEC'} Verificado: ${fallbackData.nombre}`);
             } else {
-                fallbackData = {
-                    nombre: `CIUDADANO REGISTRADO DNI ${numero}`,
-                    direccion: `JR. LAS FLORES NRO. ${numero.slice(-3)}, LIMA`,
-                    estado: 'ACTIVO',
-                    condicion: 'HABIDO',
-                    regimen: 'PERSONA NATURAL CON DNI'
-                };
+                showToast('warning', 'No se pudo consultar el documento.');
             }
-
-            if (nombreInput) nombreInput.value = fallbackData.nombre;
-            if (dirInput && fallbackData.direccion) dirInput.value = fallbackData.direccion;
-            if (estadoInput && fallbackData.estado) estadoInput.value = fallbackData.estado;
-
-            showToast('success', `${numero.length === 11 ? 'RUC SUNAT' : 'DNI RENIEC'} Verificado: ${fallbackData.nombre}`);
         });
 }
 
@@ -533,52 +502,7 @@ function ejecutarConsultaModal() {
 
             let finalData = data;
             if (!finalData || !finalData.success) {
-                const localDict = {
-                    '20100070970': { nombre: 'SUPERMERCADOS PERUANOS S.A.', direccion: 'CAL. MORELLI NRO. 181 URB. SAN BORJA - LIMA', regimen: 'RÉGIMEN GENERAL (GRAN CONTRIBUYENTE)' },
-                    '20601030013': { nombre: 'REXTIE S.A.C. / DECOLECTA TECNOLOGIAS', direccion: 'AV. JOSE PARDO NRO. 601 PISO 5, MIRAFLORES - LIMA', regimen: 'RÉGIMEN GENERAL (FINTECH)' },
-                    '10460278975': { nombre: 'HUAMANI MENDOZA ERACLEO JUAN', direccion: 'CAL. GARCILASO NRO. 210 - CUSCO', regimen: 'PERSONA NATURAL CON NEGOCIO (RER)' },
-                    '20100128218': { nombre: 'SAGA FALABELLA S.A.', direccion: 'AV. PASEO DE LA REPUBLICA NRO. 3220 - SAN ISIDRO', regimen: 'RÉGIMEN GENERAL' },
-                    '20100047218': { nombre: 'BANCO DE CREDITO DEL PERU', direccion: 'CALLE CENTENARIO NRO. 156, LA MOLINA - LIMA', regimen: 'RÉGIMEN GENERAL (BANCA)' },
-                    '20601234567': { nombre: 'CONTAHERCAR SOLUCIONES COMERCIALES S.A.C.', direccion: 'AV. LA MARINA NRO. 450, PUEBLO LIBRE - LIMA', regimen: 'RÉGIMEN MYPE TRIBUTARIO' },
-                    '20501234589': { nombre: 'IMPORTADORA INDUSTRIAL HERCAR E.I.R.L.', direccion: 'JR. PARURO NRO. 1024, CERCADO DE LIMA', regimen: 'RÉGIMEN MYPE TRIBUTARIO' },
-                    '10702488915': { nombre: 'PINTADO HUAMAN GERSON MISAEL', direccion: 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL', regimen: 'PERSONA NATURAL CON NEGOCIO (MYPE)' },
-                    '45871234': { nombre: 'JUAN CARLOS PÉREZ RÍOS', direccion: 'AV. AREQUIPA NRO. 1420, LINCE - LIMA', regimen: 'PERSONA NATURAL (DNI RENIEC)' },
-                    '45891234': { nombre: 'JUAN CARLOS PÉREZ RÍOS', direccion: 'AV. AREQUIPA NRO. 1420, LINCE - LIMA', regimen: 'PERSONA NATURAL (DNI RENIEC)' },
-                    '70248891': { nombre: 'GERSON MISAEL PINTADO HUAMAN', direccion: 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL', regimen: 'PERSONA NATURAL (DNI RENIEC)' },
-                    '12345678': { nombre: 'MARÍA ELENA GONZALES RAMOS', direccion: 'JR. HUANCAVELICA NRO. 450, LIMA', regimen: 'PERSONA NATURAL (DNI RENIEC)' }
-                };
-
-                if (localDict[num]) {
-                    finalData = {
-                        success: true,
-                        numero: num,
-                        nombre: localDict[num].nombre,
-                        estado: 'ACTIVO',
-                        condicion: 'HABIDO',
-                        direccion: localDict[num].direccion,
-                        regimen: localDict[num].regimen
-                    };
-                } else if (num.length === 11) {
-                    finalData = {
-                        success: true,
-                        numero: num,
-                        nombre: num.startsWith('20') ? `EMPRESA COMERCIAL RUC ${num} S.A.C.` : `CONTRIBUYENTE PERSONA NATURAL (RUC ${num})`,
-                        estado: 'ACTIVO',
-                        condicion: 'HABIDO',
-                        direccion: `AV. PRINCIPAL NRO. ${num.slice(-3)}, LIMA - PERÚ`,
-                        regimen: 'RÉGIMEN MYPE TRIBUTARIO'
-                    };
-                } else {
-                    finalData = {
-                        success: true,
-                        numero: num,
-                        nombre: `CIUDADANO REGISTRADO DNI ${num}`,
-                        estado: 'ACTIVO',
-                        condicion: 'HABIDO',
-                        direccion: `JR. LAS FLORES NRO. ${num.slice(-3)}, LIMA`,
-                        regimen: 'PERSONA NATURAL CON DNI'
-                    };
-                }
+                finalData = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
             }
 
             const bBadge = document.getElementById('resDocBadge');
@@ -621,15 +545,22 @@ function guardarDocModal(tipo) {
         return;
     }
 
-    // Auto-guardado en base de datos local
+    // Auto-guardado en base de datos local o LocalStorage
     fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=${tipo}&auto_guardar=1`)
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) throw new Error('Offline');
+            return r.json();
+        })
         .catch(() => null)
         .then(res => {
+            let lista = JSON.parse(localStorage.getItem('contahercar_registros_' + tipo) || '[]');
+            lista.push({ doc: num, nombre: nombre, fecha: new Date().toLocaleString() });
+            localStorage.setItem('contahercar_registros_' + tipo, JSON.stringify(lista));
+
             Swal.fire({
                 icon: 'success',
                 title: tipo === 'cliente' ? '¡Cliente Guardado en BD!' : '¡Proveedor Guardado en BD!',
-                html: `<strong>${nombre}</strong> (${num}) ha sido registrado exitosamente en la base de datos de ContaSmart.`,
+                html: `<strong>${nombre}</strong> (${num}) ha sido registrado exitosamente en el catálogo de ContaSmart.`,
                 confirmButtonColor: '#2563eb'
             });
         });

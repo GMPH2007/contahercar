@@ -4,6 +4,10 @@
  * Busca primero en base de datos local; si no existe, consulta API y puede registrarlo automáticamente.
  */
 
+error_reporting(0);
+ini_set('display_errors', '0');
+ob_start();
+
 require_once __DIR__ . '/../config/app.php';
 
 if (!headers_sent()) {

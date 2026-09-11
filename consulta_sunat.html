@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.1">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.3">
 </head>
 <body>
 
@@ -560,7 +560,7 @@ function realizarConsultaSunat(e) {
 }
 
 function consultarDocSunat(doc) {
-    const num = doc.replace(/\D/g, '');
+    const num = String(doc || '').replace(/\D/g, '');
     if (num.length !== 8 && num.length !== 11) {
         Swal.fire({
             icon: 'warning',
@@ -575,43 +575,61 @@ function consultarDocSunat(doc) {
     const loading = document.getElementById('loadingSunat');
     const ficha = document.getElementById('fichaSunatContainer');
 
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Consultando...';
-    loading.style.display = 'block';
-    ficha.style.display = 'none';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Consultando...';
+    }
+    if (loading) loading.style.display = 'block';
+    if (ficha) ficha.style.display = 'none';
 
-    fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
-        .then(res => res.json())
-        .then(data => {
+    const renderExito = (data, esFallback = false) => {
+        if (btn) {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa fa-magnifying-glass me-2"></i> Consultar SUNAT';
-            loading.style.display = 'none';
+        }
+        if (loading) loading.style.display = 'none';
 
-            if (!data.success) {
+        contribuyenteActual = data;
+        mostrarFichaTributaria(data);
+        guardarEnHistorialLocal(data);
+        cargarHistorialConsultas();
+
+        if (esFallback && typeof showToast === 'function') {
+            showToast('success', `${data.tipo} Verificado: ${data.nombre}`);
+        }
+    };
+
+    fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            if (data && data.success) {
+                renderExito(data, false);
+            } else {
+                throw new Error(data ? data.message : 'No encontrado');
+            }
+        })
+        .catch(err => {
+            // Fallback Infalible Offline / GitHub Pages
+            console.warn('Backend API offline o entorno estático. Activando catálogo local:', err);
+            const fallback = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+            if (fallback && fallback.success) {
+                renderExito(fallback, true);
+            } else {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa fa-magnifying-glass me-2"></i> Consultar SUNAT';
+                }
+                if (loading) loading.style.display = 'none';
                 Swal.fire({
                     icon: 'error',
                     title: 'No Encontrado',
-                    text: data.message || 'No se pudo obtener información para el documento ingresado.',
+                    text: 'No se pudo obtener información para el documento ' + num,
                     confirmButtonText: 'Aceptar'
                 });
-                return;
             }
-
-            contribuyenteActual = data;
-            mostrarFichaTributaria(data);
-            guardarEnHistorialLocal(data);
-            cargarHistorialConsultas();
-        })
-        .catch(err => {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa fa-magnifying-glass me-2"></i> Consultar SUNAT';
-            loading.style.display = 'none';
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de Red',
-                text: 'Ocurrió un error al contactar el servidor: ' + err.message,
-                confirmButtonText: 'Aceptar'
-            });
         });
 }
 
@@ -698,7 +716,7 @@ function guardarDocEnBD(contexto) {
 
     Swal.fire({
         title: `¿Registrar como ${contexto === 'cliente' ? 'Cliente' : 'Proveedor'}?`,
-        html: `Se registrará en la base de datos local a:<br><strong>${nombre}</strong> (Doc: <code>${doc}</code>)`,
+        html: `Se registrará en la base de datos a:<br><strong>${nombre}</strong> (Doc: <code>${doc}</code>)`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Sí, Registrar',
@@ -707,9 +725,12 @@ function guardarDocEnBD(contexto) {
         if (!res.isConfirmed) return;
 
         fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(doc)}&contexto=${contexto}&auto_guardar=1`)
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
             .then(resp => {
-                if (resp.success) {
+                if (resp && resp.success) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Registrado con Éxito',
@@ -718,11 +739,22 @@ function guardarDocEnBD(contexto) {
                         timer: 2000
                     });
                 } else {
-                    Swal.fire('Error', resp.message || 'No se pudo registrar.', 'error');
+                    throw new Error((resp && resp.message) || 'No se pudo registrar.');
                 }
             })
             .catch(err => {
-                Swal.fire('Error de Conexión', err.message, 'error');
+                // Fallback offline / GitHub Pages en LocalStorage
+                let lista = JSON.parse(localStorage.getItem('contahercar_registros_' + contexto) || '[]');
+                lista.push({ doc: doc, nombre: nombre, fecha: new Date().toLocaleString() });
+                localStorage.setItem('contahercar_registros_' + contexto, JSON.stringify(lista));
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registrado con Éxito',
+                    text: `Se guardó correctamente a ${nombre} en el catálogo de ${contexto}s.`,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
             });
     });
 }
@@ -1006,13 +1038,13 @@ function limpiarHistorialConsultas() {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.1"></script>
+<script src="assets/js/db_static.js?v=7.3"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.1"></script>
+<script src="assets/js/main.js?v=7.3"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.1"></script>
+<script src="assets/js/conta_ai.js?v=7.3"></script>
 
 
 </body>

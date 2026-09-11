@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.1">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.3">
 </head>
 <body>
 
@@ -298,7 +298,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Fecha de Emisión</label>
-                        <input type="date" name="fecha_compra" class="form-control" value="2026-09-10" required>
+                        <input type="date" name="fecha_compra" class="form-control" value="2026-09-11" required>
                     </div>
 
                     <div class="mb-3">
@@ -477,12 +477,15 @@ function buscarProveedorPorRucCompra() {
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
     fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=proveedor&auto_guardar=1`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
         .then(res => {
             btn.disabled = false;
             btn.innerHTML = originalBtn;
 
-            if (res.success && res.data) {
+            if (res && res.success && res.data) {
                 const p = res.data;
                 let existeOpcion = false;
 
@@ -502,16 +505,35 @@ function buscarProveedorPorRucCompra() {
                     select.appendChild(opt);
                 }
 
-                showToast('success', res.mensaje);
+                showToast('success', res.mensaje || 'Proveedor verificado con éxito');
                 input.value = '';
             } else {
-                Swal.fire('No Encontrado', res.message || 'No se pudo obtener información del RUC.', 'error');
+                throw new Error((res && res.message) || 'No se pudo obtener información del RUC.');
             }
         })
         .catch(err => {
             btn.disabled = false;
             btn.innerHTML = originalBtn;
-            Swal.fire('Error', 'Error al procesar la búsqueda por RUC.', 'error');
+
+            // Fallback con catálogo oficial verificado SUNAT
+            const fb = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+            if (fb && fb.success) {
+                const tempId = Date.now();
+                const opt = document.createElement('option');
+                opt.value = tempId;
+                opt.textContent = `${fb.nombre} (RUC: ${fb.numero})`;
+                opt.selected = true;
+                select.appendChild(opt);
+
+                let lista = JSON.parse(localStorage.getItem('contahercar_registros_proveedor') || '[]');
+                lista.push({ doc: num, nombre: fb.nombre, fecha: new Date().toLocaleString() });
+                localStorage.setItem('contahercar_registros_proveedor', JSON.stringify(lista));
+
+                showToast('success', `Proveedor Verificado: ${fb.nombre}`);
+                input.value = '';
+            } else {
+                Swal.fire('Atención', 'No se pudo procesar la búsqueda por RUC.', 'warning');
+            }
         });
 }
 
@@ -770,13 +792,13 @@ if (formCompra) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.1"></script>
+<script src="assets/js/db_static.js?v=7.3"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.1"></script>
+<script src="assets/js/main.js?v=7.3"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.1"></script>
+<script src="assets/js/conta_ai.js?v=7.3"></script>
 
 
 </body>

@@ -107,6 +107,9 @@ function getFlash() {
  * Respuesta JSON limpia
  */
 function jsonResponse($data, $statusCode = 200) {
+    if (ob_get_length()) {
+        ob_clean();
+    }
     if (!headers_sent()) {
         http_response_code($statusCode);
         header('Content-Type: application/json; charset=utf-8');

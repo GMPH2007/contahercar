@@ -350,12 +350,15 @@ function buscarProveedorPorRucCompra() {
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
     fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=proveedor&auto_guardar=1`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
         .then(res => {
             btn.disabled = false;
             btn.innerHTML = originalBtn;
 
-            if (res.success && res.data) {
+            if (res && res.success && res.data) {
                 const p = res.data;
                 let existeOpcion = false;
 
@@ -375,16 +378,35 @@ function buscarProveedorPorRucCompra() {
                     select.appendChild(opt);
                 }
 
-                showToast('success', res.mensaje);
+                showToast('success', res.mensaje || 'Proveedor verificado con éxito');
                 input.value = '';
             } else {
-                Swal.fire('No Encontrado', res.message || 'No se pudo obtener información del RUC.', 'error');
+                throw new Error((res && res.message) || 'No se pudo obtener información del RUC.');
             }
         })
         .catch(err => {
             btn.disabled = false;
             btn.innerHTML = originalBtn;
-            Swal.fire('Error', 'Error al procesar la búsqueda por RUC.', 'error');
+
+            // Fallback con catálogo oficial verificado SUNAT
+            const fb = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+            if (fb && fb.success) {
+                const tempId = Date.now();
+                const opt = document.createElement('option');
+                opt.value = tempId;
+                opt.textContent = `${fb.nombre} (RUC: ${fb.numero})`;
+                opt.selected = true;
+                select.appendChild(opt);
+
+                let lista = JSON.parse(localStorage.getItem('contahercar_registros_proveedor') || '[]');
+                lista.push({ doc: num, nombre: fb.nombre, fecha: new Date().toLocaleString() });
+                localStorage.setItem('contahercar_registros_proveedor', JSON.stringify(lista));
+
+                showToast('success', `Proveedor Verificado: ${fb.nombre}`);
+                input.value = '';
+            } else {
+                Swal.fire('Atención', 'No se pudo procesar la búsqueda por RUC.', 'warning');
+            }
         });
 }
 

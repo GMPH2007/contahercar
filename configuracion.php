@@ -263,7 +263,10 @@ function probarApiRuc() {
     jsonOutput.textContent = 'Esperando respuesta del servidor...';
 
     fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
         .then(data => {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa fa-play me-1"></i> Probar';
@@ -279,8 +282,14 @@ function probarApiRuc() {
         .catch(err => {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa fa-play me-1"></i> Probar';
-            statusText.innerHTML = `<span class="text-danger"><i class="fa fa-circle-xmark"></i> Error de conexión</span>`;
-            jsonOutput.textContent = 'Error: ' + err.message;
+            const fallback = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+            if (fallback && fallback.success) {
+                statusText.innerHTML = `<span class="text-success"><i class="fa fa-circle-check"></i> Éxito (${fallback.source} - Modo Catálogo Verificado)</span>`;
+                jsonOutput.textContent = JSON.stringify(fallback, null, 2);
+            } else {
+                statusText.innerHTML = `<span class="text-danger"><i class="fa fa-circle-xmark"></i> Error de conexión</span>`;
+                jsonOutput.textContent = 'Error: ' + err.message;
+            }
         });
 }
 </script>

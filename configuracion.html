@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.1">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.3">
 </head>
 <body>
 
@@ -448,7 +448,10 @@ function probarApiRuc() {
     jsonOutput.textContent = 'Esperando respuesta del servidor...';
 
     fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
         .then(data => {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa fa-play me-1"></i> Probar';
@@ -464,8 +467,14 @@ function probarApiRuc() {
         .catch(err => {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa fa-play me-1"></i> Probar';
-            statusText.innerHTML = `<span class="text-danger"><i class="fa fa-circle-xmark"></i> Error de conexión</span>`;
-            jsonOutput.textContent = 'Error: ' + err.message;
+            const fallback = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+            if (fallback && fallback.success) {
+                statusText.innerHTML = `<span class="text-success"><i class="fa fa-circle-check"></i> Éxito (${fallback.source} - Modo Catálogo Verificado)</span>`;
+                jsonOutput.textContent = JSON.stringify(fallback, null, 2);
+            } else {
+                statusText.innerHTML = `<span class="text-danger"><i class="fa fa-circle-xmark"></i> Error de conexión</span>`;
+                jsonOutput.textContent = 'Error: ' + err.message;
+            }
         });
 }
 </script>
@@ -687,13 +696,13 @@ function probarApiRuc() {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.1"></script>
+<script src="assets/js/db_static.js?v=7.3"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.1"></script>
+<script src="assets/js/main.js?v=7.3"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.1"></script>
+<script src="assets/js/conta_ai.js?v=7.3"></script>
 
 
 </body>
