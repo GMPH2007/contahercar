@@ -53,6 +53,22 @@ function consultarDocumento(numDocInputId, nombreInputId, dirInputId, estadoInpu
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Consultando...';
     }
 
+    const isStaticHost = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io') || window.location.hostname.includes('github'));
+    if (isStaticHost) {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnHtml;
+        }
+        const fb = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(numero) : null;
+        if (fb && fb.success) {
+            if (nombreInput) nombreInput.value = fb.nombre || '';
+            if (dirInput && fb.direccion) dirInput.value = fb.direccion;
+            if (estadoInput && fb.estado) estadoInput.value = fb.estado;
+            showToast('success', `${fb.tipo || 'Documento'} Encontrado: ${fb.nombre}`);
+            return;
+        }
+    }
+
     fetch(`api/consulta_ruc.php?numero=${encodeURIComponent(numero)}`)
         .then(response => {
             if (!response.ok) throw new Error('API offline');
@@ -493,44 +509,62 @@ function ejecutarConsultaModal() {
     if (load) load.classList.remove('d-none');
     if (btn) btn.disabled = true;
 
+    const renderModalData = (finalData) => {
+        if (load) load.classList.add('d-none');
+        if (btn) btn.disabled = false;
+        if (!finalData || !finalData.success) {
+            Swal.fire('Atención', 'No se encontraron datos para el documento ingresado.', 'info');
+            return;
+        }
+
+        const bBadge = document.getElementById('resDocBadge');
+        const bEstado = document.getElementById('resDocEstado');
+        const bNombre = document.getElementById('resDocNombre');
+        const bNum = document.getElementById('resDocNum');
+        const bCond = document.getElementById('resDocCondicion');
+        const bDir = document.getElementById('resDocDireccion');
+        const bReg = document.getElementById('resDocRegimen');
+
+        if (bBadge) bBadge.innerHTML = num.length === 11 ? '<i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado' : '<i class="fa fa-id-card me-1"></i>DNI RENIEC Verificado';
+        if (bEstado) bEstado.textContent = finalData.estado || 'ACTIVO';
+        if (bNombre) bNombre.textContent = finalData.nombre;
+        if (bNum) bNum.textContent = num;
+        if (bCond) bCond.textContent = finalData.condicion || 'HABIDO';
+        if (bDir) bDir.textContent = finalData.direccion || 'Sin dirección declarada';
+        if (bReg) bReg.textContent = finalData.tipo_contribuyente || finalData.regimen || 'Régimen MYPE Tributario';
+
+        if (res) res.classList.remove('d-none');
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Documento Verificado con Éxito',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    };
+
+    const isStaticHost = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io') || window.location.hostname.includes('github'));
+    if (isStaticHost) {
+        const fb = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+        renderModalData(fb);
+        return;
+    }
+
     fetch(`api/consulta_ruc.php?numero=${num}`)
-        .then(r => r.json())
+        .then(r => r.text())
+        .then(txt => {
+            if (txt.trim().startsWith('<')) throw new Error('Not JSON');
+            return JSON.parse(txt);
+        })
         .catch(() => null)
         .then(data => {
-            if (load) load.classList.add('d-none');
-            if (btn) btn.disabled = false;
-
             let finalData = data;
             if (!finalData || !finalData.success) {
                 finalData = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
             }
-
-            const bBadge = document.getElementById('resDocBadge');
-            const bEstado = document.getElementById('resDocEstado');
-            const bNombre = document.getElementById('resDocNombre');
-            const bNum = document.getElementById('resDocNum');
-            const bCond = document.getElementById('resDocCondicion');
-            const bDir = document.getElementById('resDocDireccion');
-            const bReg = document.getElementById('resDocRegimen');
-
-            if (bBadge) bBadge.innerHTML = num.length === 11 ? '<i class="fa fa-circle-check me-1"></i>RUC SUNAT Verificado' : '<i class="fa fa-id-card me-1"></i>DNI RENIEC Verificado';
-            if (bEstado) bEstado.textContent = finalData.estado || 'ACTIVO';
-            if (bNombre) bNombre.textContent = finalData.nombre;
-            if (bNum) bNum.textContent = num;
-            if (bCond) bCond.textContent = finalData.condicion || 'HABIDO';
-            if (bDir) bDir.textContent = finalData.direccion || 'Sin dirección declarada';
-            if (bReg) bReg.textContent = finalData.tipo_contribuyente || finalData.regimen || 'Régimen MYPE Tributario';
-
-            if (res) res.classList.remove('d-none');
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Documento Verificado con Éxito',
-                showConfirmButton: false,
-                timer: 2000
-            });
+            renderModalData(finalData);
         });
 }
 

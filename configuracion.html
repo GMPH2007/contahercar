@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.3">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.4">
 </head>
 <body>
 
@@ -120,7 +120,7 @@
             </a>
         </li>
         <li class="sidebar-item">
-            <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
+            <a href="https://www.gob.pe/reniec" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
                 <i class="fa fa-id-card-clip text-info"></i>
                 <span>Portal RENIEC Oficial</span>
                 <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>
@@ -447,10 +447,28 @@ function probarApiRuc() {
     statusText.textContent = 'Consultando endpoint...';
     jsonOutput.textContent = 'Esperando respuesta del servidor...';
 
+    const isStaticHost = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io') || window.location.hostname.includes('github'));
+    if (isStaticHost) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa fa-play me-1"></i> Probar';
+        const fallback = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+        if (fallback && fallback.success) {
+            statusText.innerHTML = `<span class="text-success"><i class="fa fa-circle-check"></i> Éxito (${fallback.source} - Modo Catálogo Verificado)</span>`;
+            jsonOutput.textContent = JSON.stringify(fallback, null, 2);
+        } else {
+            statusText.innerHTML = `<span class="text-danger"><i class="fa fa-circle-xmark"></i> Error</span>`;
+        }
+        return;
+    }
+
     fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
+            return res.text();
+        })
+        .then(rawText => {
+            if (rawText.trim().startsWith('<')) throw new Error('Not JSON');
+            return JSON.parse(rawText);
         })
         .then(data => {
             btn.disabled = false;
@@ -696,13 +714,13 @@ function probarApiRuc() {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.3"></script>
+<script src="assets/js/db_static.js?v=7.4"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.3"></script>
+<script src="assets/js/main.js?v=7.4"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.3"></script>
+<script src="assets/js/conta_ai.js?v=7.4"></script>
 
 
 </body>

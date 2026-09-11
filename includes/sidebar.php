@@ -95,7 +95,7 @@ $lowStockBadge = ($quickCounters['low_stock'] > 0) ? '<span class="badge bg-dang
             </a>
         </li>
         <li class="sidebar-item">
-            <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
+            <a href="https://www.gob.pe/reniec" target="_blank" rel="noopener noreferrer" class="sidebar-link sidebar-ext-link" title="Abrir portal oficial de RENIEC en nueva pestaña">
                 <i class="fa fa-id-card-clip text-info"></i>
                 <span>Portal RENIEC Oficial</span>
                 <i class="fa fa-arrow-up-right-from-square text-info ms-auto" style="font-size: 0.72rem;"></i>

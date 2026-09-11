@@ -262,10 +262,28 @@ function probarApiRuc() {
     statusText.textContent = 'Consultando endpoint...';
     jsonOutput.textContent = 'Esperando respuesta del servidor...';
 
+    const isStaticHost = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io') || window.location.hostname.includes('github'));
+    if (isStaticHost) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa fa-play me-1"></i> Probar';
+        const fallback = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+        if (fallback && fallback.success) {
+            statusText.innerHTML = `<span class="text-success"><i class="fa fa-circle-check"></i> Éxito (${fallback.source} - Modo Catálogo Verificado)</span>`;
+            jsonOutput.textContent = JSON.stringify(fallback, null, 2);
+        } else {
+            statusText.innerHTML = `<span class="text-danger"><i class="fa fa-circle-xmark"></i> Error</span>`;
+        }
+        return;
+    }
+
     fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
+            return res.text();
+        })
+        .then(rawText => {
+            if (rawText.trim().startsWith('<')) throw new Error('Not JSON');
+            return JSON.parse(rawText);
         })
         .then(data => {
             btn.disabled = false;

@@ -631,10 +631,38 @@ function buscarClientePorRucPos() {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
+    const isStaticHost = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io') || window.location.hostname.includes('github'));
+    if (isStaticHost) {
+        btn.disabled = false;
+        btn.innerHTML = originalBtn;
+        const fb = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+        if (fb && fb.success) {
+            const tempId = Date.now();
+            const opt = document.createElement('option');
+            opt.value = tempId;
+            opt.textContent = `${fb.nombre} (${fb.numero})`;
+            opt.selected = true;
+            select.appendChild(opt);
+
+            const tipoComp = document.getElementById('pos_tipo_comprobante');
+            if (tipoComp) {
+                tipoComp.value = (fb.tipo === 'RUC') ? 'Factura' : 'Boleta';
+            }
+
+            showToast('success', `${fb.tipo} Verificado: ${fb.nombre}`);
+            input.value = '';
+            return;
+        }
+    }
+
     fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=cliente&auto_guardar=1`)
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
+            return res.text();
+        })
+        .then(txt => {
+            if (txt.trim().startsWith('<')) throw new Error('Not JSON');
+            return JSON.parse(txt);
         })
         .then(res => {
             btn.disabled = false;

@@ -349,10 +349,37 @@ function buscarProveedorPorRucCompra() {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
+    const isStaticHost = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io') || window.location.hostname.includes('github'));
+    if (isStaticHost) {
+        btn.disabled = false;
+        btn.innerHTML = originalBtn;
+        const fb = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+        if (fb && fb.success) {
+            const tempId = Date.now();
+            const opt = document.createElement('option');
+            opt.value = tempId;
+            opt.textContent = `${fb.nombre} (RUC: ${fb.numero})`;
+            opt.selected = true;
+            select.appendChild(opt);
+
+            let lista = JSON.parse(localStorage.getItem('contahercar_registros_proveedor') || '[]');
+            lista.push({ doc: num, nombre: fb.nombre, fecha: new Date().toLocaleString() });
+            localStorage.setItem('contahercar_registros_proveedor', JSON.stringify(lista));
+
+            showToast('success', `Proveedor Verificado: ${fb.nombre}`);
+            input.value = '';
+            return;
+        }
+    }
+
     fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=proveedor&auto_guardar=1`)
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
+            return res.text();
+        })
+        .then(txt => {
+            if (txt.trim().startsWith('<')) throw new Error('Not JSON');
+            return JSON.parse(txt);
         })
         .then(res => {
             btn.disabled = false;

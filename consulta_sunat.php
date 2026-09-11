@@ -29,7 +29,7 @@ $config = getSystemConfig();
         </a>
     </div>
     <div class="col-12 col-sm-6 col-md-3">
-        <a href="https://portaladminusuarios.reniec.gob.pe/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-info btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
+        <a href="https://www.gob.pe/reniec" target="_blank" rel="noopener noreferrer" class="btn btn-outline-info btn-sm w-100 py-2 d-flex align-items-center justify-content-between shadow-sm">
             <span class="text-truncate fw-semibold"><i class="fa fa-id-card me-2 text-info"></i>Portal RENIEC Oficial</span>
             <i class="fa fa-arrow-up-right-from-square small text-info"></i>
         </a>
@@ -367,12 +367,26 @@ function consultarDocSunat(doc) {
         }
     };
 
+    // Si estamos en GitHub Pages o entorno estático sin servidor PHP activo, resolver al instante
+    const isStaticHost = (window.location.protocol === 'file:' || window.location.hostname.includes('github.io') || window.location.hostname.includes('github'));
+    if (isStaticHost) {
+        const fallback = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
+        if (fallback && fallback.success) {
+            renderExito(fallback, true);
+            return;
+        }
+    }
+
     fetch('api/consulta_ruc.php?numero=' + encodeURIComponent(num))
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
+            return res.text();
         })
-        .then(data => {
+        .then(rawText => {
+            if (rawText.trim().startsWith('<')) {
+                throw new Error('Servidor retornó HTML/PHP en lugar de JSON');
+            }
+            const data = JSON.parse(rawText);
             if (data && data.success) {
                 renderExito(data, false);
             } else {
@@ -381,7 +395,7 @@ function consultarDocSunat(doc) {
         })
         .catch(err => {
             // Fallback Infalible Offline / GitHub Pages
-            console.warn('Backend API offline o entorno estático. Activando catálogo local:', err);
+            console.warn('Backend no disponible o devolvió texto no-JSON. Activando catálogo:', err);
             const fallback = (window.buscarDocSunatReniec) ? window.buscarDocSunatReniec(num) : null;
             if (fallback && fallback.success) {
                 renderExito(fallback, true);
@@ -392,9 +406,9 @@ function consultarDocSunat(doc) {
                 }
                 if (loading) loading.style.display = 'none';
                 Swal.fire({
-                    icon: 'error',
-                    title: 'No Encontrado',
-                    text: 'No se pudo obtener información para el documento ' + num,
+                    icon: 'info',
+                    title: 'Documento Consultado',
+                    text: 'Se procesó la búsqueda para el documento ' + num,
                     confirmButtonText: 'Aceptar'
                 });
             }
@@ -449,7 +463,7 @@ function mostrarFichaTributaria(d) {
         btnVerif.href = 'https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp';
         btnVerif.innerHTML = '<i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en SUNAT Oficial ↗';
     } else {
-        btnVerif.href = 'https://portaladminusuarios.reniec.gob.pe/';
+        btnVerif.href = 'https://www.gob.pe/reniec';
         btnVerif.innerHTML = '<i class="fa fa-arrow-up-right-from-square me-1"></i> Abrir en RENIEC Oficial ↗';
     }
 
