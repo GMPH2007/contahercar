@@ -203,7 +203,7 @@ function verKardexProducto(productoId) {
         .then(data => renderKardex(data))
         .catch(() => {
             const fallback = (window.STATIC_DB_KARDEX && window.STATIC_DB_KARDEX[productoId]) ?
-                window.STATIC_DB_KARDEX[productoId] : {
+                JSON.parse(JSON.stringify(window.STATIC_DB_KARDEX[productoId])) : {
                     success: true,
                     producto: { nombre: 'Producto #' + productoId, stock: 15, unidad_medida: 'UNID' },
                     movimientos: [
@@ -211,58 +211,86 @@ function verKardexProducto(productoId) {
                         { fecha: '07/09/2026 09:15', tipo_movimiento: 'INGRESO POR COMPRA', cantidad: 10, stock_anterior: 7, stock_nuevo: 17, motivo: 'Compra F001-000124' }
                     ]
                 };
+            // Integrar movimientos recientes de ventas emitidas localmente
+            try {
+                const allLocal = JSON.parse(localStorage.getItem('contahercar_kardex_local') || '[]');
+                const localMovs = allLocal.filter(x => x.producto_id == productoId);
+                if (localMovs.length > 0) {
+                    fallback.movimientos = [...localMovs, ...fallback.movimientos];
+                }
+            } catch (e) {}
             renderKardex(fallback);
         });
 }
 
 /**
- * Imprimir Ticket Térmico 80mm Directo en Modal
+ * Mostrar Comprobante de Pago (Ticket Térmico 80mm) en Pantalla Inmediatamente
  */
-window.imprimirTicketDirecto = function(id) {
-    function renderTicket(ventaData) {
-        const modalEl = document.getElementById('modalTicketGlobal');
-        if (modalEl) {
-            const v = ventaData.venta;
-            const tipoEl = document.getElementById('ticketTipoDoc');
-            const numEl = document.getElementById('ticketNumero');
-            const fechaEl = document.getElementById('ticketFecha');
-            const clienteEl = document.getElementById('ticketCliente');
-            const itemsEl = document.getElementById('ticketItems');
-            const baseEl = document.getElementById('ticketBase');
-            const igvEl = document.getElementById('ticketIgv');
-            const totalEl = document.getElementById('ticketTotal');
+window.mostrarComprobanteTicket = function(ventaData, autoPrint = false) {
+    const modalEl = document.getElementById('modalTicketGlobal');
+    if (!modalEl) {
+        if (autoPrint) window.print();
+        return;
+    }
+    const v = ventaData.venta || ventaData;
+    const items = ventaData.items || [];
 
-            if (tipoEl) tipoEl.textContent = (v.tipo_comprobante || 'BOLETA ELECTRÓNICA').toUpperCase();
-            if (numEl) numEl.textContent = `${v.serie || 'B001'}-${v.correlativo || String(id).padStart(6, '0')}`;
-            if (fechaEl) fechaEl.textContent = v.fecha_venta || '07/09/2026 13:14';
-            const cliDoc = v.cliente_doc ? ` (${v.cliente_doc})` : '';
-            if (clienteEl) clienteEl.textContent = `${v.cliente_nombre || 'CLIENTE GENERAL'}${cliDoc}`;
+    const tipoEl = document.getElementById('ticketTipoDoc');
+    const numEl = document.getElementById('ticketNumero');
+    const fechaEl = document.getElementById('ticketFecha');
+    const clienteEl = document.getElementById('ticketCliente');
+    const itemsEl = document.getElementById('ticketItems');
+    const baseEl = document.getElementById('ticketBase');
+    const igvEl = document.getElementById('ticketIgv');
+    const totalEl = document.getElementById('ticketTotal');
 
-            if (itemsEl && ventaData.items) {
-                let itemsHtml = '';
-                ventaData.items.forEach(item => {
-                    itemsHtml += `
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>${item.cantidad}x ${item.producto_nombre}</span>
-                            <span class="fw-bold">${item.subtotal_fmt}</span>
-                        </div>
-                    `;
-                });
-                itemsEl.innerHTML = itemsHtml;
-            }
+    if (tipoEl) tipoEl.textContent = (v.tipo_comprobante || 'BOLETA ELECTRÓNICA').toUpperCase();
+    if (numEl) numEl.textContent = `${v.serie || 'B001'}-${v.correlativo || '000001'}`;
+    if (fechaEl) fechaEl.textContent = v.fecha_venta || new Date().toLocaleString('es-PE');
+    const cliDoc = v.cliente_doc ? ` (${v.cliente_doc})` : '';
+    if (clienteEl) clienteEl.textContent = `${v.cliente_nombre || 'CLIENTE GENERAL'}${cliDoc}`;
 
-            if (baseEl) baseEl.textContent = v.subtotal_fmt;
-            if (igvEl) igvEl.textContent = v.impuesto_fmt;
-            if (totalEl) totalEl.textContent = v.total_fmt;
-
-            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            bsModal.show();
-        } else {
-            window.print();
+    if (itemsEl) {
+        if (items.length > 0) {
+            itemsEl.innerHTML = items.map(it => `
+                <div class="d-flex justify-content-between mb-1">
+                    <span>${it.cantidad}x ${it.producto_nombre || it.nombre}</span>
+                    <span class="fw-bold">${it.subtotal_fmt || ('S/. ' + ((it.precio || 0) * it.cantidad).toFixed(2))}</span>
+                </div>
+            `).join('');
         }
     }
 
-    // Probar primero fetch si estamos con backend dinámico PHP
+    if (baseEl) baseEl.textContent = v.subtotal_fmt || `S/. ${parseFloat(v.subtotal || 0).toFixed(2)}`;
+    if (igvEl) igvEl.textContent = v.impuesto_fmt || `S/. ${parseFloat(v.impuesto || 0).toFixed(2)}`;
+    if (totalEl) totalEl.textContent = v.total_fmt || `S/. ${parseFloat(v.total || 0).toFixed(2)}`;
+
+    // Limpiar restos de SweetAlert o backdrops que pudieran bloquear el foco
+    document.querySelectorAll('.swal2-container').forEach(s => s.remove());
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+    document.body.classList.remove('modal-open', 'swal2-shown', 'swal2-height-auto');
+
+    const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    bsModal.show();
+
+    if (autoPrint) {
+        setTimeout(() => { window.print(); }, 400);
+    }
+};
+
+/**
+ * Imprimir Ticket Térmico 80mm Directo en Modal
+ */
+window.imprimirTicketDirecto = function(id) {
+    // 1. Probar primero si es una venta recién emitida localmente
+    const emitidas = (window.obtenerVentasEmitidas) ? window.obtenerVentasEmitidas() : [];
+    const ventaLocal = emitidas.find(v => v.id == id || (v.venta && v.venta.id == id));
+    if (ventaLocal) {
+        window.mostrarComprobanteTicket(ventaLocal);
+        return;
+    }
+
+    // 2. Probar fetch si estamos con backend dinámico PHP
     fetch(`api/venta_detalle.php?id=${id}`)
         .then(res => {
             if (!res.ok) throw new Error('API offline');
@@ -270,7 +298,7 @@ window.imprimirTicketDirecto = function(id) {
         })
         .then(data => {
             if (data && data.success && data.venta) {
-                renderTicket(data);
+                window.mostrarComprobanteTicket(data);
             } else {
                 throw new Error('Static fallback');
             }
@@ -295,7 +323,7 @@ window.imprimirTicketDirecto = function(id) {
                     ]
                 };
             }
-            renderTicket(ventaData);
+            window.mostrarComprobanteTicket(ventaData);
         });
 };
 
@@ -414,55 +442,93 @@ function simulateSale() {
         if (inst) inst.hide();
     }
     const sel = document.getElementById('posSelectProd');
-    const prodName = sel ? sel.options[sel.selectedIndex].text.split('-')[0].trim() : 'Taladro Percutor Bosch';
-    const prodPrice = sel ? sel.value : '245.00';
+    const prodName = sel ? sel.options[sel.selectedIndex].text.split('-')[0].trim() : 'Taladro Percutor Bosch 650W';
+    const prodPrice = sel ? parseFloat(sel.value) || 245.00 : 245.00;
+    const prodId = (prodName.toLowerCase().includes('amoladora')) ? 2 : ((prodName.toLowerCase().includes('cemento')) ? 3 : 1);
 
-    Swal.fire({
-        icon: 'success',
-        title: '¡Venta Registrada Exitosamente!',
-        html: `<strong>Boleta Electrónica B001-000428</strong> emitida con éxito por <strong>S/ ${parseFloat(prodPrice).toFixed(2)}</strong>.<br><small class="text-muted">Descontado del stock en Kardex y enviado al RVIE SIRE SUNAT.</small>`,
-        showCancelButton: true,
-        confirmButtonColor: '#22c55e',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: '<i class="fa fa-receipt me-1"></i> Ver Ticket Impreso',
-        cancelButtonText: 'Cerrar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            verTicketDemo('B001-000428', '00000000 - CLIENTE VARIOS', prodName, prodPrice);
-        }
-    });
+    // 1. Descontar inventario automáticamente en almacén y persistencia
+    const nuevoStock = (window.descontarStockProducto) ? window.descontarStockProducto(prodId, 1) : 14;
+
+    const correlativo = String(Math.floor(100 + Math.random() * 900)).padStart(6, '0');
+    const serieNum = 'B001-' + correlativo;
+    const subtotal = prodPrice / 1.18;
+    const igv = prodPrice - subtotal;
+    const fechaHora = new Date().toLocaleDateString('es-PE') + ' ' + new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+
+    const ventaObj = {
+        id: Date.now(),
+        venta: {
+            id: Date.now(),
+            tipo_comprobante: 'BOLETA ELECTRÓNICA',
+            serie: 'B001',
+            correlativo: correlativo,
+            fecha_venta: fechaHora,
+            cliente_nombre: '00000000 - CLIENTE VARIOS / GENERAL',
+            cliente_doc: '00000000',
+            subtotal: subtotal.toFixed(2),
+            subtotal_fmt: `S/. ${subtotal.toFixed(2)}`,
+            impuesto: igv.toFixed(2),
+            impuesto_fmt: `S/. ${igv.toFixed(2)}`,
+            total: prodPrice.toFixed(2),
+            total_fmt: `S/. ${prodPrice.toFixed(2)}`,
+            metodo_pago: 'Efectivo',
+            estado: 'COMPLETADA'
+        },
+        items: [
+            {
+                producto_id: prodId,
+                producto_nombre: prodName,
+                cantidad: 1,
+                precio: prodPrice,
+                subtotal_fmt: `S/. ${prodPrice.toFixed(2)}`
+            }
+        ]
+    };
+
+    // 2. Registrar venta y movimiento en Kardex local
+    if (window.registrarVentaEmitida) {
+        window.registrarVentaEmitida(ventaObj);
+    }
+    if (window.reproducirSonidoCobro) {
+        window.reproducirSonidoCobro();
+    }
+
+    // 3. MOSTRAR COMPROBANTE DE PAGO DIRECTAMENTE EN PANTALLA
+    window.mostrarComprobanteTicket(ventaObj);
+
+    if (typeof showToast === 'function') {
+        showToast('success', `¡Venta ${serieNum} emitida! Stock actualizado: ${nuevoStock} unid.`);
+    }
 }
 
 function verTicketDemo(num, cliente, producto, total, fecha) {
-    const elNum = document.getElementById('ticketNumero');
-    const elTipo = document.getElementById('ticketTipoDoc');
-    const elCli = document.getElementById('ticketCliente');
-    const elFec = document.getElementById('ticketFecha');
-    const elItems = document.getElementById('ticketItems');
-    const elBase = document.getElementById('ticketBase');
-    const elIgv = document.getElementById('ticketIgv');
-    const elTot = document.getElementById('ticketTotal');
-
     const totNum = parseFloat(total) || 245;
     const subNum = (totNum / 1.18).toFixed(2);
     const igvNum = (totNum - subNum).toFixed(2);
+    const tipo = (num && num.startsWith('F')) ? 'FACTURA ELECTRÓNICA' : 'BOLETA ELECTRÓNICA';
 
-    if (elNum) elNum.textContent = num || 'B001-000428';
-    if (elTipo) elTipo.textContent = (num && num.startsWith('F')) ? 'FACTURA ELECTRÓNICA' : 'BOLETA ELECTRÓNICA';
-    if (elCli) elCli.textContent = cliente || '00000000 - CLIENTE VARIOS';
-    if (elFec) elFec.textContent = fecha || 'Hoy';
-    if (elItems) elItems.innerHTML = `<span>1x ${producto || 'Producto Ferretero'}</span><span>S/ ${totNum.toFixed(2)}</span>`;
-    if (elBase) elBase.textContent = `S/ ${subNum}`;
-    if (elIgv) elIgv.textContent = `S/ ${igvNum}`;
-    if (elTot) elTot.textContent = `S/ ${totNum.toFixed(2)}`;
+    const ventaObj = {
+        venta: {
+            tipo_comprobante: tipo,
+            serie: num ? num.split('-')[0] : 'B001',
+            correlativo: num ? num.split('-')[1] : '000428',
+            fecha_venta: fecha || new Date().toLocaleString('es-PE'),
+            cliente_nombre: cliente || '00000000 - CLIENTE VARIOS',
+            cliente_doc: '00000000',
+            subtotal_fmt: `S/. ${subNum}`,
+            impuesto_fmt: `S/. ${igvNum}`,
+            total_fmt: `S/. ${totNum.toFixed(2)}`
+        },
+        items: [
+            {
+                cantidad: 1,
+                producto_nombre: producto || 'Producto Ferretero',
+                subtotal_fmt: `S/. ${totNum.toFixed(2)}`
+            }
+        ]
+    };
 
-    const modalEl = document.getElementById('modalTicketGlobal');
-    if (modalEl) {
-        const m = bootstrap.Modal.getOrCreateInstance(modalEl);
-        m.show();
-    } else {
-        window.open('ticket.php', '_blank');
-    }
+    window.mostrarComprobanteTicket(ventaObj);
 }
 
 function openConsultaRucModal() {
@@ -615,5 +681,233 @@ function facturarDocModal() {
     const clienteInput = document.querySelector('#modalPosGlobal input[type="text"]');
     if (clienteInput) clienteInput.value = `${num} - ${nombre}`;
 }
+
+// ============================================================================
+// GESTOR DE INVENTARIO Y STOCK EN CLIENTE / LOCALSTORAGE (CONTA SMART v6.4)
+// ============================================================================
+const STOCK_KEY = 'contahercar_stock_overrides';
+const VENTAS_EMITIDAS_KEY = 'contahercar_ventas_emitidas';
+const KARDEX_LOCAL_KEY = 'contahercar_kardex_local';
+
+/**
+ * Obtener el stock actual de un producto considerando compras y ventas previas
+ */
+window.obtenerStockProducto = function(id, stockOriginal = null) {
+    try {
+        const overrides = JSON.parse(localStorage.getItem(STOCK_KEY) || '{}');
+        if (overrides[id] !== undefined) {
+            return Math.max(0, parseInt(overrides[id], 10));
+        }
+    } catch (e) {
+        console.error('Error leyendo stock:', e);
+    }
+    if (stockOriginal !== null && stockOriginal !== undefined && !isNaN(stockOriginal)) {
+        return Math.max(0, parseInt(stockOriginal, 10));
+    }
+    // Buscar en DOM si no se pasó stockOriginal
+    const card = document.querySelector(`.item-card-prod[data-id="${id}"]`);
+    if (card && card.dataset.stock !== undefined) {
+        return Math.max(0, parseInt(card.dataset.stock, 10));
+    }
+    const row = document.querySelector(`tr[data-producto-id="${id}"]`);
+    if (row && row.dataset.stockActual !== undefined) {
+        return Math.max(0, parseInt(row.dataset.stockActual, 10));
+    }
+    return 15;
+};
+
+/**
+ * Fijar manualmente el stock de un producto (desde ajuste o inventario)
+ */
+window.fijarStockProducto = function(id, nuevoStock, stockMinimo = 5, unidad = 'UNID') {
+    try {
+        const overrides = JSON.parse(localStorage.getItem(STOCK_KEY) || '{}');
+        const finalStock = Math.max(0, parseInt(nuevoStock, 10));
+        overrides[id] = finalStock;
+        localStorage.setItem(STOCK_KEY, JSON.stringify(overrides));
+        window.actualizarDOMStock(id, finalStock, stockMinimo, unidad);
+        return finalStock;
+    } catch (e) {
+        console.error('Error guardando stock:', e);
+        return nuevoStock;
+    }
+};
+
+/**
+ * Descontar stock tras una venta completada en el POS
+ */
+window.descontarStockProducto = function(id, cantidad, stockOriginal = null) {
+    try {
+        const current = window.obtenerStockProducto(id, stockOriginal);
+        const nuevo = Math.max(0, current - parseInt(cantidad, 10));
+        const overrides = JSON.parse(localStorage.getItem(STOCK_KEY) || '{}');
+        overrides[id] = nuevo;
+        localStorage.setItem(STOCK_KEY, JSON.stringify(overrides));
+        window.actualizarDOMStock(id, nuevo);
+        return nuevo;
+    } catch (e) {
+        console.error('Error descontando stock:', e);
+        return 0;
+    }
+};
+
+/**
+ * Reponer stock (anulación de venta)
+ */
+window.reponerStockProducto = function(id, cantidad) {
+    try {
+        const current = window.obtenerStockProducto(id, 15);
+        const nuevo = current + parseInt(cantidad, 10);
+        const overrides = JSON.parse(localStorage.getItem(STOCK_KEY) || '{}');
+        overrides[id] = nuevo;
+        localStorage.setItem(STOCK_KEY, JSON.stringify(overrides));
+        window.actualizarDOMStock(id, nuevo);
+        return nuevo;
+    } catch (e) {
+        console.error('Error reponiendo stock:', e);
+        return 0;
+    }
+};
+
+/**
+ * Actualizar visualmente los elementos del DOM (POS, Almacén, Kardex)
+ */
+window.actualizarDOMStock = function(id, nuevoStock, stockMinimo = 5, unidad = 'UNID') {
+    // 1. En venta_nueva.php / venta_nueva.html (Tarjetas de Catálogo)
+    const card = document.querySelector(`.item-card-prod[data-id="${id}"]`);
+    if (card) {
+        card.setAttribute('data-stock', nuevoStock);
+        card.dataset.stock = nuevoStock;
+        const badge = card.querySelector('.badge:not(.bg-light)');
+        if (badge) {
+            badge.textContent = `Stock: ${nuevoStock}`;
+            badge.className = 'badge small ' + (nuevoStock <= 0 ? 'bg-danger' : (nuevoStock <= stockMinimo ? 'bg-warning text-dark' : 'bg-success'));
+        }
+    }
+
+    // 2. En inventario.php / inventario.html (Tabla de Productos)
+    const row = document.querySelector(`tr[data-producto-id="${id}"]`);
+    if (row) {
+        row.setAttribute('data-stock-actual', nuevoStock);
+        const stockCell = row.querySelector('.stock-actual-cell');
+        if (stockCell) {
+            if (nuevoStock <= 0) {
+                stockCell.innerHTML = `<span class="badge badge-soft-danger"><i class="fa fa-circle-xmark me-1"></i> 0 ${unidad} (Agotado)</span>`;
+            } else if (nuevoStock <= stockMinimo) {
+                stockCell.innerHTML = `<span class="badge badge-soft-warning"><i class="fa fa-triangle-exclamation me-1"></i> ${nuevoStock} ${unidad} (Bajo)</span>`;
+            } else {
+                stockCell.innerHTML = `<span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> ${nuevoStock} ${unidad}</span>`;
+            }
+        }
+    }
+};
+
+/**
+ * Guardar venta emitida en el historial local
+ */
+window.registrarVentaEmitida = function(ventaData) {
+    try {
+        let emitidas = JSON.parse(localStorage.getItem(VENTAS_EMITIDAS_KEY) || '[]');
+        emitidas.unshift(ventaData);
+        localStorage.setItem(VENTAS_EMITIDAS_KEY, JSON.stringify(emitidas));
+
+        // Registrar en Kardex local
+        let kardexLocal = JSON.parse(localStorage.getItem(KARDEX_LOCAL_KEY) || '[]');
+        const v = ventaData.venta || ventaData;
+        const fecha = v.fecha_venta || new Date().toLocaleString('es-PE');
+        const comprobante = `${v.serie || 'B001'}-${v.correlativo || '000001'}`;
+        
+        (ventaData.items || []).forEach(it => {
+            const pId = it.producto_id || it.id;
+            const stockAnt = window.obtenerStockProducto(pId, 15) + it.cantidad;
+            const stockNuevo = window.obtenerStockProducto(pId, 15);
+            kardexLocal.unshift({
+                producto_id: pId,
+                fecha: fecha,
+                tipo_movimiento: 'VENTA EN POS',
+                cantidad: -it.cantidad,
+                stock_anterior: stockAnt,
+                stock_nuevo: stockNuevo,
+                motivo: `Venta ${comprobante}`
+            });
+        });
+        localStorage.setItem(KARDEX_LOCAL_KEY, JSON.stringify(kardexLocal));
+    } catch (e) {
+        console.error('Error guardando venta emitida:', e);
+    }
+};
+
+/**
+ * Obtener ventas emitidas localmente
+ */
+window.obtenerVentasEmitidas = function() {
+    try {
+        return JSON.parse(localStorage.getItem(VENTAS_EMITIDAS_KEY) || '[]');
+    } catch (e) {
+        return [];
+    }
+};
+
+/**
+ * Sonido estético de caja registradora con Web Audio API (Sin archivos externos)
+ */
+window.reproducirSonidoCobro = function() {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // Re 5
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // La 5
+        osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.16); // Re 6
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.42);
+    } catch (e) {}
+};
+
+/**
+ * Sincronizar todos los stocks al abrir cualquier vista
+ */
+window.sincronizarInventarioGlobal = function() {
+    try {
+        const overrides = JSON.parse(localStorage.getItem(STOCK_KEY) || '{}');
+        
+        // 1. Sincronizar en POS (venta_nueva.php / venta_nueva.html)
+        document.querySelectorAll('.item-card-prod').forEach(card => {
+            const id = card.dataset.id;
+            if (overrides[id] !== undefined) {
+                const stock = parseInt(overrides[id], 10);
+                window.actualizarDOMStock(id, stock);
+            }
+        });
+
+        // 2. Sincronizar en Inventario / Almacén (inventario.php / inventario.html)
+        document.querySelectorAll('tr[data-producto-id]').forEach(row => {
+            const id = row.dataset.productoId;
+            const stockMinimo = parseInt(row.dataset.stockMinimo || '5', 10);
+            const unidad = row.dataset.unidad || 'UNID';
+            if (overrides[id] !== undefined) {
+                const stock = parseInt(overrides[id], 10);
+                window.actualizarDOMStock(id, stock, stockMinimo, unidad);
+            }
+        });
+    } catch (e) {
+        console.error('Error sincronizando inventario global:', e);
+    }
+};
+
+// Auto-ejecución al cargar cualquier página
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.sincronizarInventarioGlobal);
+} else {
+    window.sincronizarInventarioGlobal();
+}
+
 
 

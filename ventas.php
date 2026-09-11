@@ -224,7 +224,7 @@ $clientes = $pdo->query("SELECT id, nombre_razon_social FROM clientes ORDER BY n
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="ventasTableBody">
                     <?php if (empty($ventas)): ?>
                         <tr>
                             <td colspan="9" class="text-center py-4 text-muted">
@@ -399,6 +399,15 @@ function verDetalleVenta(id) {
         content.innerHTML = html;
     }
 
+    // 1. Probar primero si es una venta recién emitida localmente
+    const emitidas = (window.obtenerVentasEmitidas) ? window.obtenerVentasEmitidas() : [];
+    const ventaLocal = emitidas.find(v => v.id == id || (v.venta && v.venta.id == id));
+    if (ventaLocal) {
+        renderDetalle(ventaLocal);
+        return;
+    }
+
+    // 2. Probar fetch si backend dinámico PHP está activo
     fetch('api/venta_detalle.php?id=' + id)
         .then(res => {
             if (!res.ok) throw new Error('API offline');
@@ -458,6 +467,51 @@ function confirmarAnularVenta(id, comprobante) {
         }
     });
 }
+
+// Cargar ventas emitidas desde el POS localmente al inicio de la tabla
+document.addEventListener('DOMContentLoaded', () => {
+    const emitidas = (window.obtenerVentasEmitidas) ? window.obtenerVentasEmitidas() : [];
+    const tbody = document.getElementById('ventasTableBody');
+    if (tbody && emitidas.length > 0) {
+        const emptyTd = tbody.querySelector('td[colspan="9"]');
+        if (emptyTd) emptyTd.closest('tr').remove();
+
+        emitidas.slice().reverse().forEach(ed => {
+            const v = ed.venta || ed;
+            const tr = document.createElement('tr');
+            tr.className = 'table-light border-start border-4 border-success';
+            tr.innerHTML = `
+                <td><span class="small fw-semibold text-primary"><i class="fa fa-circle-check text-success me-1"></i>${v.fecha_venta || 'Reciente'}</span></td>
+                <td>
+                    <span class="badge bg-light text-dark border">${v.tipo_comprobante || 'Boleta'}</span><br>
+                    <span class="fw-bold font-monospace">${v.serie}-${v.correlativo}</span>
+                </td>
+                <td>
+                    <div class="fw-bold text-dark">${v.cliente_nombre || 'CLIENTE GENERAL'}</div>
+                    <small class="text-muted">${v.cliente_doc || '00000000'}</small>
+                </td>
+                <td><span class="badge bg-light text-secondary border">${v.metodo_pago || 'Efectivo'}</span></td>
+                <td>${v.subtotal_fmt || ('S/. ' + (v.subtotal || '0.00'))}</td>
+                <td>${v.impuesto_fmt || ('S/. ' + (v.impuesto || '0.00'))}</td>
+                <td class="fw-bold text-primary fs-6">${v.total_fmt || ('S/. ' + (v.total || '0.00'))}</td>
+                <td>
+                    <span class="badge badge-soft-success">${v.estado || 'COMPLETADA'}</span>
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-secondary" title="Imprimir Ticket Térmico 80mm" onclick="imprimirTicketDirecto(${ed.id})">
+                            <i class="fa fa-print"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-info" title="Ver Detalle" onclick="verDetalleVenta(${ed.id})">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.insertBefore(tr, tbody.firstChild);
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

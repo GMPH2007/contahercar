@@ -245,7 +245,7 @@ $categorias = $pdo->query("SELECT * FROM categorias ORDER BY nombre ASC")->fetch
                                 $isBajo = $p['stock'] <= $p['stock_minimo'];
                                 $isAgotado = $p['stock'] <= 0;
                             ?>
-                            <tr>
+                            <tr data-producto-id="<?= $p['id'] ?>" data-stock-minimo="<?= $p['stock_minimo'] ?>" data-unidad="<?= htmlspecialchars($p['unidad_medida']) ?>" data-stock-actual="<?= $p['stock'] ?>">
                                 <td>
                                     <span class="badge bg-light text-dark border font-monospace"><?= htmlspecialchars($p['codigo_barra']) ?></span>
                                 </td>
@@ -258,7 +258,7 @@ $categorias = $pdo->query("SELECT * FROM categorias ORDER BY nombre ASC")->fetch
                                 <td><?= htmlspecialchars($p['categoria_nombre'] ?? 'Sin categoría') ?></td>
                                 <td class="text-secondary"><?= formatMoney($p['precio_compra']) ?></td>
                                 <td class="fw-bold text-dark"><?= formatMoney($p['precio_venta']) ?></td>
-                                <td>
+                                <td class="stock-actual-cell">
                                     <?php if ($isAgotado): ?>
                                         <span class="badge badge-soft-danger"><i class="fa fa-circle-xmark me-1"></i> 0 <?= htmlspecialchars($p['unidad_medida']) ?> (Agotado)</span>
                                     <?php elseif ($isBajo): ?>
@@ -403,7 +403,7 @@ $categorias = $pdo->query("SELECT * FROM categorias ORDER BY nombre ASC")->fetch
 <div class="modal fade" id="modalAjusteStock" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="inventario.php">
+            <form method="POST" action="inventario.php" id="formAjusteStock">
                 <input type="hidden" name="action" value="ajuste_stock">
                 <input type="hidden" name="producto_id" id="ajuste_prod_id">
 
@@ -509,18 +509,79 @@ function editarProducto(p) {
 }
 
 function abrirAjusteStock(p) {
+    const stockReal = (window.obtenerStockProducto) ? window.obtenerStockProducto(p.id, p.stock) : p.stock;
     document.getElementById('ajuste_prod_id').value = p.id;
     document.getElementById('ajuste_prod_nombre').textContent = p.nombre + ' (' + p.codigo_barra + ')';
-    document.getElementById('ajuste_stock_actual').textContent = p.stock + ' ' + (p.unidad_medida || 'UNID');
+    document.getElementById('ajuste_stock_actual').textContent = stockReal + ' ' + (p.unidad_medida || 'UNID');
 
     const modal = new bootstrap.Modal(document.getElementById('modalAjusteStock'));
     modal.show();
+}
+
+// Interceptar ajuste de stock en modo estático para persistir en LocalStorage
+const formAjuste = document.getElementById('formAjusteStock');
+if (formAjuste) {
+    formAjuste.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const prodId = document.getElementById('ajuste_prod_id').value;
+            const tipo = this.querySelector('select[name="tipo_ajuste"]').value;
+            const cant = parseInt(this.querySelector('input[name="cantidad"]').value || '0', 10);
+            const motivo = this.querySelector('input[name="motivo"]').value.trim();
+
+            if (cant <= 0) {
+                Swal.fire('Atención', 'Ingrese una cantidad válida mayor a cero.', 'warning');
+                return;
+            }
+
+            const stockPrev = (window.obtenerStockProducto) ? window.obtenerStockProducto(prodId, 15) : 15;
+            const nuevoStock = tipo === 'INGRESO' ? (stockPrev + cant) : Math.max(0, stockPrev - cant);
+
+            if (window.fijarStockProducto) {
+                window.fijarStockProducto(prodId, nuevoStock);
+            }
+
+            // Registrar movimiento en Kardex local
+            try {
+                let kardexLocal = JSON.parse(localStorage.getItem('contahercar_kardex_local') || '[]');
+                kardexLocal.unshift({
+                    producto_id: prodId,
+                    fecha: new Date().toLocaleDateString('es-PE') + ' ' + new Date().toLocaleTimeString('es-PE', {hour:'2-digit', minute:'2-digit'}),
+                    tipo_movimiento: tipo === 'INGRESO' ? 'AJUSTE ENTRADA' : 'AJUSTE SALIDA',
+                    cantidad: tipo === 'INGRESO' ? cant : -cant,
+                    stock_anterior: stockPrev,
+                    stock_nuevo: nuevoStock,
+                    motivo: motivo || 'Ajuste manual de inventario'
+                });
+                localStorage.setItem('contahercar_kardex_local', JSON.stringify(kardexLocal));
+            } catch (err) {}
+
+            const mEl = document.getElementById('modalAjusteStock');
+            const m = bootstrap.Modal.getInstance(mEl);
+            if (m) m.hide();
+
+            if (typeof showToast === 'function') {
+                showToast('success', `Stock actualizado a ${nuevoStock} unidades.`);
+            } else {
+                Swal.fire('¡Ajuste Realizado!', `Nuevo stock en almacén: ${nuevoStock} unidades.`, 'success');
+            }
+        }
+    });
 }
 
 function generarCodigoAleatorio() {
     const randomNum = Math.floor(10000000 + Math.random() * 90000000);
     document.getElementById('prod_codigo').value = '775' + randomNum.toString().substring(0, 5);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.sincronizarInventarioGlobal) {
+        window.sincronizarInventarioGlobal();
+    }
+});
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
