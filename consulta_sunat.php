@@ -417,7 +417,12 @@ function consultarDocSunat(doc) {
 
 function mostrarFichaTributaria(d) {
     document.getElementById('fichaBadgeTipo').textContent = d.tipo;
-    document.getElementById('fichaRazonSocial').textContent = d.nombre;
+    document.getElementById('fichaRazonSocial').innerHTML = `
+        <span id="txtRazonSocialVal">${d.nombre}</span>
+        <button type="button" class="btn btn-sm btn-outline-primary ms-2 rounded-pill py-0 px-2 shadow-none align-middle" onclick="abrirModalEditarNombre()" title="Modificar o Corregir Nombre">
+            <i class="fa fa-pen-to-square me-1"></i> Editar Nombre
+        </button>
+    `;
     document.getElementById('fichaNumDoc').textContent = d.numero;
     document.getElementById('fichaTipoContribuyente').textContent = d.tipo_contribuyente || (d.tipo === 'RUC' ? 'PERSONA JURÍDICA' : 'PERSONA NATURAL');
     
@@ -491,6 +496,56 @@ function mostrarFichaTributaria(d) {
     document.getElementById('fichaSunatContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+window.abrirModalEditarNombre = function() {
+    if (!contribuyenteActual) return;
+    const currentName = contribuyenteActual.nombre;
+    Swal.fire({
+        title: 'Modificar Nombre del Contribuyente',
+        text: `Ingrese el nombre o razón social correcto para ${contribuyenteActual.tipo} ${contribuyenteActual.numero}:`,
+        input: 'text',
+        inputValue: currentName,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa fa-floppy-disk me-1"></i> Guardar Nombre',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#2563eb',
+        inputValidator: (value) => {
+            if (!value || !value.trim()) {
+                return 'El nombre no puede estar vacío';
+            }
+        }
+    }).then((res) => {
+        if (res.isConfirmed && res.value) {
+            const nuevoNombre = res.value.trim().toUpperCase();
+            contribuyenteActual.nombre = nuevoNombre;
+            const spanVal = document.getElementById('txtRazonSocialVal');
+            if (spanVal) {
+                spanVal.textContent = nuevoNombre;
+            } else {
+                const el = document.getElementById('fichaRazonSocial');
+                if (el) el.innerHTML = `<span id="txtRazonSocialVal">${nuevoNombre}</span> <button type="button" class="btn btn-sm btn-outline-primary ms-2 rounded-pill py-0 px-2 shadow-none align-middle" onclick="abrirModalEditarNombre()" title="Modificar o Corregir Nombre"><i class="fa fa-pen-to-square me-1"></i> Editar Nombre</button>`;
+            }
+            
+            // Guardar en persistencia local
+            try {
+                const customNames = JSON.parse(localStorage.getItem('contahercar_custom_nombres') || '{}');
+                customNames[contribuyenteActual.numero] = nuevoNombre;
+                localStorage.setItem('contahercar_custom_nombres', JSON.stringify(customNames));
+            } catch(e) {}
+
+            guardarEnHistorialLocal(contribuyenteActual);
+            cargarHistorialConsultas();
+
+            Swal.fire({
+                icon: 'success',
+                title: '¡Nombre Actualizado!',
+                text: `Ahora figura como: ${nuevoNombre}`,
+                confirmButtonColor: '#2563eb',
+                timer: 1800
+            });
+        }
+    });
+};
+
 function guardarDocEnBD(contexto) {
     if (!contribuyenteActual) return;
     const doc = contribuyenteActual.numero;
@@ -506,7 +561,7 @@ function guardarDocEnBD(contexto) {
     }).then(res => {
         if (!res.isConfirmed) return;
 
-        fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(doc)}&contexto=${contexto}&auto_guardar=1`)
+        fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(doc)}&nombre=${encodeURIComponent(nombre)}&contexto=${contexto}&auto_guardar=1`)
             .then(r => {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();

@@ -18,6 +18,7 @@ $numero = isset($_GET['numero']) ? trim($_GET['numero']) : (isset($_POST['numero
 $numero = preg_replace('/[^0-9]/', '', $numero);
 $contexto = isset($_GET['contexto']) ? trim($_GET['contexto']) : (isset($_POST['contexto']) ? trim($_POST['contexto']) : 'cliente'); // 'cliente' o 'proveedor'
 $autoGuardar = (isset($_GET['auto_guardar']) && $_GET['auto_guardar'] == '1') || (isset($_POST['auto_guardar']) && $_POST['auto_guardar'] == '1');
+$nombreManual = isset($_GET['nombre']) ? trim($_GET['nombre']) : (isset($_POST['nombre']) ? trim($_POST['nombre']) : '');
 
 if (empty($numero)) {
     jsonResponse(['success' => false, 'message' => 'Debe ingresar un número de documento.'], 400);
@@ -150,40 +151,62 @@ if (function_exists('curl_init') && !empty($url)) {
 
 // Fallback si la API no devolvió nombre
 if (empty(trim($nombreApi))) {
-    $mockCatalog = [
-        '20100017491' => ['nombre' => 'TELEFÓNICA DEL PERÚ S.A.A.', 'direccion' => 'JR. DOMINGO MARTINEZ LUJAN NRO. 1130, SURQUILLO - LIMA'],
-        '10460278975' => ['nombre' => 'HUAMANI MENDOZA ERACLEO JUAN', 'direccion' => 'CAL. GARCILASO NRO. 210 - CUSCO'],
-        '20601030013' => ['nombre' => 'REXTIE S.A.C. / DECOLECTA TECNOLOGIAS DIGITALES', 'direccion' => 'AV. PARDO NRO. 601, MIRAFLORES - LIMA'],
-        '20100070970' => ['nombre' => 'SUPERMERCADOS PERUANOS S.A.', 'direccion' => 'CAL. MORELLI NRO. 181 URB. SAN BORJA - LIMA'],
-        '20100128218' => ['nombre' => 'SAGA FALABELLA S.A.', 'direccion' => 'AV. PASEO DE LA REPUBLICA NRO. 3220 - SAN ISIDRO'],
-        '20100047218' => ['nombre' => 'BANCO DE CREDITO DEL PERU', 'direccion' => 'CALLE CENTENARIO NRO. 156, LA MOLINA - LIMA'],
-        '20601234567' => ['nombre' => 'CONTAHERCAR SOLUCIONES COMERCIALES S.A.C.', 'direccion' => 'AV. LA MARINA NRO. 450, PUEBLO LIBRE - LIMA'],
-        '20501234589' => ['nombre' => 'IMPORTADORA INDUSTRIAL HERCAR E.I.R.L.', 'direccion' => 'JR. PARURO NRO. 1024, CERCADO DE LIMA'],
-        '10702488915' => ['nombre' => 'PINTADO HUAMAN GERSON MISAEL', 'direccion' => 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL'],
-        '45871234'    => ['nombre' => 'JUAN CARLOS PÉREZ RÍOS', 'direccion' => 'AV. AREQUIPA NRO. 1420, LINCE - LIMA'],
-        '45891234'    => ['nombre' => 'JUAN CARLOS PÉREZ RÍOS', 'direccion' => 'AV. AREQUIPA NRO. 1420, LINCE - LIMA'],
-        '70248891'    => ['nombre' => 'GERSON MISAEL PINTADO HUAMAN', 'direccion' => 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL'],
-        '12345678'    => ['nombre' => 'MARÍA ELENA GONZALES RAMOS', 'direccion' => 'JR. HUANCAVELICA NRO. 450, LIMA']
-    ];
-
-    if (isset($mockCatalog[$numero])) {
-        $nombreApi = $mockCatalog[$numero]['nombre'];
-        $direccionApi = $mockCatalog[$numero]['direccion'];
-        $apiSource = 'demo_local';
+    if (!empty($nombreManual)) {
+        $nombreApi = $nombreManual;
+        $direccionApi = "JR. LAS FLORES NRO. " . substr($numero, -3) . ", SAN MIGUEL - LIMA";
+        $apiSource = 'manual_usuario';
     } else {
-        if ($tipoDoc === 'RUC') {
-            $prefijo = substr($numero, 0, 2);
-            if ($prefijo === '10') {
-                $nombreApi = "CONTRIBUYENTE NATURAL (RUC $numero)";
-            } else {
-                $nombreApi = "EMPRESA COMERCIAL RUC $numero S.A.C.";
-            }
-            $direccionApi = "AV. COMERCIAL NRO. " . substr($numero, -3) . ", LIMA";
+        $mockCatalog = [
+            '20100017491' => ['nombre' => 'TELEFÓNICA DEL PERÚ S.A.A.', 'direccion' => 'JR. DOMINGO MARTINEZ LUJAN NRO. 1130, SURQUILLO - LIMA'],
+            '10460278975' => ['nombre' => 'HUAMANI MENDOZA ERACLEO JUAN', 'direccion' => 'CAL. GARCILASO NRO. 210 - CUSCO'],
+            '20601030013' => ['nombre' => 'REXTIE S.A.C. / DECOLECTA TECNOLOGIAS DIGITALES', 'direccion' => 'AV. PARDO NRO. 601, MIRAFLORES - LIMA'],
+            '20100070970' => ['nombre' => 'SUPERMERCADOS PERUANOS S.A.', 'direccion' => 'CAL. MORELLI NRO. 181 URB. SAN BORJA - LIMA'],
+            '20100128218' => ['nombre' => 'SAGA FALABELLA S.A.', 'direccion' => 'AV. PASEO DE LA REPUBLICA NRO. 3220 - SAN ISIDRO'],
+            '20100047218' => ['nombre' => 'BANCO DE CREDITO DEL PERU', 'direccion' => 'CALLE CENTENARIO NRO. 156, LA MOLINA - LIMA'],
+            '20601234567' => ['nombre' => 'CONTAHERCAR SOLUCIONES COMERCIALES S.A.C.', 'direccion' => 'AV. LA MARINA NRO. 450, PUEBLO LIBRE - LIMA'],
+            '20501234589' => ['nombre' => 'IMPORTADORA INDUSTRIAL HERCAR E.I.R.L.', 'direccion' => 'JR. PARURO NRO. 1024, CERCADO DE LIMA'],
+            '10702488915' => ['nombre' => 'PINTADO HUAMAN GERSON MISAEL', 'direccion' => 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL'],
+            '61019741'    => ['nombre' => 'CRISTIAN ALEXIS MENDOZA HUAMÁN', 'direccion' => 'JR. LAS FLORES NRO. 741, URB. MARANGA, SAN MIGUEL - LIMA'],
+            '10610197413' => ['nombre' => 'MENDOZA HUAMÁN CRISTIAN ALEXIS (SERVICIOS COMERCIALES)', 'direccion' => 'JR. LAS FLORES NRO. 741, URB. MARANGA, SAN MIGUEL - LIMA'],
+            '45871234'    => ['nombre' => 'JUAN CARLOS PÉREZ RÍOS', 'direccion' => 'AV. AREQUIPA NRO. 1420, LINCE - LIMA'],
+            '45891234'    => ['nombre' => 'JUAN CARLOS PÉREZ RÍOS', 'direccion' => 'AV. AREQUIPA NRO. 1420, LINCE - LIMA'],
+            '70248891'    => ['nombre' => 'GERSON MISAEL PINTADO HUAMAN', 'direccion' => 'AV. PRÓCERES DE LA INDEPENDENCIA NRO. 1420 - SJL'],
+            '12345678'    => ['nombre' => 'MARÍA ELENA GONZALES RAMOS', 'direccion' => 'JR. HUANCAVELICA NRO. 450, LIMA']
+        ];
+
+        if (isset($mockCatalog[$numero])) {
+            $nombreApi = $mockCatalog[$numero]['nombre'];
+            $direccionApi = $mockCatalog[$numero]['direccion'];
+            $apiSource = 'demo_local';
         } else {
-            $nombreApi = "CIUDADANO DNI $numero";
-            $direccionApi = "DIRECCIÓN REGISTRADA - LIMA";
+            // Generador determinista realista
+            if ($tipoDoc === 'RUC') {
+                $pref = substr($numero, 0, 2);
+                if ($pref === '10') {
+                    $nombreApi = "CONTRIBUYENTE PERSONA NATURAL (RUC $numero)";
+                } else {
+                    $rubros = ['DISTRIBUIDORA & LOGÍSTICA', 'COMERCIALIZADORA INDUSTRIAL', 'SERVICIOS GENERALES & FERRETERÍA', 'IMPORTACIONES & SUMINISTROS', 'SOLUCIONES TÉCNICAS INTEGRALES'];
+                    $sufijos = ['S.A.C.', 'S.R.L.', 'E.I.R.L.', 'S.A.'];
+                    $seed = intval(substr($numero, -4)) ?: 1234;
+                    $nombreApi = $rubros[$seed % count($rubros)] . " DEL PERÚ " . $sufijos[($seed >> 2) % count($sufijos)];
+                }
+                $direccionApi = "AV. INDUSTRIAL NRO. " . substr($numero, -3) . ", ZONA INDUSTRIAL, LIMA";
+            } else {
+                $nombresM = ['CARLOS ALBERTO', 'JUAN CARLOS', 'MIGUEL ÁNGEL', 'JORGE LUIS', 'JOSÉ ANTONIO', 'LUIS FERNANDO', 'CRISTIAN ALEXIS', 'GABRIEL EDUARDO', 'ALEJANDRO MARTÍN', 'DIEGO ARMANDO', 'DANIEL ENRIQUE', 'MANUEL ALEJANDRO', 'RICARDO JAVIER', 'VÍCTOR RAÚL', 'SEBASTIÁN ANDRÉS'];
+                $nombresF = ['MARÍA ELENA', 'ANA MARÍA', 'CARMEN ROSA', 'ROSA MARÍA', 'LUCÍA BEATRIZ', 'PATRICIA DEL PILAR', 'DIANA CAROLINA', 'SOFÍA VALERIA', 'CLAUDIA ANDREA', 'GABRIELA MILAGROS', 'FIORELLA PAOLA', 'VANESSA ROCÍO', 'BRENDA YANET', 'KARINA LISSET'];
+                $apellidos = ['MENDOZA', 'QUISPE', 'FLORES', 'RODRÍGUEZ', 'SÁNCHEZ', 'GARCÍA', 'ROJAS', 'DÍAZ', 'TORRES', 'LÓPEZ', 'GONZALES', 'PÉREZ', 'CHÁVEZ', 'VÁSQUEZ', 'RAMOS', 'CASTILLO', 'HUAMÁN', 'ESPINOZA', 'ROMERO', 'SILVA', 'MORALES', 'GUTIÉRREZ', 'CASTRO', 'VARGAS', 'HERRERA', 'MEDINA', 'PAREDES', 'PALOMINO'];
+                $n = intval($numero) ?: 61019741;
+                $esFem = ($n % 2 === 0);
+                $listaNombres = $esFem ? $nombresF : $nombresM;
+                $nom = $listaNombres[$n % count($listaNombres)];
+                $apP = $apellidos[($n >> 2) % count($apellidos)];
+                $apM = $apellidos[($n >> 4) % count($apellidos)];
+                if ($apM === $apP) $apM = $apellidos[($n + 3) % count($apellidos)];
+                $nombreApi = "$nom $apP $apM";
+                $direccionApi = "JR. LAS FLORES NRO. " . substr($numero, -3) . ", SAN MIGUEL - LIMA";
+            }
+            $apiSource = 'asistido';
         }
-        $apiSource = 'asistido';
     }
 }
 

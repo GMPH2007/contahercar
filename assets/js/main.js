@@ -646,7 +646,7 @@ function guardarDocModal(tipo) {
     }
 
     // Auto-guardado en base de datos local o LocalStorage
-    fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&contexto=${tipo}&auto_guardar=1`)
+    fetch(`api/buscar_por_doc.php?numero=${encodeURIComponent(num)}&nombre=${encodeURIComponent(nombre)}&contexto=${tipo}&auto_guardar=1`)
         .then(r => {
             if (!r.ok) throw new Error('Offline');
             return r.json();
