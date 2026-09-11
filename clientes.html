@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.5">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.6">
 </head>
 <body>
 
@@ -249,7 +249,7 @@
 <!-- Filtro de Búsqueda -->
 <div class="card-custom mb-4">
     <div class="card-custom-body py-3">
-        <form method="GET" action="clientes.php" class="row g-2 align-items-center">
+        <form method="GET" action="clientes.html" class="row g-2 align-items-center">
             <div class="col-12 col-md-10">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
@@ -450,7 +450,7 @@
 <div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalClienteTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="clientes.php" id="formCliente">
+            <form method="POST" action="clientes.html" id="formCliente">
                 <input type="hidden" name="action" value="guardar_cliente">
                 <input type="hidden" name="id" id="cliente_id" value="0">
 
@@ -522,7 +522,7 @@
 </div>
 
 <!-- Form oculto para eliminación -->
-<form method="POST" action="clientes.php" id="formEliminarCliente" style="display:none;">
+<form method="POST" action="clientes.html" id="formEliminarCliente" style="display:none;">
     <input type="hidden" name="action" value="eliminar_cliente">
     <input type="hidden" name="id" id="eliminar_cliente_id">
 </form>
@@ -588,8 +588,37 @@ function confirmarEliminarCliente(id, nombre) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('eliminar_cliente_id').value = id;
-            document.getElementById('formEliminarCliente').submit();
+            const isStatic = window.location.protocol === 'file:' || 
+                             window.location.hostname.includes('github.io') || 
+                             window.location.pathname.endsWith('.html');
+            if (isStatic) {
+                Swal.fire('Eliminado', 'Cliente eliminado del catálogo.', 'success');
+            } else {
+                document.getElementById('eliminar_cliente_id').value = id;
+                document.getElementById('formEliminarCliente').submit();
+            }
+        }
+    });
+}
+
+// Interceptar Guardado de Cliente en Modo Estático
+const formCli = document.getElementById('formCliente');
+if (formCli) {
+    formCli.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const nom = document.getElementById('cliente_nombre').value.trim();
+            const num = document.getElementById('cliente_num_doc').value.trim();
+            if (!num || !nom) return;
+
+            const mEl = document.getElementById('modalCliente');
+            const m = bootstrap.Modal.getInstance(mEl);
+            if (m) m.hide();
+
+            Swal.fire('¡Cliente Guardado!', `Los datos de <strong>${nom}</strong> han sido registrados exitosamente.`, 'success');
         }
     });
 }
@@ -812,13 +841,13 @@ function confirmarEliminarCliente(id, nombre) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.5"></script>
+<script src="assets/js/db_static.js?v=7.6"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.5"></script>
+<script src="assets/js/main.js?v=7.6"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.5"></script>
+<script src="assets/js/conta_ai.js?v=7.6"></script>
 
 
 </body>

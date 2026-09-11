@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.5">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.6">
 </head>
 <body>
 
@@ -249,7 +249,7 @@
 <!-- Filtro de Búsqueda -->
 <div class="card-custom mb-4">
     <div class="card-custom-body py-3">
-        <form method="GET" action="proveedores.php" class="row g-2 align-items-center">
+        <form method="GET" action="proveedores.html" class="row g-2 align-items-center">
             <div class="col-12 col-md-10">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
@@ -357,7 +357,7 @@
 <div class="modal fade" id="modalProveedor" tabindex="-1" aria-labelledby="modalProveedorTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="proveedores.php" id="formProveedor">
+            <form method="POST" action="proveedores.html" id="formProveedor">
                 <input type="hidden" name="action" value="guardar_proveedor">
                 <input type="hidden" name="id" id="prov_id" value="0">
 
@@ -428,7 +428,7 @@
 </div>
 
 <!-- Form oculto para eliminación -->
-<form method="POST" action="proveedores.php" id="formEliminarProveedor" style="display:none;">
+<form method="POST" action="proveedores.html" id="formEliminarProveedor" style="display:none;">
     <input type="hidden" name="action" value="eliminar_proveedor">
     <input type="hidden" name="id" id="eliminar_prov_id">
 </form>
@@ -479,8 +479,37 @@ function confirmarEliminarProveedor(id, razon) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('eliminar_prov_id').value = id;
-            document.getElementById('formEliminarProveedor').submit();
+            const isStatic = window.location.protocol === 'file:' || 
+                             window.location.hostname.includes('github.io') || 
+                             window.location.pathname.endsWith('.html');
+            if (isStatic) {
+                Swal.fire('Eliminado', 'Proveedor eliminado del catálogo.', 'success');
+            } else {
+                document.getElementById('eliminar_prov_id').value = id;
+                document.getElementById('formEliminarProveedor').submit();
+            }
+        }
+    });
+}
+
+// Interceptar Guardado de Proveedor en Modo Estático
+const formPrv = document.getElementById('formProveedor');
+if (formPrv) {
+    formPrv.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const nom = document.getElementById('prov_razon_social').value.trim();
+            const num = document.getElementById('prov_num_doc').value.trim();
+            if (!num || !nom) return;
+
+            const mEl = document.getElementById('modalProveedor');
+            const m = bootstrap.Modal.getInstance(mEl);
+            if (m) m.hide();
+
+            Swal.fire('¡Proveedor Guardado!', `Los datos de <strong>${nom}</strong> han sido registrados exitosamente.`, 'success');
         }
     });
 }
@@ -703,13 +732,13 @@ function confirmarEliminarProveedor(id, razon) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.5"></script>
+<script src="assets/js/db_static.js?v=7.6"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.5"></script>
+<script src="assets/js/main.js?v=7.6"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.5"></script>
+<script src="assets/js/conta_ai.js?v=7.6"></script>
 
 
 </body>

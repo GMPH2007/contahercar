@@ -320,8 +320,37 @@ function confirmarEliminarProveedor(id, razon) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('eliminar_prov_id').value = id;
-            document.getElementById('formEliminarProveedor').submit();
+            const isStatic = window.location.protocol === 'file:' || 
+                             window.location.hostname.includes('github.io') || 
+                             window.location.pathname.endsWith('.html');
+            if (isStatic) {
+                Swal.fire('Eliminado', 'Proveedor eliminado del catálogo.', 'success');
+            } else {
+                document.getElementById('eliminar_prov_id').value = id;
+                document.getElementById('formEliminarProveedor').submit();
+            }
+        }
+    });
+}
+
+// Interceptar Guardado de Proveedor en Modo Estático
+const formPrv = document.getElementById('formProveedor');
+if (formPrv) {
+    formPrv.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const nom = document.getElementById('prov_razon_social').value.trim();
+            const num = document.getElementById('prov_num_doc').value.trim();
+            if (!num || !nom) return;
+
+            const mEl = document.getElementById('modalProveedor');
+            const m = bootstrap.Modal.getInstance(mEl);
+            if (m) m.hide();
+
+            Swal.fire('¡Proveedor Guardado!', `Los datos de <strong>${nom}</strong> han sido registrados exitosamente.`, 'success');
         }
     });
 }

@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.5">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.6">
 </head>
 <body>
 
@@ -246,7 +246,7 @@
     </a>
 </div>
 
-<form method="POST" action="compra_nueva.php" id="formNuevaCompra">
+<form method="POST" action="compra_nueva.html" id="formNuevaCompra">
     <div class="row g-3">
         <!-- Datos del Comprobante y Proveedor -->
         <div class="col-12 col-lg-4">
@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Interceptar envío en modo estático / GitHub Pages para confirmación amigable
-const formCompra = document.querySelector('form[action="compra_nueva.php"]');
+const formCompra = document.querySelector('form[action="compra_nueva.html"]');
 if (formCompra) {
     formCompra.addEventListener('submit', function(e) {
         const isStatic = window.location.protocol === 'file:' || 
@@ -819,13 +819,13 @@ if (formCompra) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.5"></script>
+<script src="assets/js/db_static.js?v=7.6"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.5"></script>
+<script src="assets/js/main.js?v=7.6"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.5"></script>
+<script src="assets/js/conta_ai.js?v=7.6"></script>
 
 
 </body>

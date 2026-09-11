@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.5">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.6">
 </head>
 <body>
 
@@ -254,7 +254,7 @@
 <!-- Barra de Filtros y Búsqueda -->
 <div class="card-custom mb-4">
     <div class="card-custom-body py-3">
-        <form method="GET" action="inventario.php" class="row g-2 align-items-center">
+        <form method="GET" action="inventario.html" class="row g-2 align-items-center">
             <div class="col-12 col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
@@ -606,7 +606,7 @@
 <div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="inventario.php">
+            <form method="POST" action="inventario.html" id="formProducto">
                 <input type="hidden" name="action" value="guardar_producto">
                 <input type="hidden" name="id" id="prod_id" value="0">
 
@@ -709,7 +709,7 @@
 <div class="modal fade" id="modalAjusteStock" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="inventario.php" id="formAjusteStock">
+            <form method="POST" action="inventario.html" id="formAjusteStock">
                 <input type="hidden" name="action" value="ajuste_stock">
                 <input type="hidden" name="producto_id" id="ajuste_prod_id">
 
@@ -754,7 +754,7 @@
 <div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="inventario.php">
+            <form method="POST" action="inventario.html" id="formCategoria">
                 <input type="hidden" name="action" value="guardar_categoria">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title fs-6 fw-bold"><i class="fa fa-folder-plus text-primary me-1"></i> Nueva Categoría</h5>
@@ -878,6 +878,182 @@ if (formAjuste) {
     });
 }
 
+// Interceptar Guardar Producto (Nuevo / Editar) en modo estático
+const formProd = document.getElementById('formProducto');
+if (formProd) {
+    formProd.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const id = document.getElementById('prod_id').value;
+            const codigo = document.getElementById('prod_codigo').value.trim();
+            const nombre = document.getElementById('prod_nombre').value.trim();
+            const selCat = document.getElementById('prod_categoria');
+            const catId = selCat ? selCat.value : '';
+            const catNombre = (selCat && selCat.selectedIndex >= 0) ? selCat.options[selCat.selectedIndex].text : 'General';
+            const unidad = document.getElementById('prod_unidad').value;
+            const pcompra = parseFloat(document.getElementById('prod_pcompra').value || 0);
+            const pventa = parseFloat(document.getElementById('prod_pventa').value || 0);
+            const smin = parseInt(document.getElementById('prod_stock_minimo').value || 5, 10);
+            const sinicial = parseInt(document.getElementById('prod_stock_inicial').value || 0, 10);
+            const desc = document.getElementById('prod_descripcion').value.trim();
+            const estado = document.getElementById('prod_estado').checked ? 1 : 0;
+
+            if (!codigo || !nombre) {
+                Swal.fire('Atención', 'Código y nombre del producto son obligatorios.', 'warning');
+                return;
+            }
+
+            const isNuevo = (!id || id === '0');
+            const prodFinalId = isNuevo ? Date.now() : parseInt(id, 10);
+            const currentStock = isNuevo ? sinicial : ((window.obtenerStockProducto) ? window.obtenerStockProducto(prodFinalId, 15) : 15);
+
+            const updatedProd = {
+                id: prodFinalId,
+                codigo_barra: codigo,
+                nombre: nombre,
+                categoria_id: catId,
+                categoria_nombre: catNombre.includes('--') ? 'General' : catNombre,
+                unidad_medida: unidad,
+                precio_compra: pcompra,
+                precio_venta: pventa,
+                stock_minimo: smin,
+                stock: currentStock,
+                descripcion: desc,
+                estado: estado
+            };
+
+            // 1. Guardar en localStorage para persistencia
+            let prodsEditados = JSON.parse(localStorage.getItem('contahercar_productos_editados') || '{}');
+            prodsEditados[prodFinalId] = updatedProd;
+            localStorage.setItem('contahercar_productos_editados', JSON.stringify(prodsEditados));
+
+            if (isNuevo) {
+                window.fijarStockProducto(prodFinalId, sinicial, smin, unidad);
+            }
+
+            // 2. Actualizar o agregar fila en la tabla del DOM
+            const row = document.querySelector(`tr[data-producto-id="${prodFinalId}"]`);
+            if (row) {
+                const codeBadge = row.querySelector('td:nth-child(1) .badge');
+                if (codeBadge) codeBadge.textContent = codigo;
+                const nameDiv = row.querySelector('td:nth-child(2) .fw-bold');
+                if (nameDiv) nameDiv.textContent = nombre;
+                let descSmall = row.querySelector('td:nth-child(2) small');
+                if (desc) {
+                    if (!descSmall) {
+                        descSmall = document.createElement('small');
+                        descSmall.className = 'text-muted d-block';
+                        row.querySelector('td:nth-child(2)').appendChild(descSmall);
+                    }
+                    descSmall.textContent = desc;
+                } else if (descSmall) {
+                    descSmall.remove();
+                }
+                const catTd = row.querySelector('td:nth-child(3)');
+                if (catTd) catTd.textContent = updatedProd.categoria_nombre;
+                const pCompTd = row.querySelector('td:nth-child(4)');
+                if (pCompTd) pCompTd.textContent = `S/. ${pcompra.toFixed(2)}`;
+                const pVentTd = row.querySelector('td:nth-child(5)');
+                if (pVentTd) pVentTd.textContent = `S/. ${pventa.toFixed(2)}`;
+                const sMinTd = row.querySelector('td:nth-child(7) .text-muted');
+                if (sMinTd) sMinTd.textContent = `${smin} ${unidad}`;
+                const stBadge = row.querySelector('td:nth-child(8) .badge');
+                if (stBadge) {
+                    stBadge.className = 'badge ' + (estado ? 'bg-success' : 'bg-secondary');
+                    stBadge.textContent = estado ? 'Activo' : 'Inactivo';
+                }
+                const btnEdit = row.querySelector('button[title="Editar Producto"]');
+                if (btnEdit) btnEdit.onclick = () => editarProducto(updatedProd);
+                const btnAjuste = row.querySelector('button[title="Ajuste manual de stock"]');
+                if (btnAjuste) btnAjuste.onclick = () => abrirAjusteStock(updatedProd);
+            } else {
+                const tbody = document.querySelector('.table-custom tbody');
+                if (tbody) {
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-producto-id', prodFinalId);
+                    tr.setAttribute('data-stock-minimo', smin);
+                    tr.setAttribute('data-unidad', unidad);
+                    tr.setAttribute('data-stock-actual', currentStock);
+                    tr.className = 'table-light border-start border-4 border-primary';
+                    tr.innerHTML = `
+                        <td><span class="badge bg-light text-dark border font-monospace">${codigo}</span></td>
+                        <td>
+                            <div class="fw-bold text-dark">${nombre}</div>
+                            ${desc ? `<small class="text-muted d-block">${desc}</small>` : ''}
+                        </td>
+                        <td>${updatedProd.categoria_nombre}</td>
+                        <td class="text-secondary">S/. ${pcompra.toFixed(2)}</td>
+                        <td class="fw-bold text-dark">S/. ${pventa.toFixed(2)}</td>
+                        <td class="stock-actual-cell">
+                            <span class="badge badge-soft-success"><i class="fa fa-circle-check me-1"></i> ${currentStock} ${unidad}</span>
+                        </td>
+                        <td><span class="text-muted">${smin} ${unidad}</span></td>
+                        <td><span class="badge ${estado ? 'bg-success' : 'bg-secondary'}">${estado ? 'Activo' : 'Inactivo'}</span></td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-outline-warning" title="Ajuste manual de stock" onclick='abrirAjusteStock(${JSON.stringify(updatedProd)})'><i class="fa fa-sliders"></i></button>
+                                <button type="button" class="btn btn-outline-info" title="Ver Historial Kardex" onclick="verKardexProducto(${prodFinalId})"><i class="fa fa-clock-rotate-left"></i></button>
+                                <button type="button" class="btn btn-outline-primary" title="Editar Producto" onclick='editarProducto(${JSON.stringify(updatedProd)})'><i class="fa fa-pen"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.insertBefore(tr, tbody.firstChild);
+                }
+            }
+
+            // 3. Cerrar modal y mostrar confirmación
+            const mEl = document.getElementById('modalProducto');
+            const m = bootstrap.Modal.getInstance(mEl);
+            if (m) m.hide();
+
+            Swal.fire({
+                icon: 'success',
+                title: isNuevo ? '¡Producto Creado!' : '¡Producto Actualizado!',
+                html: `<strong>${nombre}</strong> ha sido guardado exitosamente en el catálogo y almacén.`,
+                confirmButtonColor: '#2563eb'
+            });
+        }
+    });
+}
+
+// Interceptar Guardar Categoría en modo estático
+const formCat = document.getElementById('formCategoria');
+if (formCat) {
+    formCat.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const nomInput = this.querySelector('input[name="cat_nombre"]');
+            const nom = nomInput ? nomInput.value.trim() : '';
+            if (!nom) return;
+
+            document.querySelectorAll('select[name="categoria_id"]').forEach(sel => {
+                const opt = document.createElement('option');
+                opt.value = Date.now();
+                opt.textContent = nom;
+                sel.appendChild(opt);
+            });
+
+            const mEl = document.getElementById('modalCategoria');
+            const m = bootstrap.Modal.getInstance(mEl);
+            if (m) m.hide();
+            this.reset();
+
+            Swal.fire({
+                icon: 'success',
+                title: '¡Categoría Registrada!',
+                text: `La categoría "${nom}" se agregó correctamente.`,
+                confirmButtonColor: '#2563eb'
+            });
+        }
+    });
+}
+
 function generarCodigoAleatorio() {
     const randomNum = Math.floor(10000000 + Math.random() * 90000000);
     document.getElementById('prod_codigo').value = '775' + randomNum.toString().substring(0, 5);
@@ -887,6 +1063,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.sincronizarInventarioGlobal) {
         window.sincronizarInventarioGlobal();
     }
+    // Sincronizar productos editados desde LocalStorage
+    try {
+        const editados = JSON.parse(localStorage.getItem('contahercar_productos_editados') || '{}');
+        Object.values(editados).forEach(ep => {
+            const row = document.querySelector(`tr[data-producto-id="${ep.id}"]`);
+            if (row) {
+                if (ep.codigo_barra) {
+                    const cb = row.querySelector('td:nth-child(1) .badge');
+                    if (cb) cb.textContent = ep.codigo_barra;
+                }
+                if (ep.nombre) {
+                    const nm = row.querySelector('td:nth-child(2) .fw-bold');
+                    if (nm) nm.textContent = ep.nombre;
+                }
+                if (ep.categoria_nombre) {
+                    const ct = row.querySelector('td:nth-child(3)');
+                    if (ct) ct.textContent = ep.categoria_nombre;
+                }
+                if (ep.precio_compra) {
+                    const pc = row.querySelector('td:nth-child(4)');
+                    if (pc) pc.textContent = `S/. ${parseFloat(ep.precio_compra).toFixed(2)}`;
+                }
+                if (ep.precio_venta) {
+                    const pv = row.querySelector('td:nth-child(5)');
+                    if (pv) pv.textContent = `S/. ${parseFloat(ep.precio_venta).toFixed(2)}`;
+                }
+                if (ep.stock_minimo) {
+                    const sm = row.querySelector('td:nth-child(7) .text-muted');
+                    if (sm) sm.textContent = `${ep.stock_minimo} ${ep.unidad_medida || 'UNID'}`;
+                }
+                const stBadge = row.querySelector('td:nth-child(8) .badge');
+                if (stBadge && ep.estado !== undefined) {
+                    stBadge.className = 'badge ' + (ep.estado ? 'bg-success' : 'bg-secondary');
+                    stBadge.textContent = ep.estado ? 'Activo' : 'Inactivo';
+                }
+                const btnEdit = row.querySelector('button[title="Editar Producto"]');
+                if (btnEdit) btnEdit.onclick = () => editarProducto(ep);
+            }
+        });
+    } catch (err) {}
 });
 </script>
 
@@ -1107,13 +1323,13 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.5"></script>
+<script src="assets/js/db_static.js?v=7.6"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.5"></script>
+<script src="assets/js/main.js?v=7.6"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.5"></script>
+<script src="assets/js/conta_ai.js?v=7.6"></script>
 
 
 </body>

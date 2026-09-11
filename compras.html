@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.5">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.6">
 </head>
 <body>
 
@@ -260,7 +260,7 @@
 <!-- Filtros de Búsqueda -->
 <div class="card-custom mb-4">
     <div class="card-custom-body py-3">
-        <form method="GET" action="compras.php" class="row g-2 align-items-end">
+        <form method="GET" action="compras.html" class="row g-2 align-items-end">
             <div class="col-6 col-md-2">
                 <label class="form-label small fw-semibold text-muted mb-1">Desde:</label>
                 <input type="date" name="fecha_ini" class="form-control" value="2026-09-01">
@@ -377,7 +377,7 @@
 </div>
 
 <!-- Form oculto para anulación -->
-<form method="POST" action="compras.php" id="formAnularCompra" style="display:none;">
+<form method="POST" action="compras.html" id="formAnularCompra" style="display:none;">
     <input type="hidden" name="action" value="anular_compra">
     <input type="hidden" name="compra_id" id="anular_compra_id">
 </form>
@@ -749,13 +749,13 @@ function confirmarAnularCompra(id, comprobante) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.5"></script>
+<script src="assets/js/db_static.js?v=7.6"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.5"></script>
+<script src="assets/js/main.js?v=7.6"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.5"></script>
+<script src="assets/js/conta_ai.js?v=7.6"></script>
 
 
 </body>

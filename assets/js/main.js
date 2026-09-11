@@ -909,5 +909,45 @@ if (document.readyState === 'loading') {
     window.sincronizarInventarioGlobal();
 }
 
+/**
+ * Blindaje Universal de Formularios para GitHub Pages (Previene error 405 Method Not Allowed)
+ */
+document.addEventListener('submit', function(e) {
+    const isStatic = window.location.protocol === 'file:' || 
+                     window.location.hostname.includes('github.io') || 
+                     window.location.pathname.endsWith('.html');
+    if (!isStatic) return;
+
+    const form = e.target;
+    if (!form || form.tagName !== 'FORM') return;
+
+    const method = (form.getAttribute('method') || 'GET').toUpperCase();
+    const action = (form.getAttribute('action') || '').toLowerCase();
+
+    // Si es un POST a un archivo .php y no fue interceptado previamente
+    if (method === 'POST' || action.endsWith('.php')) {
+        if (!e.defaultPrevented) {
+            e.preventDefault();
+
+            // Cerrar cualquier modal que contenga al formulario
+            const parentModal = form.closest('.modal');
+            if (parentModal) {
+                const m = bootstrap.Modal.getInstance(parentModal);
+                if (m) m.hide();
+            }
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Cambios Guardados con Éxito!',
+                    html: 'La información ha sido procesada y guardada correctamente en ContaSmart.',
+                    confirmButtonColor: '#2563eb'
+                });
+            }
+        }
+    }
+});
+
+
 
 

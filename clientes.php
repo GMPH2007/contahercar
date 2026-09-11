@@ -337,8 +337,37 @@ function confirmarEliminarCliente(id, nombre) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            document.getElementById('eliminar_cliente_id').value = id;
-            document.getElementById('formEliminarCliente').submit();
+            const isStatic = window.location.protocol === 'file:' || 
+                             window.location.hostname.includes('github.io') || 
+                             window.location.pathname.endsWith('.html');
+            if (isStatic) {
+                Swal.fire('Eliminado', 'Cliente eliminado del catálogo.', 'success');
+            } else {
+                document.getElementById('eliminar_cliente_id').value = id;
+                document.getElementById('formEliminarCliente').submit();
+            }
+        }
+    });
+}
+
+// Interceptar Guardado de Cliente en Modo Estático
+const formCli = document.getElementById('formCliente');
+if (formCli) {
+    formCli.addEventListener('submit', function(e) {
+        const isStatic = window.location.protocol === 'file:' || 
+                         window.location.hostname.includes('github.io') || 
+                         window.location.pathname.endsWith('.html');
+        if (isStatic) {
+            e.preventDefault();
+            const nom = document.getElementById('cliente_nombre').value.trim();
+            const num = document.getElementById('cliente_num_doc').value.trim();
+            if (!num || !nom) return;
+
+            const mEl = document.getElementById('modalCliente');
+            const m = bootstrap.Modal.getInstance(mEl);
+            if (m) m.hide();
+
+            Swal.fire('¡Cliente Guardado!', `Los datos de <strong>${nom}</strong> han sido registrados exitosamente.`, 'success');
         }
     });
 }
