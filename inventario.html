@@ -1351,7 +1351,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="modal fade" id="modalMercadoPagoPlus" tabindex="-1" aria-labelledby="modalMpTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
-            <!-- Cabecera Oficial Mercado Pago con Estilo Premium -->
+            <!-- Cabecera Oficial -->
             <div class="modal-header text-white p-4" style="background: linear-gradient(135deg, #009ee3 0%, #0073a8 100%);">
                 <div class="d-flex align-items-center justify-content-between w-100 flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-3">
@@ -1360,11 +1360,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div>
                             <div class="d-flex align-items-center gap-2">
-                                <h5 class="modal-title fw-bold mb-0 text-white" id="modalMpTitle">ContaSmart PRO & PLUS</h5>
+                                <h5 class="modal-title fw-bold mb-0 text-white" id="modalMpTitle">ContaSmart PRO &amp; PLUS</h5>
                                 <span class="badge bg-warning text-dark fw-bold px-2 py-1"><i class="fa fa-bolt me-1"></i>VIP</span>
                             </div>
                             <small class="text-white-50" style="font-size: 0.78rem;">
-                                Pasarela Oficial Mercado Pago • Pago Seguro con Yape, Tarjetas y Transferencias
+                                Pasarela Oficial Mercado Pago • Yape • BCP • BBVA
                             </small>
                         </div>
                     </div>
@@ -1373,147 +1373,114 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <div class="modal-body p-4 bg-light">
-                <!-- Panel de Estado Activo (Si ya está desbloqueado) -->
+
+                <!-- Panel: Ya Activo (PRO) -->
                 <div id="panelProYaActivo" class="alert alert-success d-none align-items-center gap-3 p-3 rounded-3 shadow-sm border-success mb-3">
                     <div class="fs-2 text-success"><i class="fa fa-circle-check"></i></div>
                     <div class="flex-grow-1">
                         <h6 class="fw-bold mb-1 text-success">¡Tu Cuenta ContaSmart PRO está 100% Activa!</h6>
-                        <p class="small mb-0 text-dark">Todos los beneficios y módulos están desbloqueados sin límites: SIRE SUNAT, reportes financieros masivos, Siri IA y POS sin restricciones.</p>
+                        <p class="small mb-0 text-dark">Todos los módulos están desbloqueados: SIRE SUNAT, reportes Excel, Consultas ilimitadas y POS sin restricciones.</p>
                     </div>
                     <button type="button" class="btn btn-outline-success btn-sm fw-bold" onclick="restablecerPlanDemo()">
-                        <i class="fa fa-lock me-1"></i> Probar Modo Demo (Bloquear)
+                        <i class="fa fa-lock me-1"></i> Probar Modo Demo
                     </button>
                 </div>
 
-                <!-- Panel de Estado Demo (Si está bloqueado) -->
+                <!-- Panel: Modo Demo (bloqueado) -->
                 <div id="panelProModoDemo" class="alert alert-warning d-flex align-items-center gap-3 p-3 rounded-3 shadow-sm border-warning mb-3">
                     <div class="fs-2 text-warning"><i class="fa fa-lock"></i></div>
                     <div class="flex-grow-1">
                         <h6 class="fw-bold mb-1 text-dark">Modo Demostración Activo</h6>
-                        <p class="small mb-0 text-secondary">Las funciones exclusivas (SIRE SUNAT, reportes masivos y consultas ilimitadas) están bloqueadas. Activa tu Plan PRO por <strong>S/ 20.00</strong> para desbloquearlas todas.</p>
+                        <p class="small mb-0 text-secondary">Activa tu Plan PRO por <strong>S/ 20.00</strong> para desbloquear todas las funciones al instante.</p>
                     </div>
                 </div>
 
-                <!-- Oferta Destacada Plan Mensual S/ 20.00 -->
+                <!-- Precio -->
                 <div class="card border-0 rounded-4 shadow-sm mb-3 overflow-hidden">
-                    <div class="card-body p-4">
-                        <div class="row align-items-center g-3">
-                            <div class="col-md-7">
-                                <span class="badge bg-primary bg-opacity-10 text-primary fw-bold text-uppercase px-3 py-1 mb-2">
-                                    <i class="fa fa-fire text-danger me-1"></i> Plan Más Popular • Pago Único / Mensual
-                                </span>
-                                <h4 class="fw-extrabold text-dark mb-1">Membresía Completa PRO</h4>
-                                <p class="text-muted small mb-0">Sin contratos forzosos. Desbloquea de inmediato todas las herramientas para tu negocio.</p>
+                    <div class="card-body p-3">
+                        <div class="row align-items-center g-2">
+                            <div class="col-8">
+                                <div class="badge bg-danger bg-opacity-10 text-danger fw-bold mb-1"><i class="fa fa-fire me-1"></i>Oferta Especial • Pago Único</div>
+                                <h5 class="fw-bold text-dark mb-0">Membresía ContaSmart PRO</h5>
+                                <span class="text-muted small">Sin contratos. Activa inmediatamente todos los módulos.</span>
                             </div>
-                            <div class="col-md-5 text-md-end">
-                                <div class="d-inline-block text-start text-md-end bg-light p-3 rounded-3 border">
-                                    <span class="text-muted small text-decoration-line-through">Precio Normal: S/ 49.00</span>
-                                    <div class="d-flex align-items-baseline gap-1 justify-content-md-end">
-                                        <span class="fs-6 fw-bold text-dark">S/</span>
-                                        <span class="display-6 fw-bold text-primary" style="line-height: 1;">20.00</span>
-                                        <span class="text-muted small">/ mes</span>
-                                    </div>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold mt-1">Ahorro del 60%</span>
-                                </div>
+                            <div class="col-4 text-end">
+                                <div class="text-muted small text-decoration-line-through">S/ 49.00</div>
+                                <div class="display-6 fw-bold text-primary lh-1">S/ 20</div>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">Ahorro 60%</span>
                             </div>
                         </div>
 
-                        <hr class="my-3 text-muted opacity-25">
+                        <hr class="my-3 opacity-25">
 
-                        <!-- Métodos de Pago Aceptados -->
-                        <div class="mp-methods-banner d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                            <span class="small fw-semibold text-secondary">
-                                <i class="fa fa-credit-card text-primary me-1"></i> Métodos de pago aceptados:
-                            </span>
-                            <div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="badge text-white px-2 py-1" style="background:#7928ca;"><i class="fa fa-mobile-screen me-1"></i> Yape / Plin</span>
-                                <span class="badge bg-primary text-white px-2 py-1"><i class="fa fa-credit-card me-1"></i> Tarjetas Débito / Crédito</span>
-                                <span class="badge bg-secondary text-white px-2 py-1"><i class="fa fa-building-columns me-1"></i> BCP / BBVA / Interbank</span>
-                                <span class="badge bg-dark text-white px-2 py-1"><i class="fa fa-receipt me-1"></i> PagoEfectivo</span>
-                            </div>
+                        <!-- Métodos de pago -->
+                        <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+                            <small class="text-secondary fw-semibold"><i class="fa fa-credit-card text-primary me-1"></i>Acepta:</small>
+                            <span class="badge text-white px-2 py-1" style="background:#7928ca;"><i class="fa fa-mobile-screen me-1"></i>Yape / Plin</span>
+                            <span class="badge bg-primary text-white px-2 py-1"><i class="fa fa-credit-card me-1"></i>Tarjetas</span>
+                            <span class="badge bg-secondary text-white px-2 py-1"><i class="fa fa-building-columns me-1"></i>BCP / BBVA</span>
+                            <span class="badge bg-dark text-white px-2 py-1"><i class="fa fa-receipt me-1"></i>PagoEfectivo</span>
                         </div>
 
-                        <!-- Botón Principal de Pago Mercado Pago S/ 20.00 -->
-                        <div class="d-grid gap-2 mb-2">
-                            <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer" class="btn btn-mp-pay py-3 fw-bold fs-6 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="iniciarSeguimientoPago('S/ 20.00')">
-                                <i class="fa fa-shield-halved fs-5"></i>
-                                <span>Pagar S/ 20.00 con Mercado Pago (Yape / Tarjetas)</span>
-                                <i class="fa fa-arrow-up-right-from-square small ms-1"></i>
-                            </a>
-                        </div>
-
-                        <!-- Caja de Yape y QR Directo (0% comisiones) -->
-                        <div class="mp-yape-direct-box mt-3">
-                            <div class="row align-items-center g-3">
+                        <!-- PASO 1: Pagar con Mercado Pago -->
+                        <div class="p-3 rounded-3 border mb-2" style="background:#f0f9ff;">
+                            <div class="fw-bold text-primary small mb-2"><span class="badge bg-primary me-1">PASO 1</span> Realiza tu Pago en Mercado Pago</div>
+                            <div class="row g-2 align-items-center">
                                 <div class="col-sm-4 text-center">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://mpago.la/24CgT6E" alt="QR Yape / Mercado Pago" class="img-fluid rounded border p-1 shadow-sm bg-white" style="max-width: 110px;">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://mpago.la/24CgT6E" alt="QR Mercado Pago S/ 20" class="img-fluid rounded border p-1 shadow-sm bg-white" style="max-width: 100px;">
                                     <div class="small text-muted mt-1" style="font-size: 0.68rem;"><i class="fa fa-qrcode me-1"></i>Escanea con tu celular</div>
                                 </div>
                                 <div class="col-sm-8">
-                                    <div class="d-flex align-items-center gap-2 mb-1">
-                                        <span class="badge rounded-circle p-2 text-white" style="background: #7928ca; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"><i class="fa fa-mobile-screen"></i></span>
+                                    <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer"
+                                        class="btn btn-mp-pay w-100 fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2 mb-2"
+                                        onclick="iniciarSeguimientoPago('S/ 20.00')">
+                                        <i class="fa fa-shield-halved fs-5"></i>
+                                        <span>Pagar S/ 20.00 con Mercado Pago ↗</span>
+                                    </a>
+                                    <div class="small text-muted text-center">O yapea directamente al número:</div>
+                                    <div class="d-flex align-items-center justify-content-center gap-2 mt-1 p-2 bg-white rounded border">
+                                        <span class="badge rounded-circle p-2 text-white" style="background:#7928ca;"><i class="fa fa-mobile-screen"></i></span>
                                         <div>
-                                            <span class="small fw-bold text-dark d-block">Yape / Plin Directo a Misael:</span>
                                             <span class="font-monospace fw-bold text-primary fs-5">921 840 632</span>
-                                            <small class="text-muted d-block" style="font-size: 0.72rem;">Titular: Gerson Misael Pintado H.</small>
+                                            <small class="text-muted d-block" style="font-size:0.7rem;">Gerson Misael Pintado H.</small>
                                         </div>
-                                    </div>
-                                    <div class="d-flex gap-2 mt-2 flex-wrap">
                                         <button type="button" class="btn btn-sm btn-outline-primary" onclick="copiarNumeroYape()">
-                                            <i class="fa fa-copy me-1"></i> Copiar Número
-                                        </button>
-                                        <a href="https://wa.me/51921840632?text=Hola%20Misael,%20te%20acabo%20de%20yapear%20S/%2020.00%20para%20activar%20mi%20Plan%20PRO%20de%20ContaSmart.%20Aqu%C3%AD%20mi%20comprobante." target="_blank" class="btn btn-sm btn-success fw-bold">
-                                            <i class="fa-brands fa-whatsapp me-1"></i> Enviar Voucher
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="solicitarDatosBancariosMisael()">
-                                            <i class="fa fa-building-columns me-1"></i> Cuentas BCP/BBVA
+                                            <i class="fa fa-copy"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="text-center mt-2">
-                            <small class="text-muted" style="font-size: 0.72rem;">
-                                <i class="fa fa-lock text-success me-1"></i> Transacción procesada por Mercado Libre Perú S.R.L. Tus datos bancarios nunca se comparten.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Validación de Pago Real y Activación de Licencia -->
-                <div class="mp-sim-box mb-3 p-3 bg-white rounded-3 border shadow-sm">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="fa fa-shield-check text-success fs-5"></i>
-                            <div>
-                                <strong class="small d-block text-dark">Validación de Pago Real (Mercado Pago / Yape)</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Si ya completaste el pago de S/ 20.00, valida tu comprobante para desbloquear:</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col-sm-7">
-                            <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-100 fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="iniciarSeguimientoPago('S/ 20.00')">
-                                <i class="fa fa-arrow-up-right-from-square"></i> Pagar S/ 20.00 en Mercado Pago ↗
+                        <!-- PASO 2: Enviar comprobante -->
+                        <div class="p-3 rounded-3 border mb-2" style="background:#f0fff4;">
+                            <div class="fw-bold text-success small mb-2"><span class="badge bg-success me-1">PASO 2</span> Envía tu Comprobante por WhatsApp</div>
+                            <p class="small text-muted mb-2">Tras pagar, envía la captura de pantalla del voucher a Misael para confirmar:</p>
+                            <a href="https://wa.me/51921840632?text=Hola%20Misael%2C%20acabo%20de%20pagar%20S%2F%2020.00%20para%20activar%20mi%20Plan%20PRO%20de%20ContaSmart.%20Te%20adjunto%20mi%20comprobante." target="_blank" class="btn btn-success fw-bold w-100 d-flex align-items-center justify-content-center gap-2 py-2">
+                                <i class="fa-brands fa-whatsapp fs-5"></i> Enviar Voucher a WhatsApp de Misael (+51 921 840 632)
                             </a>
                         </div>
-                        <div class="col-sm-5">
-                            <button type="button" class="btn btn-success w-100 fw-semibold py-2" onclick="solicitarCodigoActivacion()">
-                                <i class="fa fa-key me-1"></i> Validar Código / Voucher
+
+                        <!-- PASO 3: Ingresar código -->
+                        <div class="p-3 rounded-3 border" style="background:#fffbf0;">
+                            <div class="fw-bold text-warning small mb-2"><span class="badge bg-warning text-dark me-1">PASO 3</span> Ingresa tu Código de Activación</div>
+                            <p class="small text-muted mb-2">Misael te enviará un código oficial por WhatsApp tras confirmar el pago. Ingrésalo aquí para desbloquear:</p>
+                            <button type="button" class="btn btn-warning fw-bold w-100 d-flex align-items-center justify-content-center gap-2 py-2" onclick="solicitarCodigoActivacion()">
+                                <i class="fa fa-key fs-5"></i> Ingresar Código y Desbloquear PRO
                             </button>
                         </div>
+
                     </div>
                 </div>
 
-                <!-- Lista Dinámica de Beneficios con Candados -->
-                <div class="row g-3 mb-3">
+                <!-- Beneficios -->
+                <div class="row g-2 mb-3">
                     <div class="col-sm-6">
                         <div class="feature-pill d-flex align-items-start gap-2 h-100">
                             <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
                             <div>
                                 <strong class="d-block text-dark small">Módulo SIRE SUNAT Full</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Descarga y exporta archivos RVIE y RCE listos para declarar en SUNAT.</span>
+                                <span class="text-muted" style="font-size: 0.72rem;">Descarga TXT y ZIP de RVIE y RCE para declarar en SUNAT.</span>
                             </div>
                         </div>
                     </div>
@@ -1522,7 +1489,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
                             <div>
                                 <strong class="d-block text-dark small">Reportes Financieros y Kardex</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Exportación masiva a Excel/CSV de ventas, utilidades e inventario valorizado.</span>
+                                <span class="text-muted" style="font-size: 0.72rem;">Exportación masiva a Excel de ventas, utilidades e inventario.</span>
                             </div>
                         </div>
                     </div>
@@ -1531,7 +1498,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
                             <div>
                                 <strong class="d-block text-dark small">Consultas SUNAT / RENIEC Ilimitadas</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Validación continua de DNI y RUC sin topes diarios de demostración.</span>
+                                <span class="text-muted" style="font-size: 0.72rem;">Validación de DNI y RUC sin límites diarios.</span>
                             </div>
                         </div>
                     </div>
@@ -1539,41 +1506,43 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="feature-pill d-flex align-items-start gap-2 h-100">
                             <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
                             <div>
-                                <strong class="d-block text-dark small">Soporte VIP y Facturación POS Ilimitada</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Emisión sin restricciones y asistencia directa por WhatsApp a cualquier hora.</span>
+                                <strong class="d-block text-dark small">Soporte VIP y POS Ilimitado</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Boletas y facturas sin restricciones y soporte WhatsApp 24/7.</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Opciones Alternativas de Pago / Enlace Libre (misael287) y WhatsApp -->
+                <!-- Enlace perfil y CCI -->
                 <div class="p-3 bg-white rounded-3 border">
                     <div class="row align-items-center g-2">
                         <div class="col-md-7">
-                            <span class="fw-bold text-dark small d-block"><i class="fa fa-link text-primary me-1"></i> Aporte personalizado o comprobante directo</span>
-                            <span class="text-muted" style="font-size: 0.72rem;">Paga otro monto en el perfil de Misael o envíale tu voucher directo a su WhatsApp.</span>
+                            <span class="fw-bold text-dark small d-block"><i class="fa fa-link text-primary me-1"></i>También puedes pagar por cuenta bancaria:</span>
+                            <span class="text-muted" style="font-size: 0.72rem;">O paga otro monto en el perfil de Misael en Mercado Pago.</span>
                         </div>
                         <div class="col-md-5 d-flex gap-2">
                             <a href="https://link.mercadopago.com.pe/misael287" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 fw-semibold text-truncate">
                                 <i class="fa fa-link me-1"></i> misael287 ↗
                             </a>
-                            <a href="https://wa.me/51921840632?text=Hola%20Misael,%20acabo%20de%20pagar%20mi%20Plan%20PRO%20de%20S/%2020%20por%20Mercado%20Pago%20o%20Yape.%20Aqu%C3%AD%20te%20adjunto%20mi%20comprobante." target="_blank" class="btn btn-success btn-sm fw-bold px-3 d-flex align-items-center justify-content-center" title="Enviar comprobante por WhatsApp a Misael">
-                                <i class="fa-brands fa-whatsapp fs-5"></i>
-                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" onclick="solicitarDatosBancariosMisael()">
+                                <i class="fa fa-building-columns me-1"></i> CCI/BCP
+                            </button>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="modal-footer bg-light p-3 d-flex justify-content-between">
                 <span class="text-muted small" style="font-size: 0.72rem;">
-                    <i class="fa fa-award text-warning me-1"></i> ContaSmart • Desarrollado por Gerson Misael Pintado Huaman (@GMPH2007)
+                    <i class="fa fa-award text-warning me-1"></i> ContaSmart • Por Gerson Misael Pintado Huaman (@GMPH2007)
                 </span>
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" onclick="if(window.cerrarModalMercadoPago) cerrarModalMercadoPago();">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Bootstrap 5.3 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
