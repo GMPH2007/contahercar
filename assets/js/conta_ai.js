@@ -531,22 +531,25 @@ function open() {
     async function resolveHumanResponse(raw) {
         const q = raw.toLowerCase().trim();
 
-        // 0. Consulta sobre Plan PRO / Membresía Mercado Pago (S/ 20.00)
-        if (q.includes('plan') || q.includes('pro') || q.includes('plus') || q.includes('mercado pago') || q.includes('precio') || q.includes('cuanto cuesta') || q.includes('pagar') || q.includes('suscripcion') || q.includes('comprar')) {
-            const humanText = `¡Excelente! La membresía <strong>ContaSmart PRO</strong> cuesta solo <strong>S/ 20.00 al mes</strong> mediante <strong>Mercado Pago</strong> (con Yape, Plin, tarjetas y bancos). Te desbloquea facturación ilimitada, módulo SIRE SUNAT y Siri IA sin topes.`;
-            const speechVoiceText = `La membresía ContaSmart PRO cuesta solo veinte soles al mes mediante Mercado Pago. Aceptamos Yape, tarjetas de débito o crédito y transferencias bancarias. Puedes pagarla con el botón que te dejo en pantalla.`;
+        // 0. Consulta sobre Plan PRO / Membresía Mercado Pago / Desbloqueo (S/ 20.00)
+        if (q.includes('plan') || q.includes('pro') || q.includes('plus') || q.includes('mercado pago') || q.includes('precio') || q.includes('cuanto cuesta') || q.includes('pagar') || q.includes('suscripcion') || q.includes('comprar') || q.includes('desbloque') || q.includes('beneficio') || q.includes('yape') || q.includes('plin') || q.includes('simular')) {
+            const humanText = `¡Excelente! La membresía <strong>ContaSmart PRO</strong> cuesta solo <strong>S/ 20.00 al mes</strong> mediante <strong>Mercado Pago</strong> (con Yape, Plin, tarjetas y bancos). Te desbloquea el módulo SIRE SUNAT, reportes masivos de utilidades, consultas ilimitadas y soporte VIP.`;
+            const speechVoiceText = `La membresía ContaSmart PRO cuesta solo veinte soles al mes mediante Mercado Pago o Yape directo. Te desbloquea todas las funciones: SIRE SUNAT, reportes financieros y consultas ilimitadas. Puedes pagar o simular tu activación con los botones en pantalla.`;
             const actionCardHTML = `
                 <div class="d-flex align-items-center justify-content-between mb-2">
                     <span class="badge bg-warning text-dark fw-bold"><i class="fa fa-crown me-1"></i>ContaSmart PRO</span>
                     <span class="fw-bold text-success fs-6">S/ 20.00 / mes</span>
                 </div>
-                <p class="small text-muted mb-3">Facturación ilimitada, Siri IA 24/7 y módulo SIRE SUNAT oficial.</p>
-                <div class="d-grid gap-2">
+                <p class="small text-muted mb-2">SIRE SUNAT oficial, reportes financieros Excel y consultas ilimitadas.</p>
+                <div class="d-grid gap-2 mb-2">
                     <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm fw-bold">
                         <i class="fa fa-shield-halved me-1"></i> Pagar S/ 20.00 en Mercado Pago ↗
                     </a>
+                    <button type="button" onclick="if(window.simularPagoExitosoMercadoPago) simularPagoExitosoMercadoPago();" class="btn btn-warning btn-sm fw-bold">
+                        <i class="fa fa-bolt me-1"></i> ⚡ Simular Pago y Desbloquear Ahora
+                    </button>
                     <button type="button" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" class="btn btn-outline-secondary btn-sm">
-                        <i class="fa fa-award me-1"></i> Ver Beneficios Completos y Activar
+                        <i class="fa fa-credit-card me-1"></i> Ver Métodos (Yape, Tarjetas y WhatsApp)
                     </button>
                 </div>
             `;

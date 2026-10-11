@@ -54,8 +54,9 @@ $config = getSystemConfig();
         <form id="formConsultaSunat" onsubmit="realizarConsultaSunat(event)">
             <div class="row g-3 align-items-center">
                 <div class="col-12 col-md-8">
-                    <label class="form-label fw-bold text-dark mb-1">
-                        Ingrese Número de RUC (11 dígitos) o DNI (8 dígitos):
+                    <label class="form-label fw-bold text-dark mb-1 d-flex justify-content-between align-items-center">
+                        <span>Ingrese Número de RUC (11 dígitos) o DNI (8 dígitos):</span>
+                        <span class="badge-pro-lock"></span>
                     </label>
                     <div class="input-group input-group-lg shadow-sm">
                         <span class="input-group-text bg-white border-end-0 text-primary">

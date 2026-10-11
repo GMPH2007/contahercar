@@ -954,13 +954,177 @@ document.addEventListener('submit', function(e) {
 const PRO_STORAGE_KEY = 'contahercar_plan_plus';
 const PRO_DATE_KEY = 'contahercar_plan_fecha';
 
-window.abrirModalMercadoPago = function() {
-    const modalEl = document.getElementById('modalMercadoPagoPlus');
-    if (modalEl && typeof bootstrap !== 'undefined') {
-        window.actualizarEstadoPlanProGlobal();
-        const m = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-        m.show();
+/**
+ * Consulta si el usuario cuenta con el Plan PRO Activo
+ */
+window.esUsuarioPro = function() {
+    try {
+        return (localStorage.getItem(PRO_STORAGE_KEY) === 'true');
+    } catch (e) {
+        return false;
     }
+};
+
+/**
+ * Apertura a prueba de fallos del Modal de Mercado Pago (funciona en móvil y desktop)
+ */
+window.abrirModalMercadoPago = function(e) {
+    if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const modalEl = document.getElementById('modalMercadoPagoPlus');
+    if (!modalEl) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'ContaSmart PRO (S/ 20.00)',
+                html: `
+                    <p class="mb-3">Para desbloquear todas las funciones ilimitadas, paga con tu enlace de Mercado Pago:</p>
+                    <a href="https://mpago.la/24CgT6E" target="_blank" class="btn btn-primary fw-bold w-100 py-2 mb-2">Pagar S/ 20 con Mercado Pago ↗</a>
+                    <a href="https://link.mercadopago.com.pe/misael287" target="_blank" class="btn btn-outline-secondary btn-sm w-100">Otro Monto en link.mercadopago.com.pe/misael287 ↗</a>
+                `,
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: '¡Ya Pagué / Activar!',
+                denyButtonText: 'Simular Pago Exitoso',
+                cancelButtonText: 'Cerrar'
+            }).then((res) => {
+                if (res.isConfirmed) window.solicitarCodigoActivacion();
+                else if (res.isDenied) window.simularPagoExitosoMercadoPago();
+            });
+        }
+        return;
+    }
+
+    if (window.actualizarEstadoPlanProGlobal) {
+        window.actualizarEstadoPlanProGlobal();
+    }
+
+    // Intentar abrir con Bootstrap 5
+    try {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const m = bootstrap.Modal.getOrCreateInstance(modalEl);
+            m.show();
+            return;
+        }
+    } catch (err) {}
+
+    // Fallback nativo directo sin depender de librerías
+    modalEl.classList.add('show');
+    modalEl.style.display = 'block';
+    modalEl.removeAttribute('aria-hidden');
+    modalEl.setAttribute('aria-modal', 'true');
+    document.body.classList.add('modal-open');
+    let backdrop = document.getElementById('mpFallbackBackdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'mpFallbackBackdrop';
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
+    }
+};
+
+/**
+ * Cierre a prueba de fallos del Modal de Mercado Pago
+ */
+window.cerrarModalMercadoPago = function() {
+    const modalEl = document.getElementById('modalMercadoPagoPlus');
+    if (modalEl) {
+        try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                const m = bootstrap.Modal.getInstance(modalEl);
+                if (m) m.hide();
+            }
+        } catch (e) {}
+        modalEl.classList.remove('show');
+        modalEl.style.display = 'none';
+        modalEl.setAttribute('aria-hidden', 'true');
+        modalEl.removeAttribute('aria-modal');
+        document.body.classList.remove('modal-open');
+        const fbBd = document.getElementById('mpFallbackBackdrop');
+        if (fbBd) fbBd.remove();
+        const bsBd = document.querySelector('.modal-backdrop');
+        if (bsBd) bsBd.remove();
+    }
+};
+
+/**
+ * Guardián de Paywall: Bloquea funciones exclusivas en modo demo y solicita pago
+ */
+window.verificarAccesoPro = function(nombreModulo, accionPermitida) {
+    if (window.esUsuarioPro()) {
+        if (typeof accionPermitida === 'function') accionPermitida();
+        return true;
+    }
+
+    // Modal de Paywall persuasivo
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'warning',
+            title: '🔒 Función Bloqueada en Modo Demo',
+            html: `
+                <div class="text-start p-3 bg-light rounded-3 border my-2">
+                    <div class="fw-bold text-dark mb-1"><i class="fa fa-lock text-warning me-2"></i>${nombreModulo}</div>
+                    <p class="small text-muted mb-2">
+                        Esta función es exclusiva para clientes con <strong>ContaSmart PRO Activo</strong>.
+                    </p>
+                    <div class="d-flex align-items-center justify-content-between p-2 bg-white rounded border">
+                        <span class="small fw-semibold text-secondary">Inversión mensual:</span>
+                        <span class="fs-5 fw-bold text-primary">S/ 20.00</span>
+                    </div>
+                </div>
+                <small class="text-muted d-block mt-1">Paga con Yape, Plin o Tarjeta y activa tu cuenta al instante.</small>
+            `,
+            showCancelButton: true,
+            showDenyButton: true,
+            confirmButtonText: '<i class="fa fa-shield-halved me-1"></i> Pagar S/ 20 con Mercado Pago',
+            denyButtonText: '<i class="fa fa-bolt me-1"></i> Simular Pago / Desbloquear',
+            cancelButtonText: 'Cerrar',
+            confirmButtonColor: '#009ee3',
+            denyButtonColor: '#f59e0b',
+            cancelButtonColor: '#64748b'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.abrirModalMercadoPago();
+            } else if (result.isDenied) {
+                window.simularPagoExitosoMercadoPago(accionPermitida);
+            }
+        });
+    } else {
+        const conf = confirm(`Función Bloqueada: ${nombreModulo} requiere Plan PRO (S/ 20.00).\n¿Deseas abrir Mercado Pago para desbloquearla?`);
+        if (conf) window.open('https://mpago.la/24CgT6E', '_blank');
+    }
+    return false;
+};
+
+/**
+ * Simulación de Pago en Vivo y Activación Inmediata de Beneficios
+ */
+window.simularPagoExitosoMercadoPago = function(callbackTrasActivar = null) {
+    if (typeof Swal === 'undefined') {
+        window.activarPlanPro(true);
+        if (typeof callbackTrasActivar === 'function') callbackTrasActivar();
+        return;
+    }
+
+    Swal.fire({
+        title: 'Verificando con Mercado Pago...',
+        html: `
+            <div class="text-center py-3">
+                <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
+                <div class="fw-bold text-dark fs-6">Procesando Transacción de S/ 20.00...</div>
+                <small class="text-secondary">Conectando con la pasarela oficial de Mercado Pago Perú</small>
+            </div>
+        `,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        timer: 1500
+    }).then(() => {
+        window.activarPlanPro(true);
+        if (typeof callbackTrasActivar === 'function') {
+            setTimeout(callbackTrasActivar, 600);
+        }
+    });
 };
 
 window.iniciarSeguimientoPago = function(monto) {
@@ -970,10 +1134,32 @@ window.iniciarSeguimientoPago = function(monto) {
             position: 'top-end',
             icon: 'info',
             title: 'Abriendo Mercado Pago Seguro...',
-            text: 'Al completar tu pago, regresa aquí y pulsa "Activar Ahora".',
+            text: 'Al completar tu pago, pulsa "Activar Ahora" o "Simular Pago".',
             showConfirmButton: false,
             timer: 4500
         });
+    }
+};
+
+window.copiarNumeroYape = function() {
+    const num = '921840632';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(num).then(() => {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: '¡Número Yape copiado: 921 840 632!',
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+            } else {
+                alert('Número copiado: 921 840 632');
+            }
+        });
+    } else {
+        prompt('Copia el número de Yape de Misael:', num);
     }
 };
 
@@ -983,10 +1169,10 @@ window.solicitarCodigoActivacion = function() {
     Swal.fire({
         title: 'Activar Membresía ContaSmart PRO',
         html: `
-            <p class="small text-muted mb-3">Si ya pagaste en Mercado Pago (S/ 20.00), ingresa tu código de activación o número de operación:</p>
+            <p class="small text-muted mb-3">Si ya pagaste en Mercado Pago o Yape (S/ 20.00), ingresa tu código de activación o número de operación:</p>
             <input type="text" id="swalInputCodPro" class="form-control text-center font-monospace fw-bold fs-5 text-uppercase" placeholder="Ej: PLUS20, CONTA2026 o N° Op" autofocus>
             <div class="mt-2 small text-secondary">
-                <i class="fa fa-circle-info text-primary me-1"></i> Códigos automáticos válidos: <code>PLUS20</code>, <code>CONTA2026</code>, <code>MISAELPRO</code>, <code>MISAEL287</code>
+                <i class="fa fa-circle-info text-primary me-1"></i> Códigos automáticos válidos: <code>PLUS20</code>, <code>CONTA2026</code>, <code>MISAELPRO</code>, <code>HERCARVIP</code>
             </div>
         `,
         showCancelButton: true,
@@ -1009,7 +1195,7 @@ window.solicitarCodigoActivacion = function() {
             Swal.fire({
                 icon: 'warning',
                 title: 'Código no reconocido',
-                text: 'Puedes ingresar PLUS20 o enviar tu comprobante directo por WhatsApp.',
+                text: 'Puedes ingresar PLUS20 o enviar tu comprobante directo por WhatsApp a Misael.',
                 confirmButtonColor: '#2563eb'
             });
         }
@@ -1031,17 +1217,18 @@ window.activarPlanPro = function(notificar = true) {
             title: '👑 ¡ContaSmart PRO Activado con Éxito!',
             html: `
                 <div class="text-start p-3 bg-light rounded-3 my-2 border">
-                    <h6 class="fw-bold text-success mb-2"><i class="fa fa-award me-1"></i> Beneficios VIP Habilitados:</h6>
+                    <h6 class="fw-bold text-success mb-2"><i class="fa fa-award me-1"></i> Todos los Beneficios Desbloqueados:</h6>
                     <ul class="list-unstyled mb-0 small">
-                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Facturación POS Ilimitada:</strong> Emite boletas y facturas sin topes.</li>
-                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Siri IA Asistente Completo:</strong> Respuestas por voz instantáneas.</li>
-                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Módulo SIRE SUNAT Full:</strong> Exportación RVIE y RCE directa.</li>
+                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Descarga SIRE SUNAT Full:</strong> TXT RVIE y ZIP RCE sin candados.</li>
+                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Reportes Financieros Masivos:</strong> Exportación Excel/CSV habilitada.</li>
+                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Consultas SUNAT y RENIEC Ilimitadas:</strong> Sin límites de prueba.</li>
+                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Facturación POS Ilimitada:</strong> Boletas y facturas completas.</li>
                         <li><i class="fa fa-check text-success me-2"></i><strong>Soporte Prioritario VIP 24/7</strong> por WhatsApp directo.</li>
                     </ul>
                 </div>
-                <small class="text-muted">¡Gracias por apoyar el desarrollo de ContaSmart con Mercado Pago!</small>
+                <small class="text-muted">¡Gracias por apoyar a ContaSmart con Mercado Pago!</small>
             `,
-            confirmButtonText: '¡Comenzar a usar PRO!',
+            confirmButtonText: '¡Comenzar a usar Todo!',
             confirmButtonColor: '#10b981'
         });
     }
@@ -1054,16 +1241,23 @@ window.restablecerPlanDemo = function() {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
             icon: 'info',
-            title: 'Modo Free Activado',
-            text: 'Has restablecido la vista a modo demostración gratuito.',
+            title: 'Modo Demostración Activado',
+            text: 'Has restablecido la aplicación a modo prueba. Las funciones exclusivas vuelven a estar bloqueadas para demostración.',
             confirmButtonColor: '#2563eb',
-            timer: 1800
+            timer: 2000
         });
     }
 };
 
 window.actualizarEstadoPlanProGlobal = function() {
-    const esPro = (localStorage.getItem(PRO_STORAGE_KEY) === 'true');
+    const esPro = window.esUsuarioPro();
+
+    // Clase global en body
+    if (esPro) {
+        document.body.classList.add('pro-active');
+    } else {
+        document.body.classList.remove('pro-active');
+    }
 
     // Botón en Topbar
     const btnTopbar = document.getElementById('btnTopbarPlanPro');
@@ -1103,7 +1297,7 @@ window.actualizarEstadoPlanProGlobal = function() {
                 priceSidebar.className = 'badge bg-success text-white fw-bold';
                 priceSidebar.textContent = 'ACTIVO';
             }
-            if (descSidebar) descSidebar.textContent = 'Membresía PRO activa sin límites de facturación ni consultas.';
+            if (descSidebar) descSidebar.textContent = 'Membresía PRO activa sin límites de facturación, SIRE ni consultas.';
             if (btnSidebar) {
                 btnSidebar.className = 'btn btn-success btn-sm w-100 fw-bold shadow-sm py-1';
                 btnSidebar.innerHTML = '<i class="fa fa-award me-1"></i> Ver Beneficios PRO';
@@ -1123,8 +1317,9 @@ window.actualizarEstadoPlanProGlobal = function() {
         }
     }
 
-    // Panel en Modal
+    // Paneles en Modal de Mercado Pago
     const panelYaActivo = document.getElementById('panelProYaActivo');
+    const panelModoDemo = document.getElementById('panelProModoDemo');
     if (panelYaActivo) {
         if (esPro) {
             panelYaActivo.classList.remove('d-none');
@@ -1134,14 +1329,46 @@ window.actualizarEstadoPlanProGlobal = function() {
             panelYaActivo.classList.remove('d-flex');
         }
     }
+    if (panelModoDemo) {
+        if (esPro) {
+            panelModoDemo.classList.add('d-none');
+        } else {
+            panelModoDemo.classList.remove('d-none');
+        }
+    }
+
+    // Actualización de Candados Dinámicos (.badge-pro-lock)
+    document.querySelectorAll('.badge-pro-lock').forEach(badge => {
+        if (esPro) {
+            badge.innerHTML = '<i class="fa fa-circle-check text-success"></i> Desbloqueado PRO';
+            badge.classList.remove('badge-pro-locked');
+            badge.classList.add('badge-pro-unlocked');
+        } else {
+            badge.innerHTML = '<i class="fa fa-lock text-warning"></i> Requiere PRO (S/ 20)';
+            badge.classList.remove('badge-pro-unlocked');
+            badge.classList.add('badge-pro-locked');
+        }
+    });
+
+    // Actualización de Íconos de Beneficios en el Modal
+    document.querySelectorAll('.benefit-lock-icon').forEach(iconEl => {
+        if (esPro) {
+            iconEl.className = 'benefit-lock-icon text-success mt-1';
+            iconEl.innerHTML = '<i class="fa fa-circle-check fs-5"></i>';
+        } else {
+            iconEl.className = 'benefit-lock-icon text-warning mt-1';
+            iconEl.innerHTML = '<i class="fa fa-lock fs-5"></i>';
+        }
+    });
 };
 
-// Sincronizar estado al cargar la página
+// Sincronizar estado al cargar cualquier página
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', window.actualizarEstadoPlanProGlobal);
 } else {
     window.actualizarEstadoPlanProGlobal();
 }
+
 
 
 

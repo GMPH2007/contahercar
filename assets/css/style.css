@@ -1913,6 +1913,55 @@ body:has(.pos-wrapper) .mobile-bottom-dock {
     padding: 8px 12px;
 }
 
+/* Candados y Bloqueos de Plan PRO (Demo vs VIP) */
+.badge-pro-lock {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    transition: all 0.25s ease;
+}
+
+body.pro-active .badge-pro-lock {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+}
+
+.mp-yape-direct-box {
+    background: linear-gradient(135deg, rgba(121, 40, 202, 0.08) 0%, rgba(121, 40, 202, 0.02) 100%);
+    border: 1px dashed rgba(121, 40, 202, 0.4);
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.mp-sim-box {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.02) 100%);
+    border: 1px dashed rgba(245, 158, 11, 0.4);
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.pay-card-method {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+    transition: all 0.2s ease;
+}
+
+.pay-card-method:hover {
+    border-color: #009ee3;
+    box-shadow: 0 4px 12px rgba(0, 158, 227, 0.15);
+}
+
+
 
 
 

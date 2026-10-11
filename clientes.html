@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.8">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.9">
 </head>
 <body>
 
@@ -154,7 +154,7 @@
         <p class="text-white-50 small mb-2" style="font-size: 0.72rem; line-height: 1.25;" id="sidebarProDesc">
             Desbloquea facturación ilimitada, Siri IA sin límites y módulo SIRE.
         </p>
-        <button type="button" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-1" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" id="btnSidebarProAction">
+        <button type="button" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-1" data-bs-toggle="modal" data-bs-target="#modalMercadoPagoPlus" onclick="if(window.abrirModalMercadoPago) { window.abrirModalMercadoPago(event); }" id="btnSidebarProAction">
             <i class="fa fa-bolt me-1"></i> Desbloquear PRO
         </button>
     </div>
@@ -195,7 +195,7 @@
                     </a>
                 
                 <!-- Botón Plan PRO / Mercado Pago S/ 20 (Visible en Celular y Desktop) -->
-                <button type="button" class="btn btn-sm btn-plan-pro d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="btnTopbarPlanPro" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" title="Desbloquear ContaSmart PRO (Mercado Pago S/ 20.00)">
+                <button type="button" class="btn btn-sm btn-plan-pro d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="btnTopbarPlanPro" data-bs-toggle="modal" data-bs-target="#modalMercadoPagoPlus" onclick="if(window.abrirModalMercadoPago) { window.abrirModalMercadoPago(event); }" title="Desbloquear ContaSmart PRO (Mercado Pago S/ 20.00)">
                     <i class="fa fa-crown text-warning"></i>
                     <span class="fw-bold d-none d-sm-inline" id="topbarProTexto">Plan PRO</span>
                     <span class="badge bg-danger ms-1" id="topbarProBadge">S/ 20</span>
@@ -907,29 +907,38 @@ if (formCli) {
                                 <span class="badge bg-warning text-dark fw-bold px-2 py-1"><i class="fa fa-bolt me-1"></i>VIP</span>
                             </div>
                             <small class="text-white-50" style="font-size: 0.78rem;">
-                                Pasarela Oficial Mercado Pago • Pago Seguro y Encriptado 256-bit
+                                Pasarela Oficial Mercado Pago • Pago Seguro con Yape, Tarjetas y Transferencias
                             </small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="if(window.cerrarModalMercadoPago) cerrarModalMercadoPago();" aria-label="Cerrar"></button>
                 </div>
             </div>
 
             <div class="modal-body p-4 bg-light">
                 <!-- Panel de Estado Activo (Si ya está desbloqueado) -->
-                <div id="panelProYaActivo" class="alert alert-success d-none align-items-center gap-3 p-3 rounded-3 shadow-sm border-success mb-4">
+                <div id="panelProYaActivo" class="alert alert-success d-none align-items-center gap-3 p-3 rounded-3 shadow-sm border-success mb-3">
                     <div class="fs-2 text-success"><i class="fa fa-circle-check"></i></div>
                     <div class="flex-grow-1">
                         <h6 class="fw-bold mb-1 text-success">¡Tu Cuenta ContaSmart PRO está 100% Activa!</h6>
-                        <p class="small mb-0 text-dark">Tienes acceso completo e ilimitado a todos los módulos: POS, SIRE SUNAT, Siri IA sin límites y Kardex multi-almacén.</p>
+                        <p class="small mb-0 text-dark">Todos los beneficios y módulos están desbloqueados sin límites: SIRE SUNAT, reportes financieros masivos, Siri IA y POS sin restricciones.</p>
                     </div>
-                    <button type="button" class="btn btn-outline-success btn-sm" onclick="restablecerPlanDemo()">
-                        <i class="fa fa-rotate-left me-1"></i> Probar Modo Free
+                    <button type="button" class="btn btn-outline-success btn-sm fw-bold" onclick="restablecerPlanDemo()">
+                        <i class="fa fa-lock me-1"></i> Probar Modo Demo (Bloquear)
                     </button>
                 </div>
 
+                <!-- Panel de Estado Demo (Si está bloqueado) -->
+                <div id="panelProModoDemo" class="alert alert-warning d-flex align-items-center gap-3 p-3 rounded-3 shadow-sm border-warning mb-3">
+                    <div class="fs-2 text-warning"><i class="fa fa-lock"></i></div>
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1 text-dark">Modo Demostración Activo</h6>
+                        <p class="small mb-0 text-secondary">Las funciones exclusivas (SIRE SUNAT, reportes masivos y consultas ilimitadas) están bloqueadas. Activa tu Plan PRO por <strong>S/ 20.00</strong> para desbloquearlas todas.</p>
+                    </div>
+                </div>
+
                 <!-- Oferta Destacada Plan Mensual S/ 20.00 -->
-                <div class="card border-0 rounded-4 shadow-sm mb-4 overflow-hidden">
+                <div class="card border-0 rounded-4 shadow-sm mb-3 overflow-hidden">
                     <div class="card-body p-4">
                         <div class="row align-items-center g-3">
                             <div class="col-md-7">
@@ -971,11 +980,27 @@ if (formCli) {
                         <div class="d-grid gap-2 mb-2">
                             <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer" class="btn btn-mp-pay py-3 fw-bold fs-6 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="iniciarSeguimientoPago('S/ 20.00')">
                                 <i class="fa fa-shield-halved fs-5"></i>
-                                <span>Pagar S/ 20.00 con Mercado Pago</span>
+                                <span>Pagar S/ 20.00 con Mercado Pago (Yape / Tarjetas)</span>
                                 <i class="fa fa-arrow-up-right-from-square small ms-1"></i>
                             </a>
                         </div>
-                        <div class="text-center">
+
+                        <!-- Caja de Yape Directo sin comisiones -->
+                        <div class="mp-yape-direct-box d-flex align-items-center justify-content-between flex-wrap gap-2 mt-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge rounded-circle p-2 text-white" style="background: #7928ca; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"><i class="fa fa-mobile-screen"></i></span>
+                                <div>
+                                    <span class="small fw-bold text-dark d-block">¿Prefieres pagar directo con Yape a Misael?</span>
+                                    <span class="font-monospace fw-bold text-primary fs-6">921 840 632</span>
+                                    <small class="text-muted ms-1">(Gerson Misael Pintado H.)</small>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="copiarNumeroYape()">
+                                <i class="fa fa-copy me-1"></i> Copiar Número
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-2">
                             <small class="text-muted" style="font-size: 0.72rem;">
                                 <i class="fa fa-lock text-success me-1"></i> Transacción procesada por Mercado Libre Perú S.R.L. Tus datos bancarios nunca se comparten.
                             </small>
@@ -983,71 +1008,83 @@ if (formCli) {
                     </div>
                 </div>
 
-                <!-- Lista de Beneficios Desbloqueados -->
-                <div class="row g-3 mb-4">
-                    <div class="col-sm-6">
-                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
-                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
+                <!-- Simulación en Vivo y Activación Rápida -->
+                <div class="mp-sim-box mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-wand-magic-sparkles text-warning fs-5"></i>
                             <div>
-                                <strong class="d-block text-dark small">Facturación POS Ilimitada</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Emisión sin límites de boletas, facturas, tickets de 80mm y descuentos automáticos de stock.</span>
+                                <strong class="small d-block text-dark">Simulador de Pago en Vivo y Verificación</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Prueba en tiempo real cómo se desbloquean los beneficios en pantalla:</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
-                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
-                            <div>
-                                <strong class="d-block text-dark small">Siri IA Conta Asistente Sin Restricciones</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Comandos de voz continuos para consultar ventas, caja del día y productos agotados.</span>
-                            </div>
+                    <div class="row g-2">
+                        <div class="col-sm-7">
+                            <button type="button" class="btn btn-warning w-100 fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="simularPagoExitosoMercadoPago()">
+                                <i class="fa fa-bolt"></i> ⚡ Simular Pago Aprobado y Desbloquear
+                            </button>
+                        </div>
+                        <div class="col-sm-5">
+                            <button type="button" class="btn btn-outline-dark w-100 fw-semibold py-2" onclick="solicitarCodigoActivacion()">
+                                <i class="fa fa-key me-1"></i> Ingresar Código / Voucher
+                            </button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Lista Dinámica de Beneficios con Candados -->
+                <div class="row g-3 mb-3">
                     <div class="col-sm-6">
                         <div class="feature-pill d-flex align-items-start gap-2 h-100">
-                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
+                            <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
                             <div>
                                 <strong class="d-block text-dark small">Módulo SIRE SUNAT Full</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Descarga y exporta archivos RVIE y RCE listos para declarar en la plataforma oficial de SUNAT.</span>
+                                <span class="text-muted" style="font-size: 0.72rem;">Descarga y exporta archivos RVIE y RCE listos para declarar en SUNAT.</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="feature-pill d-flex align-items-start gap-2 h-100">
-                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
+                            <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
                             <div>
-                                <strong class="d-block text-dark small">Soporte Prioritario VIP 24/7</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Asistencia directa por WhatsApp para dudas tributarias, configuración de inventarios y mejoras.</span>
+                                <strong class="d-block text-dark small">Reportes Financieros y Kardex</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Exportación masiva a Excel/CSV de ventas, utilidades e inventario valorizado.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
+                            <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
+                            <div>
+                                <strong class="d-block text-dark small">Consultas SUNAT / RENIEC Ilimitadas</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Validación continua de DNI y RUC sin topes diarios de demostración.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
+                            <div class="benefit-lock-icon text-warning mt-1"><i class="fa fa-lock fs-5"></i></div>
+                            <div>
+                                <strong class="d-block text-dark small">Soporte VIP y Facturación POS Ilimitada</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Emisión sin restricciones y asistencia directa por WhatsApp a cualquier hora.</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Opciones Alternativas de Pago / Enlace Libre (misael287) -->
-                <div class="p-3 bg-white rounded-3 border mb-3">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <div>
-                            <span class="fw-bold text-dark small d-block">¿Deseas pagar otro monto o hacer un aporte personalizado?</span>
-                            <span class="text-muted" style="font-size: 0.72rem;">Usa el link oficial directo de cobro libre de Misael:</span>
-                        </div>
-                        <a href="https://link.mercadopago.com.pe/misael287" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm fw-semibold">
-                            <i class="fa fa-link me-1"></i> link.mercadopago.com.pe/misael287 ↗
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Sección: ¿Ya pagaste? Activar Beneficios -->
+                <!-- Opciones Alternativas de Pago / Enlace Libre (misael287) y WhatsApp -->
                 <div class="p-3 bg-white rounded-3 border">
                     <div class="row align-items-center g-2">
                         <div class="col-md-7">
-                            <span class="fw-bold text-dark small d-block"><i class="fa fa-key text-warning me-1"></i> ¿Ya completaste tu pago en Mercado Pago?</span>
-                            <span class="text-muted" style="font-size: 0.72rem;">Activa tu cuenta al instante con tu código o confirma con tu comprobante.</span>
+                            <span class="fw-bold text-dark small d-block"><i class="fa fa-link text-primary me-1"></i> Aporte personalizado o comprobante directo</span>
+                            <span class="text-muted" style="font-size: 0.72rem;">Paga otro monto en el perfil de Misael o envíale tu voucher directo a su WhatsApp.</span>
                         </div>
                         <div class="col-md-5 d-flex gap-2">
-                            <button type="button" class="btn btn-success btn-sm w-100 fw-bold" onclick="solicitarCodigoActivacion()">
-                                <i class="fa fa-bolt me-1"></i> Activar Ahora
-                            </button>
-                            <a href="https://wa.me/51987654321?text=Hola%20Misael,%20acabo%20de%20pagar%20mi%20Plan%20PRO%20de%20S/%2020%20por%20Mercado%20Pago.%20Por%20favor%20activa%20mi%20cuenta." target="_blank" class="btn btn-outline-success btn-sm" title="Enviar comprobante por WhatsApp a Misael">
+                            <a href="https://link.mercadopago.com.pe/misael287" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm w-100 fw-semibold text-truncate">
+                                <i class="fa fa-link me-1"></i> misael287 ↗
+                            </a>
+                            <a href="https://wa.me/51921840632?text=Hola%20Misael,%20acabo%20de%20pagar%20mi%20Plan%20PRO%20de%20S/%2020%20por%20Mercado%20Pago%20o%20Yape.%20Aqu%C3%AD%20te%20adjunto%20mi%20comprobante." target="_blank" class="btn btn-success btn-sm fw-bold px-3 d-flex align-items-center justify-content-center" title="Enviar comprobante por WhatsApp a Misael">
                                 <i class="fa-brands fa-whatsapp fs-5"></i>
                             </a>
                         </div>
@@ -1057,9 +1094,9 @@ if (formCli) {
 
             <div class="modal-footer bg-light p-3 d-flex justify-content-between">
                 <span class="text-muted small" style="font-size: 0.72rem;">
-                    <i class="fa fa-award text-warning me-1"></i> Garantía de Satisfacción ContaSmart • Desarrollado por Gerson Misael Pintado Huaman
+                    <i class="fa fa-award text-warning me-1"></i> ContaSmart • Desarrollado por Gerson Misael Pintado Huaman (@GMPH2007)
                 </span>
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" onclick="if(window.cerrarModalMercadoPago) cerrarModalMercadoPago();">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1072,13 +1109,13 @@ if (formCli) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.8"></script>
+<script src="assets/js/db_static.js?v=7.9"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.8"></script>
+<script src="assets/js/main.js?v=7.9"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.8"></script>
+<script src="assets/js/conta_ai.js?v=7.9"></script>
 
 
 </body>

@@ -68,7 +68,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <?php endif; ?>
 
                 <!-- Botón Plan PRO / Mercado Pago S/ 20 (Visible en Celular y Desktop) -->
-                <button type="button" class="btn btn-sm btn-plan-pro d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="btnTopbarPlanPro" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" title="Desbloquear ContaSmart PRO (Mercado Pago S/ 20.00)">
+                <button type="button" class="btn btn-sm btn-plan-pro d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="btnTopbarPlanPro" data-bs-toggle="modal" data-bs-target="#modalMercadoPagoPlus" onclick="if(window.abrirModalMercadoPago) { window.abrirModalMercadoPago(event); }" title="Desbloquear ContaSmart PRO (Mercado Pago S/ 20.00)">
                     <i class="fa fa-crown text-warning"></i>
                     <span class="fw-bold d-none d-sm-inline" id="topbarProTexto">Plan PRO</span>
                     <span class="badge bg-danger ms-1" id="topbarProBadge">S/ 20</span>

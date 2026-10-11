@@ -129,7 +129,7 @@ $lowStockBadge = ($quickCounters['low_stock'] > 0) ? '<span class="badge bg-dang
         <p class="text-white-50 small mb-2" style="font-size: 0.72rem; line-height: 1.25;" id="sidebarProDesc">
             Desbloquea facturación ilimitada, Siri IA sin límites y módulo SIRE.
         </p>
-        <button type="button" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-1" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" id="btnSidebarProAction">
+        <button type="button" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-1" data-bs-toggle="modal" data-bs-target="#modalMercadoPagoPlus" onclick="if(window.abrirModalMercadoPago) { window.abrirModalMercadoPago(event); }" id="btnSidebarProAction">
             <i class="fa fa-bolt me-1"></i> Desbloquear PRO
         </button>
     </div>

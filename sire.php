@@ -160,13 +160,14 @@ foreach ($comprasSire as $c) {
             <span class="badge bg-primary px-3 py-2 fs-6">Propuesta RVIE</span>
             <span class="small text-muted">Periodo: <strong><?= $periodoActual ?></strong> (<?= count($ventasSire) ?> registros)</span>
         </div>
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="badge-pro-lock"></span>
             <!-- Descarga TXT Oficial SUNAT -->
-            <a href="api/sire_export.php?tipo=rvie&periodo=<?= $periodoActual ?>&formato=txt" class="btn btn-sm btn-outline-primary" download>
+            <a href="api/sire_export.php?tipo=rvie&periodo=<?= $periodoActual ?>&formato=txt" class="btn btn-sm btn-outline-primary" onclick="if(!window.esUsuarioPro()) { event.preventDefault(); window.verificarAccesoPro('Descarga Oficial TXT RVIE (SUNAT)', () => window.location.href=this.href); }" download>
                 <i class="fa fa-file-lines me-1"></i> Descargar TXT Oficial SUNAT
             </a>
             <!-- Descarga ZIP Oficial SUNAT -->
-            <a href="api/sire_export.php?tipo=rvie&periodo=<?= $periodoActual ?>&formato=zip" class="btn btn-sm btn-primary" download>
+            <a href="api/sire_export.php?tipo=rvie&periodo=<?= $periodoActual ?>&formato=zip" class="btn btn-sm btn-primary" onclick="if(!window.esUsuarioPro()) { event.preventDefault(); window.verificarAccesoPro('Descarga ZIP para SIRE (Libro 140400)', () => window.location.href=this.href); }" download>
                 <i class="fa fa-file-zipper me-1"></i> Descargar ZIP para SIRE
             </a>
         </div>
@@ -275,13 +276,14 @@ foreach ($comprasSire as $c) {
             <span class="badge bg-warning text-dark px-3 py-2 fs-6">Propuesta RCE</span>
             <span class="small text-muted">Periodo: <strong><?= $periodoActual ?></strong> (<?= count($comprasSire) ?> registros)</span>
         </div>
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="badge-pro-lock"></span>
             <!-- Descarga TXT Oficial SUNAT -->
-            <a href="api/sire_export.php?tipo=rce&periodo=<?= $periodoActual ?>&formato=txt" class="btn btn-sm btn-outline-warning" download>
+            <a href="api/sire_export.php?tipo=rce&periodo=<?= $periodoActual ?>&formato=txt" class="btn btn-sm btn-outline-warning" onclick="if(!window.esUsuarioPro()) { event.preventDefault(); window.verificarAccesoPro('Descarga Oficial TXT RCE (SUNAT)', () => window.location.href=this.href); }" download>
                 <i class="fa fa-file-lines me-1"></i> Descargar TXT Oficial SUNAT
             </a>
             <!-- Descarga ZIP Oficial SUNAT -->
-            <a href="api/sire_export.php?tipo=rce&periodo=<?= $periodoActual ?>&formato=zip" class="btn btn-sm btn-warning" download>
+            <a href="api/sire_export.php?tipo=rce&periodo=<?= $periodoActual ?>&formato=zip" class="btn btn-sm btn-warning" onclick="if(!window.esUsuarioPro()) { event.preventDefault(); window.verificarAccesoPro('Descarga ZIP para SIRE (Libro 080400)', () => window.location.href=this.href); }" download>
                 <i class="fa fa-file-zipper me-1"></i> Descargar ZIP para SIRE
             </a>
         </div>

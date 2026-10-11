@@ -245,8 +245,8 @@ $gananciaPotencialAlmacen = $totalVentaPotencialAlmacen - $totalInversionAlmacen
                     </button>
                 </div>
                 <div class="col-6 col-md-3 text-end">
-                    <a href="reportes.php?export=<?= $tab ?>&fecha_ini=<?= $fechaIni ?>&fecha_fin=<?= $fechaFin ?>" class="btn btn-success w-100">
-                        <i class="fa fa-file-excel me-1"></i> Descargar CSV Excel
+                    <a href="reportes.php?export=<?= $tab ?>&fecha_ini=<?= $fechaIni ?>&fecha_fin=<?= $fechaFin ?>" class="btn btn-success w-100" onclick="if(!window.esUsuarioPro()) { event.preventDefault(); window.verificarAccesoPro('Exportación de Reportes Excel/CSV', () => window.location.href=this.href); }">
+                        <i class="fa fa-file-excel me-1"></i> Descargar CSV Excel <span class="badge-pro-lock ms-1"></span>
                     </a>
                 </div>
             </form>
