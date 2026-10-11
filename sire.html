@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.7">
+    <link rel="stylesheet" href="assets/css/style.css?v=7.8">
 </head>
 <body>
 
@@ -142,6 +142,23 @@
         </li>
     </ul>
 
+    <!-- Banner Suscripción ContaSmart PLUS (Mercado Pago S/ 20) -->
+    <div class="sidebar-pro-banner" id="sidebarProBanner">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge-crown"><i class="fa fa-crown"></i></span>
+                <span class="fw-bold text-white small" id="sidebarProTitulo">ContaSmart PRO</span>
+            </div>
+            <span class="badge bg-warning text-dark fw-bold" id="sidebarProPrice">S/ 20</span>
+        </div>
+        <p class="text-white-50 small mb-2" style="font-size: 0.72rem; line-height: 1.25;" id="sidebarProDesc">
+            Desbloquea facturación ilimitada, Siri IA sin límites y módulo SIRE.
+        </p>
+        <button type="button" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-1" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" id="btnSidebarProAction">
+            <i class="fa fa-bolt me-1"></i> Desbloquear PRO
+        </button>
+    </div>
+
     <div class="sidebar-footer">
         <i class="fa fa-shield-halved text-success"></i>
         <span>ContaHercar v2.5 • GMPH2007</span>
@@ -177,6 +194,13 @@
                         <span class="badge bg-warning text-dark">2</span>
                     </a>
                 
+                <!-- Botón Plan PRO / Mercado Pago S/ 20 (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-plan-pro d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="btnTopbarPlanPro" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" title="Desbloquear ContaSmart PRO (Mercado Pago S/ 20.00)">
+                    <i class="fa fa-crown text-warning"></i>
+                    <span class="fw-bold d-none d-sm-inline" id="topbarProTexto">Plan PRO</span>
+                    <span class="badge bg-danger ms-1" id="topbarProBadge">S/ 20</span>
+                </button>
+
                 <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
                 <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                     <i class="fa fa-microphone text-warning"></i>
@@ -249,7 +273,7 @@
         <form method="GET" action="sire.php" class="d-flex align-items-center gap-2">
             <input type="hidden" name="tab" value="rvie">
             <label class="small fw-semibold text-muted mb-0 d-none d-sm-inline">Periodo:</label>
-            <input type="month" name="periodo" class="form-control form-control-sm font-monospace fw-bold" value="2026-09" onchange="this.form.submit()">
+            <input type="month" name="periodo" class="form-control form-control-sm font-monospace fw-bold" value="2026-10" onchange="this.form.submit()">
             <button type="submit" class="btn btn-sm btn-primary">
                 <i class="fa fa-rotate"></i>
             </button>
@@ -287,17 +311,17 @@
 <!-- Selector de Pestañas SIRE -->
 <ul class="nav nav-pills mb-4" id="sireTabs">
     <li class="nav-item">
-        <a class="nav-link active" href="sire.php?tab=rvie&periodo=2026-09">
+        <a class="nav-link active" href="sire.php?tab=rvie&periodo=2026-10">
             <i class="fa fa-file-invoice-dollar me-1"></i> RVIE - Ventas e Ingresos (140400)
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link " href="sire.php?tab=rce&periodo=2026-09">
+        <a class="nav-link " href="sire.php?tab=rce&periodo=2026-10">
             <i class="fa fa-cart-arrow-down me-1"></i> RCE - Compras Electrónico (080400)
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link " href="sire.php?tab=config&periodo=2026-09">
+        <a class="nav-link " href="sire.php?tab=config&periodo=2026-10">
             <i class="fa fa-plug me-1"></i> API SIRE & Credenciales SOL
         </a>
     </li>
@@ -310,22 +334,22 @@
     <div class="col-6 col-md-3">
         <div class="stat-card border-primary-accent">
             <div class="stat-title">Base Gravada (Ventas)</div>
-            <div class="stat-value text-primary">S/. 259.33</div>
-            <div class="stat-subtitle">2 comprobantes en el mes</div>
+            <div class="stat-value text-primary">S/. 0.00</div>
+            <div class="stat-subtitle">0 comprobantes en el mes</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card border-success-accent">
             <div class="stat-title">IGV Débito Fiscal (18%)</div>
-            <div class="stat-value text-success">S/. 46.67</div>
+            <div class="stat-value text-success">S/. 0.00</div>
             <div class="stat-subtitle">Impuesto generado a pagar</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
         <div class="stat-card border-info-accent">
             <div class="stat-title">Total Facturado RVIE</div>
-            <div class="stat-value text-info">S/. 306.00</div>
-            <div class="stat-subtitle">Periodo 2026-09</div>
+            <div class="stat-value text-info">S/. 0.00</div>
+            <div class="stat-subtitle">Periodo 2026-10</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
@@ -341,15 +365,15 @@
     <div class="card-custom-header d-flex flex-wrap align-items-center justify-content-between gap-2 py-3">
         <div class="d-flex align-items-center gap-2">
             <span class="badge bg-primary px-3 py-2 fs-6">Propuesta RVIE</span>
-            <span class="small text-muted">Periodo: <strong>2026-09</strong> (2 registros)</span>
+            <span class="small text-muted">Periodo: <strong>2026-10</strong> (0 registros)</span>
         </div>
         <div class="d-flex flex-wrap gap-2">
             <!-- Descarga TXT Oficial SUNAT -->
-            <a href="api/sire_export.php?tipo=rvie&periodo=2026-09&formato=txt" class="btn btn-sm btn-outline-primary" download>
+            <a href="api/sire_export.php?tipo=rvie&periodo=2026-10&formato=txt" class="btn btn-sm btn-outline-primary" download>
                 <i class="fa fa-file-lines me-1"></i> Descargar TXT Oficial SUNAT
             </a>
             <!-- Descarga ZIP Oficial SUNAT -->
-            <a href="api/sire_export.php?tipo=rvie&periodo=2026-09&formato=zip" class="btn btn-sm btn-primary" download>
+            <a href="api/sire_export.php?tipo=rvie&periodo=2026-10&formato=zip" class="btn btn-sm btn-primary" download>
                 <i class="fa fa-file-zipper me-1"></i> Descargar ZIP para SIRE
             </a>
         </div>
@@ -372,49 +396,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                                                                        <tr>
-                                <td class="ps-3 font-monospace small text-primary fw-bold" title="2060123456703B0010000000001">
-                                    2060123456703B0...
-                                </td>
-                                <td>07/09/2026</td>
-                                <td>
-                                    <span class="badge bg-secondary">
-                                        Boleta                                    </span>
-                                    <span class="fw-bold font-monospace ms-1">B001-000001</span>
-                                </td>
-                                <td class="fw-semibold text-dark text-truncate" style="max-width: 220px;">
-                                    CLIENTE VARIOS / GENERAL                                </td>
-                                <td class="font-monospace small">00000000</td>
-                                <td class="fw-bold">S/. 17.80</td>
-                                <td class="text-secondary">S/. 3.20</td>
-                                <td class="fw-bold text-success">S/. 21.00</td>
-                                <td class="text-center pe-3">
-                                    <span class="badge bg-success">
-                                        ACTIVO (1)                                    </span>
-                                </td>
-                            </tr>
-                                                    <tr>
-                                <td class="ps-3 font-monospace small text-primary fw-bold" title="2060123456703B0010000000002">
-                                    2060123456703B0...
-                                </td>
-                                <td>07/09/2026</td>
-                                <td>
-                                    <span class="badge bg-secondary">
-                                        Boleta                                    </span>
-                                    <span class="fw-bold font-monospace ms-1">B001-000002</span>
-                                </td>
-                                <td class="fw-semibold text-dark text-truncate" style="max-width: 220px;">
-                                    CLIENTE VARIOS / GENERAL                                </td>
-                                <td class="font-monospace small">00000000</td>
-                                <td class="fw-bold">S/. 241.53</td>
-                                <td class="text-secondary">S/. 43.47</td>
-                                <td class="fw-bold text-success">S/. 285.00</td>
-                                <td class="text-center pe-3">
-                                    <span class="badge bg-success">
-                                        ACTIVO (1)                                    </span>
-                                </td>
-                            </tr>
-                                                            </tbody>
+                                            <tr>
+                            <td colspan="9" class="text-center py-5 text-muted">
+                                <i class="fa fa-inbox fs-2 mb-2 d-block text-secondary"></i>
+                                No se registran ventas emitidas en el periodo 2026-10.
+                            </td>
+                        </tr>
+                                    </tbody>
             </table>
         </div>
     </div>
@@ -717,6 +705,181 @@ function probarTokenSire() {
     </div>
 </div>
 
+<!-- Modal Interactivo Oficial: Mercado Pago - ContaSmart PLUS / PRO (S/ 20.00) -->
+<div class="modal fade" id="modalMercadoPagoPlus" tabindex="-1" aria-labelledby="modalMpTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 shadow-lg border-0 overflow-hidden">
+            <!-- Cabecera Oficial Mercado Pago con Estilo Premium -->
+            <div class="modal-header text-white p-4" style="background: linear-gradient(135deg, #009ee3 0%, #0073a8 100%);">
+                <div class="d-flex align-items-center justify-content-between w-100 flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="p-2 bg-white rounded-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="fa fa-crown text-warning fs-4"></i>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="modal-title fw-bold mb-0 text-white" id="modalMpTitle">ContaSmart PRO & PLUS</h5>
+                                <span class="badge bg-warning text-dark fw-bold px-2 py-1"><i class="fa fa-bolt me-1"></i>VIP</span>
+                            </div>
+                            <small class="text-white-50" style="font-size: 0.78rem;">
+                                Pasarela Oficial Mercado Pago • Pago Seguro y Encriptado 256-bit
+                            </small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+
+            <div class="modal-body p-4 bg-light">
+                <!-- Panel de Estado Activo (Si ya está desbloqueado) -->
+                <div id="panelProYaActivo" class="alert alert-success d-none align-items-center gap-3 p-3 rounded-3 shadow-sm border-success mb-4">
+                    <div class="fs-2 text-success"><i class="fa fa-circle-check"></i></div>
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1 text-success">¡Tu Cuenta ContaSmart PRO está 100% Activa!</h6>
+                        <p class="small mb-0 text-dark">Tienes acceso completo e ilimitado a todos los módulos: POS, SIRE SUNAT, Siri IA sin límites y Kardex multi-almacén.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="restablecerPlanDemo()">
+                        <i class="fa fa-rotate-left me-1"></i> Probar Modo Free
+                    </button>
+                </div>
+
+                <!-- Oferta Destacada Plan Mensual S/ 20.00 -->
+                <div class="card border-0 rounded-4 shadow-sm mb-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-7">
+                                <span class="badge bg-primary bg-opacity-10 text-primary fw-bold text-uppercase px-3 py-1 mb-2">
+                                    <i class="fa fa-fire text-danger me-1"></i> Plan Más Popular • Pago Único / Mensual
+                                </span>
+                                <h4 class="fw-extrabold text-dark mb-1">Membresía Completa PRO</h4>
+                                <p class="text-muted small mb-0">Sin contratos forzosos. Desbloquea de inmediato todas las herramientas para tu negocio.</p>
+                            </div>
+                            <div class="col-md-5 text-md-end">
+                                <div class="d-inline-block text-start text-md-end bg-light p-3 rounded-3 border">
+                                    <span class="text-muted small text-decoration-line-through">Precio Normal: S/ 49.00</span>
+                                    <div class="d-flex align-items-baseline gap-1 justify-content-md-end">
+                                        <span class="fs-6 fw-bold text-dark">S/</span>
+                                        <span class="display-6 fw-bold text-primary" style="line-height: 1;">20.00</span>
+                                        <span class="text-muted small">/ mes</span>
+                                    </div>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold mt-1">Ahorro del 60%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-3 text-muted opacity-25">
+
+                        <!-- Métodos de Pago Aceptados -->
+                        <div class="mp-methods-banner d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                            <span class="small fw-semibold text-secondary">
+                                <i class="fa fa-credit-card text-primary me-1"></i> Métodos de pago aceptados:
+                            </span>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span class="badge text-white px-2 py-1" style="background:#7928ca;"><i class="fa fa-mobile-screen me-1"></i> Yape / Plin</span>
+                                <span class="badge bg-primary text-white px-2 py-1"><i class="fa fa-credit-card me-1"></i> Tarjetas Débito / Crédito</span>
+                                <span class="badge bg-secondary text-white px-2 py-1"><i class="fa fa-building-columns me-1"></i> BCP / BBVA / Interbank</span>
+                                <span class="badge bg-dark text-white px-2 py-1"><i class="fa fa-receipt me-1"></i> PagoEfectivo</span>
+                            </div>
+                        </div>
+
+                        <!-- Botón Principal de Pago Mercado Pago S/ 20.00 -->
+                        <div class="d-grid gap-2 mb-2">
+                            <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer" class="btn btn-mp-pay py-3 fw-bold fs-6 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="iniciarSeguimientoPago('S/ 20.00')">
+                                <i class="fa fa-shield-halved fs-5"></i>
+                                <span>Pagar S/ 20.00 con Mercado Pago</span>
+                                <i class="fa fa-arrow-up-right-from-square small ms-1"></i>
+                            </a>
+                        </div>
+                        <div class="text-center">
+                            <small class="text-muted" style="font-size: 0.72rem;">
+                                <i class="fa fa-lock text-success me-1"></i> Transacción procesada por Mercado Libre Perú S.R.L. Tus datos bancarios nunca se comparten.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Beneficios Desbloqueados -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
+                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
+                            <div>
+                                <strong class="d-block text-dark small">Facturación POS Ilimitada</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Emisión sin límites de boletas, facturas, tickets de 80mm y descuentos automáticos de stock.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
+                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
+                            <div>
+                                <strong class="d-block text-dark small">Siri IA Conta Asistente Sin Restricciones</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Comandos de voz continuos para consultar ventas, caja del día y productos agotados.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
+                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
+                            <div>
+                                <strong class="d-block text-dark small">Módulo SIRE SUNAT Full</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Descarga y exporta archivos RVIE y RCE listos para declarar en la plataforma oficial de SUNAT.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="feature-pill d-flex align-items-start gap-2 h-100">
+                            <div class="text-success mt-1"><i class="fa fa-circle-check fs-5"></i></div>
+                            <div>
+                                <strong class="d-block text-dark small">Soporte Prioritario VIP 24/7</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Asistencia directa por WhatsApp para dudas tributarias, configuración de inventarios y mejoras.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opciones Alternativas de Pago / Enlace Libre (misael287) -->
+                <div class="p-3 bg-white rounded-3 border mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div>
+                            <span class="fw-bold text-dark small d-block">¿Deseas pagar otro monto o hacer un aporte personalizado?</span>
+                            <span class="text-muted" style="font-size: 0.72rem;">Usa el link oficial directo de cobro libre de Misael:</span>
+                        </div>
+                        <a href="https://link.mercadopago.com.pe/misael287" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm fw-semibold">
+                            <i class="fa fa-link me-1"></i> link.mercadopago.com.pe/misael287 ↗
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sección: ¿Ya pagaste? Activar Beneficios -->
+                <div class="p-3 bg-white rounded-3 border">
+                    <div class="row align-items-center g-2">
+                        <div class="col-md-7">
+                            <span class="fw-bold text-dark small d-block"><i class="fa fa-key text-warning me-1"></i> ¿Ya completaste tu pago en Mercado Pago?</span>
+                            <span class="text-muted" style="font-size: 0.72rem;">Activa tu cuenta al instante con tu código o confirma con tu comprobante.</span>
+                        </div>
+                        <div class="col-md-5 d-flex gap-2">
+                            <button type="button" class="btn btn-success btn-sm w-100 fw-bold" onclick="solicitarCodigoActivacion()">
+                                <i class="fa fa-bolt me-1"></i> Activar Ahora
+                            </button>
+                            <a href="https://wa.me/51987654321?text=Hola%20Misael,%20acabo%20de%20pagar%20mi%20Plan%20PRO%20de%20S/%2020%20por%20Mercado%20Pago.%20Por%20favor%20activa%20mi%20cuenta." target="_blank" class="btn btn-outline-success btn-sm" title="Enviar comprobante por WhatsApp a Misael">
+                                <i class="fa-brands fa-whatsapp fs-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light p-3 d-flex justify-content-between">
+                <span class="text-muted small" style="font-size: 0.72rem;">
+                    <i class="fa fa-award text-warning me-1"></i> Garantía de Satisfacción ContaSmart • Desarrollado por Gerson Misael Pintado Huaman
+                </span>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap 5.3 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -724,13 +887,13 @@ function probarTokenSire() {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.7"></script>
+<script src="assets/js/db_static.js?v=7.8"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.7"></script>
+<script src="assets/js/main.js?v=7.8"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.7"></script>
+<script src="assets/js/conta_ai.js?v=7.8"></script>
 
 
 </body>

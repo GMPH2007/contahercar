@@ -1814,6 +1814,105 @@ body:has(.pos-wrapper) .mobile-bottom-dock {
     }
 }
 
+/* ============================================================================
+   CONTASMART PRO / MERCADO PAGO INTEGRATION STYLES
+   ============================================================================ */
+.btn-plan-pro {
+    background: linear-gradient(135deg, #009ee3 0%, #0077b6 60%, #023e8a 100%);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 158, 227, 0.35);
+}
+
+.btn-plan-pro:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 158, 227, 0.5);
+    color: #ffffff !important;
+}
+
+.btn-plan-pro.pro-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.sidebar-pro-banner {
+    margin: 12px 14px;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-pro-banner::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.sidebar-pro-banner.pro-active {
+    border-color: rgba(16, 185, 129, 0.6);
+    background: linear-gradient(135deg, rgba(6, 78, 59, 0.9), rgba(15, 23, 42, 0.95));
+}
+
+.badge-crown {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+}
+
+.btn-mp-pay {
+    background: #009ee3;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(0, 158, 227, 0.4);
+}
+
+.btn-mp-pay:hover {
+    background: #0087c2;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 158, 227, 0.55);
+}
+
+.feature-pill {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+}
+
+.feature-pill:hover {
+    border-color: #009ee3;
+    background: #f0f9ff;
+}
+
+.mp-methods-banner {
+    background: #f1f5f9;
+    border-radius: 10px;
+    padding: 8px 12px;
+}
+
 
 
 

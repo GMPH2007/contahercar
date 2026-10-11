@@ -531,6 +531,28 @@ function open() {
     async function resolveHumanResponse(raw) {
         const q = raw.toLowerCase().trim();
 
+        // 0. Consulta sobre Plan PRO / Membresía Mercado Pago (S/ 20.00)
+        if (q.includes('plan') || q.includes('pro') || q.includes('plus') || q.includes('mercado pago') || q.includes('precio') || q.includes('cuanto cuesta') || q.includes('pagar') || q.includes('suscripcion') || q.includes('comprar')) {
+            const humanText = `¡Excelente! La membresía <strong>ContaSmart PRO</strong> cuesta solo <strong>S/ 20.00 al mes</strong> mediante <strong>Mercado Pago</strong> (con Yape, Plin, tarjetas y bancos). Te desbloquea facturación ilimitada, módulo SIRE SUNAT y Siri IA sin topes.`;
+            const speechVoiceText = `La membresía ContaSmart PRO cuesta solo veinte soles al mes mediante Mercado Pago. Aceptamos Yape, tarjetas de débito o crédito y transferencias bancarias. Puedes pagarla con el botón que te dejo en pantalla.`;
+            const actionCardHTML = `
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="badge bg-warning text-dark fw-bold"><i class="fa fa-crown me-1"></i>ContaSmart PRO</span>
+                    <span class="fw-bold text-success fs-6">S/ 20.00 / mes</span>
+                </div>
+                <p class="small text-muted mb-3">Facturación ilimitada, Siri IA 24/7 y módulo SIRE SUNAT oficial.</p>
+                <div class="d-grid gap-2">
+                    <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm fw-bold">
+                        <i class="fa fa-shield-halved me-1"></i> Pagar S/ 20.00 en Mercado Pago ↗
+                    </a>
+                    <button type="button" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa fa-award me-1"></i> Ver Beneficios Completos y Activar
+                    </button>
+                </div>
+            `;
+            return { humanText, speechVoiceText, actionCardHTML };
+        }
+
         // 1. Consulta RUC (11 dígitos de SUNAT)
         const rucMatch = q.match(/\b(10|20)\d{9}\b/) || (q.includes('ruc') ? q.match(/\d{11}/) : null);
         if (rucMatch) {

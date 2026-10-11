@@ -67,6 +67,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 <?php endif; ?>
 
+                <!-- Botón Plan PRO / Mercado Pago S/ 20 (Visible en Celular y Desktop) -->
+                <button type="button" class="btn btn-sm btn-plan-pro d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="btnTopbarPlanPro" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" title="Desbloquear ContaSmart PRO (Mercado Pago S/ 20.00)">
+                    <i class="fa fa-crown text-warning"></i>
+                    <span class="fw-bold d-none d-sm-inline" id="topbarProTexto">Plan PRO</span>
+                    <span class="badge bg-danger ms-1" id="topbarProBadge">S/ 20</span>
+                </button>
+
                 <!-- Acceso a Siri ContaSmart (Visible en Celular y Desktop) -->
                 <button type="button" class="btn btn-sm btn-primary btn-open-ai d-flex align-items-center gap-1 shadow-sm px-2 px-md-3" id="tourAiAssistantBtn" onclick="if(window.openSiri) openSiri(); else if(window.ContaSmartAI) ContaSmartAI.open();" title="Hablar con Siri ContaSmart (Comandos de Voz)">
                     <i class="fa fa-microphone text-warning"></i>

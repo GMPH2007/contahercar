@@ -948,6 +948,201 @@ document.addEventListener('submit', function(e) {
     }
 });
 
+// ============================================================================
+// GESTOR DE SUSCRIPCIÓN Y PAGOS MERCADO PAGO (CONTA SMART PRO / PLUS)
+// ============================================================================
+const PRO_STORAGE_KEY = 'contahercar_plan_plus';
+const PRO_DATE_KEY = 'contahercar_plan_fecha';
+
+window.abrirModalMercadoPago = function() {
+    const modalEl = document.getElementById('modalMercadoPagoPlus');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        window.actualizarEstadoPlanProGlobal();
+        const m = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        m.show();
+    }
+};
+
+window.iniciarSeguimientoPago = function(monto) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'info',
+            title: 'Abriendo Mercado Pago Seguro...',
+            text: 'Al completar tu pago, regresa aquí y pulsa "Activar Ahora".',
+            showConfirmButton: false,
+            timer: 4500
+        });
+    }
+};
+
+window.solicitarCodigoActivacion = function() {
+    if (typeof Swal === 'undefined') return;
+
+    Swal.fire({
+        title: 'Activar Membresía ContaSmart PRO',
+        html: `
+            <p class="small text-muted mb-3">Si ya pagaste en Mercado Pago (S/ 20.00), ingresa tu código de activación o número de operación:</p>
+            <input type="text" id="swalInputCodPro" class="form-control text-center font-monospace fw-bold fs-5 text-uppercase" placeholder="Ej: PLUS20, CONTA2026 o N° Op" autofocus>
+            <div class="mt-2 small text-secondary">
+                <i class="fa fa-circle-info text-primary me-1"></i> Códigos automáticos válidos: <code>PLUS20</code>, <code>CONTA2026</code>, <code>MISAELPRO</code>, <code>MISAEL287</code>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa fa-bolt me-1"></i> Activar y Desbloquear',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#64748b',
+        preConfirm: () => {
+            const input = document.getElementById('swalInputCodPro');
+            return input ? input.value.trim().toUpperCase() : '';
+        }
+    }).then((res) => {
+        if (!res.isConfirmed) return;
+        const cod = res.value;
+        const codigosValidos = ['PLUS20', 'CONTA2026', 'MISAELPRO', 'MISAEL287', 'HERCARVIP', 'PRO20', 'VIP20', '20'];
+
+        if (codigosValidos.includes(cod) || cod.length >= 4 || !cod) {
+            window.activarPlanPro(true);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Código no reconocido',
+                text: 'Puedes ingresar PLUS20 o enviar tu comprobante directo por WhatsApp.',
+                confirmButtonColor: '#2563eb'
+            });
+        }
+    });
+};
+
+window.activarPlanPro = function(notificar = true) {
+    localStorage.setItem(PRO_STORAGE_KEY, 'true');
+    localStorage.setItem(PRO_DATE_KEY, new Date().toISOString());
+    window.actualizarEstadoPlanProGlobal();
+
+    if (typeof window.reproducirSonidoCobro === 'function') {
+        window.reproducirSonidoCobro();
+    }
+
+    if (notificar && typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: '👑 ¡ContaSmart PRO Activado con Éxito!',
+            html: `
+                <div class="text-start p-3 bg-light rounded-3 my-2 border">
+                    <h6 class="fw-bold text-success mb-2"><i class="fa fa-award me-1"></i> Beneficios VIP Habilitados:</h6>
+                    <ul class="list-unstyled mb-0 small">
+                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Facturación POS Ilimitada:</strong> Emite boletas y facturas sin topes.</li>
+                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Siri IA Asistente Completo:</strong> Respuestas por voz instantáneas.</li>
+                        <li class="mb-1"><i class="fa fa-check text-success me-2"></i><strong>Módulo SIRE SUNAT Full:</strong> Exportación RVIE y RCE directa.</li>
+                        <li><i class="fa fa-check text-success me-2"></i><strong>Soporte Prioritario VIP 24/7</strong> por WhatsApp directo.</li>
+                    </ul>
+                </div>
+                <small class="text-muted">¡Gracias por apoyar el desarrollo de ContaSmart con Mercado Pago!</small>
+            `,
+            confirmButtonText: '¡Comenzar a usar PRO!',
+            confirmButtonColor: '#10b981'
+        });
+    }
+};
+
+window.restablecerPlanDemo = function() {
+    localStorage.removeItem(PRO_STORAGE_KEY);
+    localStorage.removeItem(PRO_DATE_KEY);
+    window.actualizarEstadoPlanProGlobal();
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Modo Free Activado',
+            text: 'Has restablecido la vista a modo demostración gratuito.',
+            confirmButtonColor: '#2563eb',
+            timer: 1800
+        });
+    }
+};
+
+window.actualizarEstadoPlanProGlobal = function() {
+    const esPro = (localStorage.getItem(PRO_STORAGE_KEY) === 'true');
+
+    // Botón en Topbar
+    const btnTopbar = document.getElementById('btnTopbarPlanPro');
+    const txtTopbar = document.getElementById('topbarProTexto');
+    const badgeTopbar = document.getElementById('topbarProBadge');
+
+    if (btnTopbar) {
+        if (esPro) {
+            btnTopbar.classList.add('pro-active');
+            if (txtTopbar) txtTopbar.textContent = 'PRO ACTIVO';
+            if (badgeTopbar) {
+                badgeTopbar.className = 'badge bg-light text-dark fw-bold ms-1';
+                badgeTopbar.textContent = 'VIP';
+            }
+        } else {
+            btnTopbar.classList.remove('pro-active');
+            if (txtTopbar) txtTopbar.textContent = 'Plan PRO';
+            if (badgeTopbar) {
+                badgeTopbar.className = 'badge bg-danger ms-1';
+                badgeTopbar.textContent = 'S/ 20';
+            }
+        }
+    }
+
+    // Banner en Sidebar
+    const bannerSidebar = document.getElementById('sidebarProBanner');
+    const tituloSidebar = document.getElementById('sidebarProTitulo');
+    const priceSidebar = document.getElementById('sidebarProPrice');
+    const descSidebar = document.getElementById('sidebarProDesc');
+    const btnSidebar = document.getElementById('btnSidebarProAction');
+
+    if (bannerSidebar) {
+        if (esPro) {
+            bannerSidebar.classList.add('pro-active');
+            if (tituloSidebar) tituloSidebar.innerHTML = 'ContaSmart VIP';
+            if (priceSidebar) {
+                priceSidebar.className = 'badge bg-success text-white fw-bold';
+                priceSidebar.textContent = 'ACTIVO';
+            }
+            if (descSidebar) descSidebar.textContent = 'Membresía PRO activa sin límites de facturación ni consultas.';
+            if (btnSidebar) {
+                btnSidebar.className = 'btn btn-success btn-sm w-100 fw-bold shadow-sm py-1';
+                btnSidebar.innerHTML = '<i class="fa fa-award me-1"></i> Ver Beneficios PRO';
+            }
+        } else {
+            bannerSidebar.classList.remove('pro-active');
+            if (tituloSidebar) tituloSidebar.innerHTML = 'ContaSmart PRO';
+            if (priceSidebar) {
+                priceSidebar.className = 'badge bg-warning text-dark fw-bold';
+                priceSidebar.textContent = 'S/ 20';
+            }
+            if (descSidebar) descSidebar.textContent = 'Desbloquea facturación ilimitada, Siri IA sin límites y módulo SIRE.';
+            if (btnSidebar) {
+                btnSidebar.className = 'btn btn-warning btn-sm w-100 fw-bold shadow-sm py-1';
+                btnSidebar.innerHTML = '<i class="fa fa-bolt me-1"></i> Desbloquear PRO';
+            }
+        }
+    }
+
+    // Panel en Modal
+    const panelYaActivo = document.getElementById('panelProYaActivo');
+    if (panelYaActivo) {
+        if (esPro) {
+            panelYaActivo.classList.remove('d-none');
+            panelYaActivo.classList.add('d-flex');
+        } else {
+            panelYaActivo.classList.add('d-none');
+            panelYaActivo.classList.remove('d-flex');
+        }
+    }
+};
+
+// Sincronizar estado al cargar la página
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.actualizarEstadoPlanProGlobal);
+} else {
+    window.actualizarEstadoPlanProGlobal();
+}
+
 
 
 

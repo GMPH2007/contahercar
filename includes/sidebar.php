@@ -117,6 +117,23 @@ $lowStockBadge = ($quickCounters['low_stock'] > 0) ? '<span class="badge bg-dang
         </li>
     </ul>
 
+    <!-- Banner Suscripción ContaSmart PLUS (Mercado Pago S/ 20) -->
+    <div class="sidebar-pro-banner" id="sidebarProBanner">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge-crown"><i class="fa fa-crown"></i></span>
+                <span class="fw-bold text-white small" id="sidebarProTitulo">ContaSmart PRO</span>
+            </div>
+            <span class="badge bg-warning text-dark fw-bold" id="sidebarProPrice">S/ 20</span>
+        </div>
+        <p class="text-white-50 small mb-2" style="font-size: 0.72rem; line-height: 1.25;" id="sidebarProDesc">
+            Desbloquea facturación ilimitada, Siri IA sin límites y módulo SIRE.
+        </p>
+        <button type="button" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-1" onclick="if(window.abrirModalMercadoPago) abrirModalMercadoPago();" id="btnSidebarProAction">
+            <i class="fa fa-bolt me-1"></i> Desbloquear PRO
+        </button>
+    </div>
+
     <div class="sidebar-footer">
         <i class="fa fa-shield-halved text-success"></i>
         <span>ContaHercar v2.5 • GMPH2007</span>
