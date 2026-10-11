@@ -168,6 +168,9 @@ $categorias = $pdo->query("SELECT * FROM categorias ORDER BY nombre ASC")->fetch
         <p class="text-muted small mb-0">Gestión de productos, existencias en almacén y registro de movimientos fiables.</p>
     </div>
     <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-success" onclick="if(!window.esUsuarioPro()) { window.verificarAccesoPro('Exportación de Kardex e Inventario Valorizado a Excel', () => window.location.href='reportes.php?tab=inventario'); } else { window.location.href='reportes.php?tab=inventario'; }">
+            <i class="fa fa-file-excel me-1"></i> Exportar Kardex <span class="badge-pro-lock ms-1"></span>
+        </button>
         <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCategoria">
             <i class="fa fa-folder-plus me-1"></i> Categorías
         </button>

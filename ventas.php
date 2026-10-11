@@ -130,9 +130,14 @@ $clientes = $pdo->query("SELECT id, nombre_razon_social FROM clientes ORDER BY n
         <h4 class="mb-1 text-dark fw-bold">Historial de Ventas & Comprobantes</h4>
         <p class="text-muted small mb-0">Auditoría completa de boletas, facturas y tickets emitidos, con reimpresión y anulación atómica.</p>
     </div>
-    <a href="venta_nueva.php" class="btn btn-primary">
-        <i class="fa fa-cash-register me-1"></i> Ir al Punto de Venta (POS)
-    </a>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-success" onclick="if(!window.esUsuarioPro()) { window.verificarAccesoPro('Exportación de Registro de Ventas a Excel', () => window.location.href='reportes.php?export=ventas'); } else { window.location.href='reportes.php?export=ventas'; }">
+            <i class="fa fa-file-excel me-1"></i> Exportar Ventas Excel <span class="badge-pro-lock ms-1"></span>
+        </button>
+        <a href="venta_nueva.php" class="btn btn-primary">
+            <i class="fa fa-cash-register me-1"></i> Ir al Punto de Venta (POS)
+        </a>
+    </div>
 </div>
 
 <!-- Tarjetas KPI del Filtro -->

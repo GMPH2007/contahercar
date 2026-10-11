@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- Custom CSS (con cache-buster dinámico) -->
-    <link rel="stylesheet" href="assets/css/style.css?v=7.9">
+    <link rel="stylesheet" href="assets/css/style.css?v=8.0">
 </head>
 <body>
 
@@ -822,15 +822,19 @@ if (formCompra) {
                     <div class="small text-muted" style="font-size: 0.65rem;">
                         Representación impresa de Comprobante Electrónico.<br>
                         Autorizado por SUNAT mediante RS 097-2012.<br>
-                        <strong>Hash: a7F8e9K2mP9==</strong>
-                    </div>
+                    <div id="ticketWatermarkArea" class="mt-2 text-center"></div>
                 </div>
             </div>
             <div class="modal-footer bg-light p-2 d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-success btn-sm fw-bold" onclick="window.print()">
-                    <i class="fa fa-print me-1"></i> Imprimir Ticket
-                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-success btn-sm fw-bold" onclick="compartirTicketWhatsApp()" title="Enviar ticket por WhatsApp">
+                        <i class="fa-brands fa-whatsapp me-1"></i> Enviar WhatsApp <span class="badge-pro-lock ms-1"></span>
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm fw-bold" onclick="window.print()">
+                        <i class="fa fa-print me-1"></i> Imprimir Ticket
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -931,19 +935,35 @@ if (formCompra) {
                             </a>
                         </div>
 
-                        <!-- Caja de Yape Directo sin comisiones -->
-                        <div class="mp-yape-direct-box d-flex align-items-center justify-content-between flex-wrap gap-2 mt-3">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge rounded-circle p-2 text-white" style="background: #7928ca; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"><i class="fa fa-mobile-screen"></i></span>
-                                <div>
-                                    <span class="small fw-bold text-dark d-block">¿Prefieres pagar directo con Yape a Misael?</span>
-                                    <span class="font-monospace fw-bold text-primary fs-6">921 840 632</span>
-                                    <small class="text-muted ms-1">(Gerson Misael Pintado H.)</small>
+                        <!-- Caja de Yape y QR Directo (0% comisiones) -->
+                        <div class="mp-yape-direct-box mt-3">
+                            <div class="row align-items-center g-3">
+                                <div class="col-sm-4 text-center">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://mpago.la/24CgT6E" alt="QR Yape / Mercado Pago" class="img-fluid rounded border p-1 shadow-sm bg-white" style="max-width: 110px;">
+                                    <div class="small text-muted mt-1" style="font-size: 0.68rem;"><i class="fa fa-qrcode me-1"></i>Escanea con tu celular</div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="badge rounded-circle p-2 text-white" style="background: #7928ca; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;"><i class="fa fa-mobile-screen"></i></span>
+                                        <div>
+                                            <span class="small fw-bold text-dark d-block">Yape / Plin Directo a Misael:</span>
+                                            <span class="font-monospace fw-bold text-primary fs-5">921 840 632</span>
+                                            <small class="text-muted d-block" style="font-size: 0.72rem;">Titular: Gerson Misael Pintado H.</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2 mt-2 flex-wrap">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="copiarNumeroYape()">
+                                            <i class="fa fa-copy me-1"></i> Copiar Número
+                                        </button>
+                                        <a href="https://wa.me/51921840632?text=Hola%20Misael,%20te%20acabo%20de%20yapear%20S/%2020.00%20para%20activar%20mi%20Plan%20PRO%20de%20ContaSmart.%20Aqu%C3%AD%20mi%20comprobante." target="_blank" class="btn btn-sm btn-success fw-bold">
+                                            <i class="fa-brands fa-whatsapp me-1"></i> Enviar Voucher
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="solicitarDatosBancariosMisael()">
+                                            <i class="fa fa-building-columns me-1"></i> Cuentas BCP/BBVA
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="copiarNumeroYape()">
-                                <i class="fa fa-copy me-1"></i> Copiar Número
-                            </button>
                         </div>
 
                         <div class="text-center mt-2">
@@ -1055,13 +1075,13 @@ if (formCompra) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Base de Datos Estática (Cache para GitHub Pages / Offline) -->
-<script src="assets/js/db_static.js?v=7.9"></script>
+<script src="assets/js/db_static.js?v=8.0"></script>
 
 <!-- Custom Main JS -->
-<script src="assets/js/main.js?v=7.9"></script>
+<script src="assets/js/main.js?v=8.0"></script>
 
 <!-- ContaSmart AI Assistant Siri (Cache-busting) -->
-<script src="assets/js/conta_ai.js?v=7.9"></script>
+<script src="assets/js/conta_ai.js?v=8.0"></script>
 
 
 </body>

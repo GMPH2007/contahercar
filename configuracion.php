@@ -122,6 +122,28 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
+            <!-- Facturación Electrónica SUNAT Oficial & Certificado Digital (Exclusivo Plan PRO) -->
+            <div class="card-custom mb-4 border-warning border-start border-4">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <h5><i class="fa fa-stamp text-warning"></i> Facturación Electrónica SUNAT & Certificado Digital</h5>
+                    <span class="badge-pro-lock"></span>
+                </div>
+                <div class="card-custom-body">
+                    <p class="text-muted small mb-3">
+                        Configura el certificado digital tributario (.pfx), claves secundarias SOL para envío automático de comprobantes a SUNAT y membrete con logo oficial en tus boletas y facturas.
+                    </p>
+                    <div class="p-3 bg-light rounded-3 border d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <strong class="d-block text-dark small"><i class="fa fa-certificate text-primary me-1"></i> Estado del Módulo de Facturación:</strong>
+                            <span class="small text-muted" id="cfgSireEstadoTexto">En modo demo, los comprobantes se emiten con numeración interna y watermark de demostración.</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold" onclick="if(!window.esUsuarioPro()) { window.verificarAccesoPro('Certificado Digital y Facturación SUNAT', () => {}); } else { window.abrirModalMercadoPago(); }">
+                            <i class="fa fa-key me-1"></i> Configurar Certificado SUNAT
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Integración de API para Consulta RUC / DNI -->
             <div class="card-custom mb-4">
                 <div class="card-custom-header">

@@ -265,6 +265,16 @@ window.mostrarComprobanteTicket = function(ventaData, autoPrint = false) {
     if (igvEl) igvEl.textContent = v.impuesto_fmt || `S/. ${parseFloat(v.impuesto || 0).toFixed(2)}`;
     if (totalEl) totalEl.textContent = v.total_fmt || `S/. ${parseFloat(v.total || 0).toFixed(2)}`;
 
+    // Marca de agua y certificación según modo PRO o Demo
+    const watermarkEl = document.getElementById('ticketWatermarkArea');
+    if (watermarkEl) {
+        if (window.esUsuarioPro()) {
+            watermarkEl.innerHTML = '<div class="p-1 bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded small fw-bold"><i class="fa fa-shield-halved me-1"></i> COMPROBANTE OFICIAL - CUENTA PRO VIP ACTIVA</div>';
+        } else {
+            watermarkEl.innerHTML = '<div class="p-1 bg-warning bg-opacity-10 text-dark border border-warning rounded small fw-bold"><i class="fa fa-lock text-warning me-1"></i> COPIA DEMOSTRACIÓN - ADQUIERE TU PLAN PRO (S/ 20)</div>';
+        }
+    }
+
     // Limpiar restos de SweetAlert o backdrops que pudieran bloquear el foco
     document.querySelectorAll('.swal2-container').forEach(s => s.remove());
     document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
@@ -276,6 +286,60 @@ window.mostrarComprobanteTicket = function(ventaData, autoPrint = false) {
     if (autoPrint) {
         setTimeout(() => { window.print(); }, 400);
     }
+};
+
+/**
+ * Compartir Comprobante / Ticket por WhatsApp (Protegido por Paywall en Demo)
+ */
+window.compartirTicketWhatsApp = function() {
+    if (!window.esUsuarioPro()) {
+        window.verificarAccesoPro('Envío de Tickets y Comprobantes por WhatsApp', () => {
+            window.compartirTicketWhatsApp();
+        });
+        return;
+    }
+    const num = document.getElementById('ticketNumero')?.textContent || 'B001-000001';
+    const cli = document.getElementById('ticketCliente')?.textContent || 'Cliente';
+    const tot = document.getElementById('ticketTotal')?.textContent || 'S/ 0.00';
+    const msj = encodeURIComponent(`Hola ${cli}, gracias por tu compra en ContaSmart. Te compartimos tu comprobante electrónico N° ${num} por el importe de ${tot}.`);
+    window.open(`https://wa.me/?text=${msj}`, '_blank');
+};
+
+/**
+ * Visualizar Cuentas Bancarias Directas de Misael (BCP / BBVA)
+ */
+window.solicitarDatosBancariosMisael = function() {
+    if (typeof Swal === 'undefined') return;
+    Swal.fire({
+        title: 'Cuentas Bancarias Directas (0% Comisión)',
+        html: `
+            <div class="text-start p-3 bg-light rounded-3 border small">
+                <div class="mb-2">
+                    <span class="badge bg-primary me-1">BCP</span> <strong>Banco de Crédito del Perú</strong>
+                    <div class="font-monospace fw-bold text-dark mt-1">Cta Ahorros: 191-98765432-0-89</div>
+                    <div class="font-monospace text-secondary" style="font-size:0.75rem;">CCI: 002-1910098765432089-54</div>
+                </div>
+                <div class="border-top pt-2 mb-2">
+                    <span class="badge bg-primary bg-opacity-75 me-1">BBVA</span> <strong>Banco BBVA Perú</strong>
+                    <div class="font-monospace fw-bold text-dark mt-1">Cta Ahorros: 0011-0234-0200876543</div>
+                    <div class="font-monospace text-secondary" style="font-size:0.75rem;">CCI: 011-234000200876543-12</div>
+                </div>
+                <div class="border-top pt-2">
+                    <strong>Titular:</strong> Gerson Misael Pintado Huamán<br>
+                    <strong>Monto:</strong> S/ 20.00 (Membresía Mensual)
+                </div>
+            </div>
+            <p class="small text-muted mt-2 mb-0">Al realizar tu transferencia, envíanos la captura por WhatsApp y te activamos el acceso PRO de inmediato.</p>
+        `,
+        confirmButtonText: '<i class="fa-brands fa-whatsapp me-1"></i> Enviar Comprobante por WhatsApp',
+        confirmButtonColor: '#10b981',
+        showCancelButton: true,
+        cancelButtonText: 'Cerrar'
+    }).then((res) => {
+        if (res.isConfirmed) {
+            window.open('https://wa.me/51921840632?text=Hola%20Misael,%20te%20acabo%20de%20transferir%20S/%2020.00%20por%20banco%20para%20el%20Plan%20PRO%20de%20ContaSmart.%20Aqu%C3%AD%20mi%20captura.', '_blank');
+        }
+    });
 };
 
 /**

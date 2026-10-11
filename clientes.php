@@ -94,9 +94,14 @@ $clientes = $stmt->fetchAll();
         <h4 class="mb-1 text-dark fw-bold">Cartera de Clientes</h4>
         <p class="text-muted small mb-0">Gestión de clientes, historial de ventas e integración directa con consultas RUC / DNI.</p>
     </div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCliente" onclick="abrirModalNuevoCliente()">
-        <i class="fa fa-user-plus me-1"></i> Nuevo Cliente
-    </button>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-success" onclick="if(!window.esUsuarioPro()) { window.verificarAccesoPro('Exportación de Cartera de Clientes a Excel', () => {}); } else { alert('Exportando cartera de clientes a Excel...'); }">
+            <i class="fa fa-file-excel me-1"></i> Exportar Clientes <span class="badge-pro-lock ms-1"></span>
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCliente" onclick="abrirModalNuevoCliente()">
+            <i class="fa fa-user-plus me-1"></i> Nuevo Cliente
+        </button>
+    </div>
 </div>
 
 <!-- Filtro de Búsqueda -->
