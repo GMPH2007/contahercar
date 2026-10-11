@@ -1045,16 +1045,15 @@ window.abrirModalMercadoPago = function(e) {
                 html: `
                     <p class="mb-3">Para desbloquear todas las funciones ilimitadas, paga con tu enlace de Mercado Pago:</p>
                     <a href="https://mpago.la/24CgT6E" target="_blank" class="btn btn-primary fw-bold w-100 py-2 mb-2">Pagar S/ 20 con Mercado Pago ↗</a>
-                    <a href="https://link.mercadopago.com.pe/misael287" target="_blank" class="btn btn-outline-secondary btn-sm w-100">Otro Monto en link.mercadopago.com.pe/misael287 ↗</a>
+                    <a href="https://link.mercadopago.com.pe/misael287" target="_blank" class="btn btn-outline-secondary btn-sm w-100 mb-2">Otro Monto en link.mercadopago.com.pe/misael287 ↗</a>
                 `,
                 showCancelButton: true,
-                showDenyButton: true,
-                confirmButtonText: '¡Ya Pagué / Activar!',
-                denyButtonText: 'Simular Pago Exitoso',
-                cancelButtonText: 'Cerrar'
+                confirmButtonText: '<i class="fa fa-key me-1"></i> Validar Comprobante / Código',
+                cancelButtonText: 'Cerrar',
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#64748b'
             }).then((res) => {
                 if (res.isConfirmed) window.solicitarCodigoActivacion();
-                else if (res.isDenied) window.simularPagoExitosoMercadoPago();
             });
         }
         return;
@@ -1137,21 +1136,21 @@ window.verificarAccesoPro = function(nombreModulo, accionPermitida) {
                         <span class="fs-5 fw-bold text-primary">S/ 20.00</span>
                     </div>
                 </div>
-                <small class="text-muted d-block mt-1">Paga con Yape, Plin o Tarjeta y activa tu cuenta al instante.</small>
+                <small class="text-muted d-block mt-1">Realiza tu pago en Mercado Pago o Yape para desbloquear todas las funciones.</small>
             `,
             showCancelButton: true,
             showDenyButton: true,
             confirmButtonText: '<i class="fa fa-shield-halved me-1"></i> Pagar S/ 20 con Mercado Pago',
-            denyButtonText: '<i class="fa fa-bolt me-1"></i> Simular Pago / Desbloquear',
+            denyButtonText: '<i class="fa fa-key me-1"></i> Validar Pago / Código',
             cancelButtonText: 'Cerrar',
             confirmButtonColor: '#009ee3',
-            denyButtonColor: '#f59e0b',
+            denyButtonColor: '#10b981',
             cancelButtonColor: '#64748b'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.abrirModalMercadoPago();
+                window.pagarConMercadoPago();
             } else if (result.isDenied) {
-                window.simularPagoExitosoMercadoPago(accionPermitida);
+                window.solicitarCodigoActivacion();
             }
         });
     } else {
@@ -1162,33 +1161,34 @@ window.verificarAccesoPro = function(nombreModulo, accionPermitida) {
 };
 
 /**
- * Simulación de Pago en Vivo y Activación Inmediata de Beneficios
+ * Redirección Directa a la Pasarela Oficial de Mercado Pago (S/ 20.00)
  */
-window.simularPagoExitosoMercadoPago = function(callbackTrasActivar = null) {
-    if (typeof Swal === 'undefined') {
-        window.activarPlanPro(true);
-        if (typeof callbackTrasActivar === 'function') callbackTrasActivar();
-        return;
+window.pagarConMercadoPago = function() {
+    window.open('https://mpago.la/24CgT6E', '_blank');
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Pasarela Oficial Abierta',
+            html: `
+                <div class="p-3 bg-light rounded text-start mb-3 border">
+                    <div class="fw-bold text-primary mb-1"><i class="fa fa-shield-halved me-1"></i> Transacción Segura S/ 20.00</div>
+                    <small class="text-muted">Acepta Tarjetas de Crédito, Débito, Yape, Plin y PagoEfectivo.</small>
+                </div>
+                <p class="small text-muted mb-3">Una vez completado tu pago, valida tu código o comprobante para desbloquear de inmediato:</p>
+                <button type="button" class="btn btn-success fw-bold w-100 py-2" onclick="solicitarCodigoActivacion()">
+                    <i class="fa fa-key me-1"></i> Validar Pago y Desbloquear PRO
+                </button>
+            `,
+            showConfirmButton: false,
+            showCancelButton: true,
+            cancelButtonText: 'Cerrar'
+        });
     }
+};
 
-    Swal.fire({
-        title: 'Verificando con Mercado Pago...',
-        html: `
-            <div class="text-center py-3">
-                <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
-                <div class="fw-bold text-dark fs-6">Procesando Transacción de S/ 20.00...</div>
-                <small class="text-secondary">Conectando con la pasarela oficial de Mercado Pago Perú</small>
-            </div>
-        `,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        timer: 1500
-    }).then(() => {
-        window.activarPlanPro(true);
-        if (typeof callbackTrasActivar === 'function') {
-            setTimeout(callbackTrasActivar, 600);
-        }
-    });
+window.simularPagoExitosoMercadoPago = function() {
+    // Redirige al pago real; ya no permite desbloqueo gratuito sin pagar
+    window.pagarConMercadoPago();
 };
 
 window.iniciarSeguimientoPago = function(monto) {
@@ -1197,10 +1197,10 @@ window.iniciarSeguimientoPago = function(monto) {
             toast: true,
             position: 'top-end',
             icon: 'info',
-            title: 'Abriendo Mercado Pago Seguro...',
-            text: 'Al completar tu pago, pulsa "Activar Ahora" o "Simular Pago".',
+            title: 'Abriendo Mercado Pago...',
+            text: 'Al completar tu pago, pulsa "Validar Código / Voucher" para activar.',
             showConfirmButton: false,
-            timer: 4500
+            timer: 4000
         });
     }
 };
@@ -1231,35 +1231,52 @@ window.solicitarCodigoActivacion = function() {
     if (typeof Swal === 'undefined') return;
 
     Swal.fire({
-        title: 'Activar Membresía ContaSmart PRO',
+        title: '🔑 Activar Licencia ContaSmart PRO',
         html: `
-            <p class="small text-muted mb-3">Si ya pagaste en Mercado Pago o Yape (S/ 20.00), ingresa tu código de activación o número de operación:</p>
-            <input type="text" id="swalInputCodPro" class="form-control text-center font-monospace fw-bold fs-5 text-uppercase" placeholder="Ej: PLUS20, CONTA2026 o N° Op" autofocus>
-            <div class="mt-2 small text-secondary">
-                <i class="fa fa-circle-info text-primary me-1"></i> Códigos automáticos válidos: <code>PLUS20</code>, <code>CONTA2026</code>, <code>MISAELPRO</code>, <code>HERCARVIP</code>
+            <p class="small text-muted mb-2">Ingresa tu código de activación o comprobante oficial tras pagar los <strong>S/ 20.00</strong>:</p>
+            <input type="text" id="swalInputCodPro" class="form-control text-center font-monospace fw-bold fs-5 text-uppercase mb-2" placeholder="Ej: CONTA2026, PLUS20 o N° Operación" autofocus>
+            <div class="p-2 bg-light rounded border text-start small">
+                <div class="text-secondary mb-1"><i class="fa fa-circle-info text-primary me-1"></i> <strong>¿Aún no has realizado el pago?</strong></div>
+                <div class="text-muted">Paga <strong>S/ 20.00</strong> en Mercado Pago (<a href="https://mpago.la/24CgT6E" target="_blank" class="fw-bold text-primary">mpago.la/24CgT6E</a>) o Yapea al <strong>921 840 632</strong> (Gerson Misael Pintado H.) y envía el voucher por WhatsApp.</div>
             </div>
         `,
         showCancelButton: true,
-        confirmButtonText: '<i class="fa fa-bolt me-1"></i> Activar y Desbloquear',
+        confirmButtonText: '<i class="fa fa-shield-check me-1"></i> Validar y Desbloquear',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#10b981',
         cancelButtonColor: '#64748b',
         preConfirm: () => {
             const input = document.getElementById('swalInputCodPro');
-            return input ? input.value.trim().toUpperCase() : '';
+            const val = input ? input.value.trim().toUpperCase() : '';
+            if (!val) {
+                Swal.showValidationMessage('Debes ingresar tu código de activación o número de operación');
+                return false;
+            }
+            return val;
         }
     }).then((res) => {
         if (!res.isConfirmed) return;
         const cod = res.value;
-        const codigosValidos = ['PLUS20', 'CONTA2026', 'MISAELPRO', 'MISAEL287', 'HERCARVIP', 'PRO20', 'VIP20', '20'];
+        const codigosValidos = ['PLUS20', 'CONTA2026', 'MISAELPRO', 'MISAEL20', 'MISAEL287', 'HERCARVIP', 'VIP2026', 'PRO2026'];
 
-        if (codigosValidos.includes(cod) || cod.length >= 4 || !cod) {
+        if (codigosValidos.includes(cod)) {
             window.activarPlanPro(true);
         } else {
             Swal.fire({
-                icon: 'warning',
-                title: 'Código no reconocido',
-                text: 'Puedes ingresar PLUS20 o enviar tu comprobante directo por WhatsApp a Misael.',
+                icon: 'error',
+                title: 'Código No Válido',
+                html: `
+                    <p class="small text-muted mb-2">El código <code>${cod}</code> no corresponde a una licencia o pago verificado de S/ 20.00.</p>
+                    <p class="small text-danger fw-semibold mb-3">Si no se confirma el pago, las funciones permanecen bloqueadas.</p>
+                    <div class="d-grid gap-2">
+                        <a href="https://mpago.la/24CgT6E" target="_blank" class="btn btn-primary btn-sm fw-bold">
+                            <i class="fa fa-shield-halved me-1"></i> Pagar S/ 20.00 en Mercado Pago
+                        </a>
+                        <a href="https://wa.me/51921840632?text=Hola%20Misael,%20te%20escribo%20para%20solicitar%20mi%20c%C3%B3digo%20de%20activaci%C3%B3n%20para%20ContaSmart%20PRO" target="_blank" class="btn btn-success btn-sm fw-bold">
+                            <i class="fa-brands fa-whatsapp me-1"></i> Solicitar Código por WhatsApp
+                        </a>
+                    </div>
+                `,
                 confirmButtonColor: '#2563eb'
             });
         }
@@ -1426,11 +1443,37 @@ window.actualizarEstadoPlanProGlobal = function() {
     });
 };
 
-// Sincronizar estado al cargar cualquier página
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', window.actualizarEstadoPlanProGlobal);
-} else {
+/**
+ * Detección Automática de Retorno de Pago Aprobado desde Mercado Pago
+ */
+window.detectarPagoRetornoMercadoPago = function() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status') || urlParams.get('collection_status') || urlParams.get('payment_status');
+        const proCode = urlParams.get('pro_code') || urlParams.get('clave') || urlParams.get('codigo');
+
+        const codigosValidos = ['PLUS20', 'CONTA2026', 'MISAELPRO', 'MISAEL20', 'MISAEL287', 'HERCARVIP', 'VIP2026', 'PRO2026'];
+
+        if (status === 'approved' || (proCode && codigosValidos.includes(proCode.toUpperCase()))) {
+            window.activarPlanPro(true);
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({path: cleanUrl}, '', cleanUrl);
+        }
+    } catch (e) {
+        console.error('Error al detectar retorno de pago:', e);
+    }
+};
+
+// Sincronizar estado y detectar pago de retorno al cargar cualquier página
+function inicializarPaywallContaSmart() {
+    window.detectarPagoRetornoMercadoPago();
     window.actualizarEstadoPlanProGlobal();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarPaywallContaSmart);
+} else {
+    inicializarPaywallContaSmart();
 }
 
 

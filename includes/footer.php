@@ -347,26 +347,26 @@
                     </div>
                 </div>
 
-                <!-- Simulación en Vivo y Activación Rápida -->
-                <div class="mp-sim-box mb-3">
+                <!-- Validación de Pago Real y Activación de Licencia -->
+                <div class="mp-sim-box mb-3 p-3 bg-white rounded-3 border shadow-sm">
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
                         <div class="d-flex align-items-center gap-2">
-                            <i class="fa fa-wand-magic-sparkles text-warning fs-5"></i>
+                            <i class="fa fa-shield-check text-success fs-5"></i>
                             <div>
-                                <strong class="small d-block text-dark">Simulador de Pago en Vivo y Verificación</strong>
-                                <span class="text-muted" style="font-size: 0.72rem;">Prueba en tiempo real cómo se desbloquean los beneficios en pantalla:</span>
+                                <strong class="small d-block text-dark">Validación de Pago Real (Mercado Pago / Yape)</strong>
+                                <span class="text-muted" style="font-size: 0.72rem;">Si ya completaste el pago de S/ 20.00, valida tu comprobante para desbloquear:</span>
                             </div>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col-sm-7">
-                            <button type="button" class="btn btn-warning w-100 fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="simularPagoExitosoMercadoPago()">
-                                <i class="fa fa-bolt"></i> ⚡ Simular Pago Aprobado y Desbloquear
-                            </button>
+                            <a href="https://mpago.la/24CgT6E" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-100 fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2" onclick="iniciarSeguimientoPago('S/ 20.00')">
+                                <i class="fa fa-arrow-up-right-from-square"></i> Pagar S/ 20.00 en Mercado Pago ↗
+                            </a>
                         </div>
                         <div class="col-sm-5">
-                            <button type="button" class="btn btn-outline-dark w-100 fw-semibold py-2" onclick="solicitarCodigoActivacion()">
-                                <i class="fa fa-key me-1"></i> Ingresar Código / Voucher
+                            <button type="button" class="btn btn-success w-100 fw-semibold py-2" onclick="solicitarCodigoActivacion()">
+                                <i class="fa fa-key me-1"></i> Validar Código / Voucher
                             </button>
                         </div>
                     </div>
